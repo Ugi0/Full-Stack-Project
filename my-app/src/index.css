@@ -11,3 +11,13 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.react-draggable * {
+  height: 100%;
+  width: 100%;
+}
+
+#root {
+  min-width: 100vw;
+  min-height: 100vh;
+}

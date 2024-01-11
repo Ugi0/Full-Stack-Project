@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './styles/App.css';
 import { FloatingImage } from './components/floatingimage.jsx'
 
 function App() {
