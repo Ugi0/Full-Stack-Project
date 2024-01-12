@@ -25,7 +25,7 @@ export class FloatingImage extends React.Component {
                     this.setState({
                         width: ref.offsetWidth,
                         height: ref.offsetHeight,
-                        ... position
+                        ...position
                     });
                 }}
             >
