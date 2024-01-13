@@ -40,7 +40,7 @@ export class Register extends React.Component {
                 .catch(error => {
                     console.log(error)
                 });
-            console.log(response.json())
+            if (response) console.log(response.json());
         }
     }
 
