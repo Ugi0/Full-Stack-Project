@@ -1,11 +1,6 @@
 import Express from "express";
-import { DBConnection, users } from "./DBConnection";
-import { createPool } from "mysql2"
-import { MySql2PoolQueryRunner } from "ts-sql-query/queryRunners/MySql2PoolQueryRunner";
-import { CustomBooleanTypeAdapter } from "ts-sql-query/TypeAdapter";
-import { ConsoleLogQueryRunner } from "ts-sql-query/queryRunners/ConsoleLogQueryRunner";
-import { uuidValueSourceType } from "ts-sql-query/utils/symbols";
-
+import { assertEquals } from "./utils/assert";
+import { db } from "./DBConnection";
 
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -16,37 +11,39 @@ dotenv.config()
 const app = Express();
 const port = 8000
 
-const pool = createPool({
-  connectionLimit: 10,
-  host: process.env.DATABASE_LOCATION,
-  user: process.env.DATABASE_USERNAME,
-  password: process.env.DATABASE_PASSWORD,
-  database: 'TestDB'
-})
-
-let connection;
-
-connection = new DBConnection(new ConsoleLogQueryRunner(new MySql2PoolQueryRunner(pool)))
-
 app.use(cors())
 app.use(Express.json());
 
 app.post('/register', async (req, res) => {
-  console.log(req.body);
-  res.send({message: 'Hello World!'})
-  await connection.beginTransaction()
-let i = await connection.insertInto(users)
-    .set({
-      id: getRandomID(),
-      email: "someemail",
-      username: "someusername",
-      created_at: new Date(),
-      passwordHash: "SOMEHASH"
+  try {
+    let result = await db
+      .insertInto('users')
+      .values({
+        id: getRandomID(),
+        email: req.body.email,
+        username: req.body.username,
+        created_at: new Date(),
+        passwordHash: req.body.password
+      })
+      .executeTakeFirstOrThrow()
+    if (result.numInsertedOrUpdatedRows == 1n) {
+      res.send({
+        result: "success",
+        message: "Redirect"
+      })
+    }
+  } catch (e) {
+    console.log(e.code)
+    console.log(e.sqlMessage)
+    console.log({
+      result: "failure",
+      error: `${e.code}: ${e.sqlMessage}`
     })
-    .returningLastInsertedId()
-    .executeInsertOne()
-    .then(e => console.log(e))
-  //console.log(JSON.parse(req.body));
+    res.send({
+      result: "failure",
+      error: `${e.code}: ${e.sqlMessage}`
+    })
+  }
 })
 
 app.get('/login', (req, res) => {

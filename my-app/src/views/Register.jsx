@@ -35,12 +35,19 @@ export class Register extends React.Component {
                     password: this.state.password
                 })
             };
-            console.log(JSON.stringify(this.state))
             const response = await fetch(`http://${environment.BackendLocation}:${environment.BackendPort}/register`, requestOptions)
                 .catch(error => {
                     console.log(error)
                 });
-            if (response) console.log(response.json());
+            if (response) {
+                let responseJSON = await response.json()
+                if (responseJSON.result === 'success') {
+                    console.log("Success");
+                } else {
+                    console.log("Failure");
+                    console.log(responseJSON.error);
+                }
+            }
         }
     }
 
@@ -75,7 +82,8 @@ export class Register extends React.Component {
 }
 
 function validate(state) {
-    let regexp = new RegExp('"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$"'); //Regex to test for at least 8 characters, one letter and one number
+    // eslint-disable-next-line no-useless-escape
+    let regexp = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$"); //Regex to test for at least 8 characters, one letter and one number
     if (!state.username) { //Username empty
         return [false, "Username can't be empty"];
     }
@@ -85,7 +93,7 @@ function validate(state) {
     if (!state.password) { //Password empty
         return [false, "Password can't be empty"];
     }
-    if (regexp.test(state.password)) { //Passwords doesn't pass the requirements
+    if (!regexp.test(state.password)) { //Passwords doesn't pass the requirements
         return [false, "Password doesn't pass the requirements. At least 8 characters, a letter and a number is needed."];
     }
     if (!(state.password === state.passwordCheck)) { //Passwords not equal
