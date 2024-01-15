@@ -1,12 +1,14 @@
 import React from 'react'
 import '../styles/Login.css'
 import environment from '../environment.js';
-
+import bcrypt from 'bcryptjs'
+import Cookies from 'universal-cookie';
+import { Navigate } from 'react-router-dom';
 
 export class Register extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { username: "", email: "", password: "", passwordCheck: "" }
+        this.state = { username: "", email: "", password: "", passwordCheck: "", redirect: false}
     }
 
     // Handle changing the values of the inputs and save to state
@@ -26,13 +28,16 @@ export class Register extends React.Component {
             console.log(Error)
         }
         else {
+            const salt = bcrypt.genSaltSync(10)
+            const hashedPassword = bcrypt.hashSync(this.state.password, salt)
             const requestOptions = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     username: this.state.username,
                     email: this.state.email,
-                    password: this.state.password
+                    password: hashedPassword,
+                    salt: salt
                 })
             };
             const response = await fetch(`http://${environment.BackendLocation}:${environment.BackendPort}/register`, requestOptions)
@@ -41,13 +46,24 @@ export class Register extends React.Component {
                 });
             if (response) {
                 let responseJSON = await response.json()
-                if (responseJSON.result === 'success') {
-                    console.log("Success");
+                if (responseJSON.result === 'success') { //User was created successfully
+                    const cookies = new Cookies();
+                    cookies.set( //Set auth token, expiry in a month
+                        "token", responseJSON.token, { path: '/', maxAge: 60*60*24*30 }
+                    )
+                    this.setState({ //Make window redirect
+                        redirect: true
+                    })
                 } else {
-                    console.log("Failure");
                     console.log(responseJSON.error);
                 }
             }
+        }
+    }
+
+    renderRedirect() {
+        if (this.state.redirect) {
+            return <Navigate to='/' />
         }
     }
 
@@ -73,6 +89,7 @@ export class Register extends React.Component {
                     </div>
                     <div>
                         <input type="submit" value="Register" />
+                        {this.renderRedirect()}
                     </div>
 
                 </form>
