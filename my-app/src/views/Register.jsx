@@ -46,7 +46,7 @@ export class Register extends React.Component {
                 });
             if (response) {
                 let responseJSON = await response.json()
-                if (responseJSON.result === 'success') { //User was created successfully
+                if (responseJSON.success) { //User was created successfully
                     const cookies = new Cookies();
                     cookies.set( //Set auth token, expiry in a month
                         "token", responseJSON.token, { path: '/', maxAge: 60*60*24*30 }

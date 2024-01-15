@@ -12,6 +12,7 @@ interface UsersTable {
     username: string
     created_at: Date
     passwordHash: string
+    passwordSalt: string
 }
 
 const dialect = new MysqlDialect({ 
