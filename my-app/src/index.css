@@ -21,3 +21,13 @@ code {
   min-width: 100vw;
   min-height: 100vh;
 }
+
+@font-face {
+  font-family: 'StudyAlone';
+  src: local('StudyAlone'), url(./fonts/StudyAlone.woff) format('woff');
+}
+
+@font-face {
+  font-family: 'WallNotes';
+  src: local('WallNotes'), url(./fonts/Wall\ Notes.woff) format('woff');
+}

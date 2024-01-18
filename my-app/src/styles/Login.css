@@ -20,15 +20,63 @@
     height: 50%;
 
     background-color: whitesmoke;
+    border-radius: 25px;
+    border: #602285;
+    border-width: 12px;
+    border-style: solid;
+}
+
+.inputBox input {
+    background-color: #a3c6e9;
+    border-radius: 8px;
+    font-family: 'StudyAlone';
 }
 
 .inputBox div {
     display: flex;
     flex-direction: column;
-    text-align: center;
-    align-items: center;
+    margin-right: 50px;
+    margin-left: 50px;
+    font-size: large;
 }
 
-.inputBox div button, .inputBox div input {
-    max-width: 200px;
+.inputBox div button, .inputBox div p {
+    width: fit-content;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    font-weight: bold;
+    font-family: 'StudyAlone';
+}
+
+.inputBox div button {
+    text-align: center;
+    margin: auto;
+    font-size: large;
+    background-color: #a3c6e9;
+    color: whitesmoke;
+    border-radius: 8px;
+    padding: 5px 20px 5px 20px;
+    font-family: 'StudyAlone';
+}
+
+.loginButton {
+    margin: auto;
+    font-size: large;
+    background-color: aquamarine !important;
+    border-radius: 8px;
+    padding: 5px 10px 5px 10px;
+    border-style: solid;
+}
+
+
+.inputBox div h1 {
+    margin: 0;
+    text-align: center;
+    font-size: 60px;
+    font-family: 'WallNotes';
+}
+
+.registerDiv {
+    align-items: center;
 }

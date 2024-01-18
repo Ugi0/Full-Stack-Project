@@ -8,7 +8,7 @@ import { Navigate } from 'react-router-dom';
 export class Register extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { username: "", email: "", password: "", passwordCheck: "", redirect: false}
+        this.state = { username: "", email: "", password: "", passwordCheck: "", redirect: false, redirectLocation: '/'}
     }
 
     // Handle changing the values of the inputs and save to state
@@ -63,8 +63,15 @@ export class Register extends React.Component {
 
     renderRedirect() {
         if (this.state.redirect) {
-            return <Navigate to='/' />
+            return <Navigate to={this.state.redirectLocation} />
         }
+    }
+
+    routeChange = () => {
+        this.setState({
+            redirectLocation: "/login",
+            redirect: true
+        })
     }
 
     render() {
@@ -72,11 +79,16 @@ export class Register extends React.Component {
             <div className='LoginRoot'>
                 <form onSubmit={this.handleSubmit} className='inputBox' autoComplete="off">
                     <div>
+                        <h1>
+                            WELCOME
+                        </h1>
+                    </div>
+                    <div>
                         <label>Username</label>
                         <input type="text" id="username" name="username" value={ this.state.username } onChange={this.handleInputChange} />
                     </div>
                     <div>
-                        <label>email</label>
+                        <label>Email</label>
                         <input type="text" id="email" name="email" value={ this.state.email } onChange={this.handleInputChange} />
                     </div>
                     <div>
@@ -89,9 +101,14 @@ export class Register extends React.Component {
                     </div>
                     <div>
                         <input type="submit" value="Register" />
-                        {this.renderRedirect()}
                     </div>
-
+                    <div className='registerDiv'>  
+                        <p> Already got an account?</p>
+                        <button onClick={this.routeChange}>
+                            Log in
+                        </button>
+                    </div>
+                    {this.renderRedirect()}
                 </form>
             </div>
         ); 
