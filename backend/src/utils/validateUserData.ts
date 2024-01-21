@@ -9,7 +9,7 @@ export function validateUserData(request) {
             return [false, "This is not an actual email"];
         }
         if (!passwordReg.test(request.password)) { //Passwords doesn't pass the requirements
-            return [false, "Password doesn't pass the requirements. At least 8 characters, a letter and a number is needed."];
+            return [false, "Password has to be at least 8 characters and include a number."];
         }
         else {
             return [true, ""];

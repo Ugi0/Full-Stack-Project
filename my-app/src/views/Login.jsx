@@ -1,6 +1,5 @@
 import React from 'react';
 import '../styles/Login.css'
-import '../index.css'
 import environment from '../environment.js';
 import Cookies from 'universal-cookie';
 import bcrypt from 'bcryptjs'
@@ -9,7 +8,7 @@ import { Navigate } from 'react-router-dom';
 export class Login extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { username: "", password: "", redirect: false, redirectLocation: "/" }
+        this.state = { username: "", password: "", redirect: false, redirectLocation: "/", errorMessage: "" }
     }
 
     // Handle changing the values of the inputs and save to state
@@ -26,7 +25,9 @@ export class Login extends React.Component {
         event.preventDefault();
         const [valid, Error] = validate(this.state);
         if (!valid) { //Inputs are not valid, display an error to the user
-            console.log(Error)
+            this.setState({
+                errorMessage: Error
+            })
         }
         else {
             const requestOptions = {
@@ -37,7 +38,9 @@ export class Login extends React.Component {
                 })
             };
             let response = await fetch(`http://${environment.BackendLocation}:${environment.BackendPort}/login`, requestOptions)
-                    .catch(error => {console.log(error)});
+                    .catch(error => {
+                        console.log(error)
+                    });
             if (response.ok) {
                 let responseJSON = await response.json()
                 const requestOptions = {
@@ -49,11 +52,18 @@ export class Login extends React.Component {
                     })
                 }
                 response = await fetch(`http://${environment.BackendLocation}:${environment.BackendPort}/login`, requestOptions)
+                    .catch(error => {
+                        console.log(error)
+                    })
                 if (response) {
                     let responseJSON = await response.json()
                     if (responseJSON.success) {
                         this.setState({ //Make window redirect
                             redirect: true
+                        })
+                    } else {
+                        this.setState({
+                            errorMessage: "Either username or password is wrong."
                         })
                     }
                 }
@@ -72,6 +82,16 @@ export class Login extends React.Component {
             redirectLocation: "/register",
             redirect: true
         })
+    }
+
+    renderError() {
+        if (this.state.errorMessage !== "") {
+            return <div className='errorMessage'>
+                <p>
+                    {this.state.errorMessage}
+                </p>
+            </div>
+        }
     }
 
     render() {
@@ -109,7 +129,7 @@ export class Login extends React.Component {
                     <div>
                         <input type="submit" value="Log in" className='loginButton' />
                     </div>
-
+                    {this.renderError()}
                     <div className='registerDiv'>
                         <p>
                             Or haven't created an account yet?
@@ -118,14 +138,17 @@ export class Login extends React.Component {
                             Register
                         </button>
                     </div>
-                    {this.renderRedirect()}
                 </form>
+                {this.renderRedirect()}
             </div>
         ); 
     }
 }
 
 function validate(state) {
+    if (state.redirect) {
+        return [false, ""]
+    }
     if (!state.username) { //Username empty
         return [false, "Username can't be empty"];
     }

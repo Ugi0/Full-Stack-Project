@@ -10,14 +10,13 @@
     max-width: 400px;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
 
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 50%;
-    height: 50%;
+    height: fit-content;
 
     background-color: whitesmoke;
     border-radius: 25px;
@@ -35,15 +34,14 @@
 .inputBox div {
     display: flex;
     flex-direction: column;
-    margin-right: 50px;
-    margin-left: 50px;
+    margin: 2vh 50px 2vh 50px;
     font-size: large;
 }
 
 .inputBox div button, .inputBox div p {
     width: fit-content;
     margin: 0;
-    white-space: nowrap;
+    
     overflow: hidden;
     font-weight: bold;
     font-family: 'StudyAlone';
@@ -79,4 +77,9 @@
 
 .registerDiv {
     align-items: center;
+}
+
+.errorMessage {
+    align-items: center;
+    color: red;
 }

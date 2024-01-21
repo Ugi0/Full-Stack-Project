@@ -52,7 +52,20 @@ app.post('/register', async (req, res) => {
       })
     }
   } catch (e) {
-    console.log(e)
+    if (e.code === "ER_DUP_ENTRY") {
+      const regex = /[^ ]*$/;
+      let dupKey = regex.exec(e.sqlMessage)
+      if (dupKey !== null) {
+        let s = dupKey[0];
+        const key = s.slice(s.indexOf(".")+1, -1);
+        console.log(key)
+        res.send({
+          success: false,
+          error: `Someone is already registered with this ${key}`
+        })
+        return;
+      }
+    }
     res.send({
       success: false,
       error: `${e.code ?? ""}: ${e.sqlMessage ?? ""}`

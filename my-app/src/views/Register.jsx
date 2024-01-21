@@ -1,14 +1,14 @@
 import React from 'react'
 import '../styles/Login.css'
 import environment from '../environment.js';
-import bcrypt from 'bcryptjs'
 import Cookies from 'universal-cookie';
+import bcrypt from 'bcryptjs'
 import { Navigate } from 'react-router-dom';
 
 export class Register extends React.Component {
     constructor(props) {
         super(props)
-        this.state = { username: "", email: "", password: "", passwordCheck: "", redirect: false, redirectLocation: '/'}
+        this.state = { username: "", email: "", password: "", passwordCheck: "", redirect: false, redirectLocation: '/', errorMessage: ""}
     }
 
     // Handle changing the values of the inputs and save to state
@@ -20,12 +20,15 @@ export class Register extends React.Component {
         event.preventDefault();
       };
 
-    // Handle submitting the form. Meaning sending to the backend for checking
+    // Handle submitting the form
     handleSubmit = async (event) => {
         event.preventDefault();
         const [valid, Error] = validate(this.state);
         if (!valid) { //Inputs are not valid, display an error to the user
             console.log(Error)
+            this.setState({
+                errorMessage: Error
+            })
         }
         else {
             const salt = bcrypt.genSaltSync(10)
@@ -55,7 +58,9 @@ export class Register extends React.Component {
                         redirect: true
                     })
                 } else {
-                    console.log(responseJSON.error);
+                    this.setState({
+                        errorMessage: responseJSON.error
+                    })
                 }
             }
         }
@@ -74,6 +79,16 @@ export class Register extends React.Component {
         })
     }
 
+    renderError() {
+        if (this.state.errorMessage !== "") {
+            return <div className='errorMessage'>
+                <p>
+                    {this.state.errorMessage}
+                </p>
+            </div>
+        }
+    }
+
     render() {
         return (
             <div className='LoginRoot'>
@@ -84,40 +99,44 @@ export class Register extends React.Component {
                         </h1>
                     </div>
                     <div>
-                        <label>Username</label>
+                        <p>Username</p>
                         <input type="text" id="username" name="username" value={ this.state.username } onChange={this.handleInputChange} />
                     </div>
                     <div>
-                        <label>Email</label>
+                        <p>Email</p>
                         <input type="text" id="email" name="email" value={ this.state.email } onChange={this.handleInputChange} />
                     </div>
                     <div>
-                        <label>Password</label >
+                        <p>Password</p>
                         <input type="password" id="password" name="password" value={ this.state.password } onChange={this.handleInputChange} />
                     </div>
                     <div>
-                        <label>Type the same password again</label >
+                        <p>Type the same password again</p>
                         <input type="password" id="passwordCheck" name="passwordCheck" value={ this.state.passwordCheck } onChange={this.handleInputChange} />
                     </div>
                     <div>
-                        <input type="submit" value="Register" />
+                        <input type="submit" value="Register"  className='loginButton'/>
                     </div>
+                    {this.renderError()}
                     <div className='registerDiv'>  
                         <p> Already got an account?</p>
                         <button onClick={this.routeChange}>
                             Log in
                         </button>
                     </div>
-                    {this.renderRedirect()}
                 </form>
+                {this.renderRedirect()}
             </div>
         ); 
     }
 }
 
 function validate(state) {
+    if (state.redirect) {
+        return [false, ""]
+    }
     // eslint-disable-next-line no-useless-escape
-    let regexp = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$"); //Regex to test for at least 8 characters, one letter and one number
+    let regexp = new RegExp(".{8,}?.*[0-9]"); //Regex to test for at least 8 characters, one letter and one number
     if (!state.username) { //Username empty
         return [false, "Username can't be empty"];
     }
@@ -128,7 +147,7 @@ function validate(state) {
         return [false, "Password can't be empty"];
     }
     if (!regexp.test(state.password)) { //Passwords doesn't pass the requirements
-        return [false, "Password doesn't pass the requirements. At least 8 characters, a letter and a number is needed."];
+        return [false, "Password has to be at least 8 characters and include a number."];
     }
     if (!(state.password === state.passwordCheck)) { //Passwords not equal
         return [false, "Passwords don't match"];
