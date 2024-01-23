@@ -1,12 +1,11 @@
 import React from 'react';
 import './styles/App.css';
-import { FloatingImage } from './components/floatingimage.jsx'
-import { ClickableNote } from './components/clickableNote.jsx';
+import { AddComponents } from './components/addComponents.jsx';
 
 function App() {
   return (
     <div className="App">
-      <ClickableNote title="Random title" description="Some longer text to describe the note" />
+      <AddComponents />
     </div>
   );
 }

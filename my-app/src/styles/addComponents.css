@@ -1,0 +1,39 @@
+.addMenu1 {
+    left: 100px;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 50%;
+    transform: translate(0, -50%);
+    align-content: center;
+    min-height: 300px;
+    list-style-type: none;
+}
+
+.addMenu2 {
+    margin: auto;
+    padding: 0;
+    text-align: center;
+}
+
+.addMenu2 div {
+    transform: translate(0, -50%);
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 150px;
+    align-content: space-evenly;
+    left: 200px;
+}
+
+.p {
+    margin: 0;
+}
+
+.addMenu1:hover {
+    cursor: pointer;
+}
+
+.addMenu2:hover {
+    cursor: pointer;
+}
