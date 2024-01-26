@@ -1,11 +1,11 @@
 import React from 'react';
-import './styles/App.css';
-import { AddComponents } from './components/addComponents.jsx';
+import '../styles/App.css';
+import { WeekCalendar } from '../components/calendars/week';
 
 function App() {
   return (
     <div className="App">
-      <AddComponents />
+      <WeekCalendar />
     </div>
   );
 }

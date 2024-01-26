@@ -1,5 +1,6 @@
 import React from 'react'
 import '../styles/clickableNote.css'
+import '../styles/clickableModal.css'
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
