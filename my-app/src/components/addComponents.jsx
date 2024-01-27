@@ -8,6 +8,7 @@ import '../styles/addComponents.css'
 export class AddComponents extends React.Component {
     constructor(props) {
         super(props);
+        this.toggleEditable = props.toggleEditable;
         this.state = { editable: false, addIconClicked: false, secondMenuNumber: -1 }
         this.menuItems = [
             {
@@ -69,6 +70,7 @@ export class AddComponents extends React.Component {
     }
 
     handleEditClick = () => {
+        this.toggleEditable();
         this.setState({
             editable: !this.state.editable,
             addIconClicked: false

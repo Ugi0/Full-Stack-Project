@@ -3,18 +3,20 @@
     justify-content: space-evenly;
     align-items: stretch;
     border-bottom: 0.2px black dotted;
-    border-radius: 10px;
     font-family: 'MonofontoRG';
+    font-weight: lighter;
     height: 100%;
     width: 100%;
+    border-top: 0.2px gray solid;
 }
 
 .day {
-    border-top: 0.2px gray solid;
+    border-radius: 3px;
     margin: 5px;
     background-color: #1d2120;
     flex: 1 1 0px;
     padding: 5px;
+    height: fit-content !important;
 }
 
 .dayName {
@@ -38,14 +40,16 @@
     background-color: #233028;
     display: flex;
     flex-direction: column;
-    border-radius: 5px;
+    border-radius: 3px;
     width: 100%;
+    height: fit-content;
+    padding: 5px 0 5px 0;
+    margin: 2px 0 2px 0;
 }
 
 .event * {
     height: fit-content;
     margin: 0;
-    padding: 0 2px 0 2px;
 }
 
 .eventTitle {
@@ -58,21 +62,28 @@
 
 .eventTitle p {
     padding: 0 4px 0 4px;
+    font-size: small;
+}
+
+.eventTime {
+    justify-content: start;
+    margin-left: 5px;
 }
 
 .eventTime * {
     display: flex;
     background-color: #2b583e;
-    border-radius: 5px;
-    margin: 2px 4px 2px 4px;
+    border-radius: 3px;
+    margin: 2px;
+    padding: 2px;
+    font-size: small;
 }
 
 .newButton {
     color: #2b583e;
-    position: absolute;
     bottom: 5px;
     padding: 0;
-    margin: 0;
+    margin: 5px 5px 5px 0;
     display: flex;
     align-items: center;
     background: none;

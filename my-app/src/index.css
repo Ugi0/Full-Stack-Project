@@ -39,5 +39,5 @@ code {
 
 @font-face {
   font-family: 'MonofontoRG';
-  src: local('MonofontoRG'), url(./fonts/monofontoRg.otf) format('otf');
+  src: local('MonofontoRG'), url(./fonts/monofontoRg.woff) format('woff');
 }
