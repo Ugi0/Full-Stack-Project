@@ -60,7 +60,11 @@ export class Login extends React.Component {
                     if (responseJSON.success) {
                         this.setState({ //Make window redirect
                             redirect: true
-                        })
+                        });
+                        const cookies = new Cookies();
+                        cookies.set( //Set auth token, expiry in a month
+                            "token", responseJSON.token, { path: '/', maxAge: 60*60*24*30 }
+                        )
                     } else {
                         this.setState({
                             errorMessage: "Either username or password is wrong."
@@ -71,12 +75,6 @@ export class Login extends React.Component {
         }
     }
 
-    renderRedirect() {
-        if (this.state.redirect) {
-            return <Navigate to={this.state.redirectLocation} />
-        }
-    }
-
     routeChange = () => {
         this.setState({
             redirectLocation: "/register",
@@ -84,7 +82,13 @@ export class Login extends React.Component {
         })
     }
 
-    renderError() {
+    renderRedirect() {
+        if (this.state.redirect) {
+            return <Navigate to={this.state.redirectLocation} />
+        }
+    }
+
+    renderError = () => {
         if (this.state.errorMessage !== "") {
             return <div className='errorMessage'>
                 <p>
@@ -101,15 +105,17 @@ export class Login extends React.Component {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json', 'token': cookies.get('token') }
             }
-            fetch(`http://${environment.BackendLocation}:${environment.BackendPort}/verifyToken`, requestOptions).then(res => {
+            fetch(`http://${environment.BackendLocation}:${environment.BackendPort}/verifyToken`, requestOptions).then((res) => {
                 res.json().then(e => {
                     if (e.success) { //User already has a valid token
                         this.setState({ //Make window redirect
                             redirect: true
-                        })
-                    }
+                            })
+                        }
+                    })
+                }).catch(e => {
+                    console.log("Could not connect to backend")
                 })
-            })
         }
         return (
             <div className='LoginRoot'>
@@ -120,21 +126,21 @@ export class Login extends React.Component {
                     </div>
                     <div>
                         <p>Username</p>
-                        <input type="text" id="username" name="username" value={ this.state.username } onChange={this.handleInputChange} />
+                        <input type="text" id="username" name="username" value={ this.state.username } onChange={this.handleInputChange} data-testid="Username" />
                     </div>
                     <div>
                         <p>Password</p >
-                        <input type="password" name="password" value={ this.state.password } onChange={this.handleInputChange} />
+                        <input type="password" name="password" value={ this.state.password } onChange={this.handleInputChange} data-testid="Password" />
                     </div>
                     <div>
-                        <input type="submit" value="Log in" className='loginButton' />
+                        <input type="submit" value="Log in" className='loginButton' data-testid="SubmitButton" />
                     </div>
                     {this.renderError()}
                     <div className='registerDiv'>
                         <p>
                             Or haven't created an account yet?
                         </p>
-                        <button onClick={this.routeChange}>
+                        <button onClick={this.routeChange} data-testid="RegisterButton">
                             Register
                         </button>
                     </div>

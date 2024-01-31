@@ -52,11 +52,11 @@ interface courses {
     creator: bigint,
     courseid: bigint,
     title: string,
-    startdate: Date,
-    duration: number,
+    time: Date,
+    duration: string,
     description: string,
-    repeating: number
-    repeatingTimes: number
+    repeating: string,
+    repeatingTime: string
 }
 
 interface assignments {

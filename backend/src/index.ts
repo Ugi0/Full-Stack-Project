@@ -58,7 +58,6 @@ app.post('/register', async (req, res) => {
       if (dupKey !== null) {
         let s = dupKey[0];
         const key = s.slice(s.indexOf(".")+1, -1);
-        console.log(key)
         res.send({
           success: false,
           error: `Someone is already registered with this ${key}`
@@ -103,7 +102,10 @@ app.post('/login', async (req, res) => {
         .execute()
       if (result.length) {
         res.send({
-          success: true
+          success: true,
+          token: jwt.sign({
+            data: result[0].id
+          }, process.env.PRIVATE_KEY, { expiresIn: '30d'})
         })
       } else 
           throw new Error("Wrong password.");
@@ -124,6 +126,66 @@ app.get('/verifyToken', async (req, res) => {
     if (decoded.data) {
       res.send({
         success: true
+      })
+    }
+  } catch(e) {
+    console.log(e)
+    res.send({
+      success: false
+    })
+  }
+})
+
+app.post('/courses', async (req, res) => {
+  try {
+    let token = req.headers.token;
+    let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    if (decoded.data) {
+      if (!req.body.courses) { res.send({success: false}); }
+      let result = await db
+        .replaceInto('courses')
+        .values(req.body.courses.map(e => {
+          return {
+            creator: decoded.data,
+            courseid: e.index,
+            title: e.title, description: e.description,
+            time: e.time, duration: e.duration,
+            repeating: e.repeating, repeatingTime: e.repeatingTime
+          }
+        }))
+        .execute()
+      res.send({
+        success: true
+      })
+    }
+  } catch(e) {
+    console.log(e)
+    res.send({
+      success: false
+    })
+  }
+})
+
+app.get('/courses', async (req, res) => {
+  try {
+    let token = req.headers.token;
+    let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    if (decoded.data) {
+      let result = await db
+        .selectFrom('courses')
+        .selectAll()
+        .where('creator', '=', decoded.data)
+        .execute()
+      res.send({
+        success: true,
+        data: result.map((e,i) => {
+          return {
+            title: e.title, time: e.time, 
+            duration: e.duration, description: e.description, repeating: e.repeating, 
+            repeatingTime: e.repeatingTime, 
+            index: i
+          }
+        })
       })
     }
   } catch(e) {

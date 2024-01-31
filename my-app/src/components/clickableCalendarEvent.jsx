@@ -35,11 +35,11 @@ export class ClickableCalendarEvent extends React.Component {
         const [addHours, addMinutes] = this.state.duration.split(":").map(e => parseInt(e))
         return (
             <div className="event" key={this.state.index} onClick={this.handleClick}>
-                <div className="eventTitle" key="0">
+                <div className="eventTitle">
                     <AccessTimeFilledIcon  style={{fill: '#2b583e'}} sx={{width: '15px', height: '15px'}}/>
                     <p> {this.state.title} </p>
                 </div>
-                <div className="eventTime" key="1">
+                <div className="eventTime">
                     <p> {this.state.time.split("T")[1]} </p>
                     <p> {(hours+addHours).toLocaleString(undefined, {minimumIntegerDigits: 2})}:{(minutes+addMinutes).toLocaleString(undefined, {minimumIntegerDigits: 2})} </p>
                 </div>

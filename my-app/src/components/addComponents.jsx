@@ -9,7 +9,7 @@ export class AddComponents extends React.Component {
     constructor(props) {
         super(props);
         this.toggleEditable = props.toggleEditable;
-        this.state = { editable: false, addIconClicked: false, secondMenuNumber: -1 }
+        this.state = { editable: props.editable, addIconClicked: false, secondMenuNumber: -1 }
         this.menuItems = [
             {
                 title: 'Calendar',
@@ -35,10 +35,10 @@ export class AddComponents extends React.Component {
 
     renderAddMenu = () => {
         if (this.state.addIconClicked) {
-            return <ul className="addMenu1">
+            return <ul className="addMenu1" data-testid="addMenu1">
                 {this.menuItems.map((menu, index) => {
                     return (
-                        <ul key={index} className="addMenu2" onClick={() => this.handleMenuItemClick(index)}>
+                        <ul key={index} className="addMenu2" onClick={() => this.handleMenuItemClick(index)} data-testid="addMenu2">
                             <p> {menu.title} </p>
                             <div>
                                 {(this.state.secondMenuNumber === index) ?
@@ -61,7 +61,7 @@ export class AddComponents extends React.Component {
     renderAddIcon = () => {
         if (this.state.editable) {
             return <div>
-                <IconButton sx={{position:'absolute', top:'50%', left:0, scale:'2'}}> 
+                <IconButton sx={{position:'absolute', top:'50%', left:0, scale:'2'}} data-testid="addButton"> 
                     <AddCircleOutlineIcon onClick={this.handleAddClick}/>
                  </IconButton>
                  {this.renderAddMenu()}
@@ -97,7 +97,7 @@ export class AddComponents extends React.Component {
     render() {
         return (
             <div>
-                <IconButton onClick={this.handleEditClick} sx={{position:'absolute', top:0, right:0}}>
+                <IconButton onClick={this.handleEditClick} sx={{position:'absolute', top:0, right:0}} data-testid="editButton">
                     {this.renderIcon()}
                 </IconButton>
                 {this.renderAddIcon()}

@@ -9,13 +9,22 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import SaveIcon from '@mui/icons-material/Save';
+import { AddEvent } from "../addEvent";
 
 export class WeekCalendar extends React.Component {
     //Modal can't be closed if it's placed inside the Rnd
     //Therefore, the modal will be located in the WeekCalendar parent
     //and opened through the children
+
+    // Break this into smaller components
+    static getDerivedStateFromProps(props, state) {
+        state.courses = props.courses;
+        return state;
+    }
     constructor(props) {
         super(props);
+        this.setCourses = props.setCourses;
+        this.openAddEventModal = React.createRef();
         this.days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         this.hourOptions = Array.from(Array(24).keys()).map((e) => {
             return {
@@ -28,6 +37,7 @@ export class WeekCalendar extends React.Component {
                 label: e.toLocaleString(undefined, {minimumIntegerDigits: 2})
             }})
         this.state = {
+          courses: [],
           editable: props.editable,
           open: false, modalEditable: false,
           chHandler: "",
@@ -35,22 +45,7 @@ export class WeekCalendar extends React.Component {
           time: "", newtime: "",
           duration: "", newduration: "",
           description: "", newdescription: "",
-          courses: [
-            {title: "Course 1", date: '2018-06-12', day: 0, time: '12:00', duration: '1:00', description: ""},
-            {title: "Course 2", date: '2018-06-12', day: 0, time: '14:00', duration: '2:00', description: ""},
-            {title: "Course 3", date: '2018-06-12', day: 0, time: '14:00', duration: '2:00', description: ""},
-            {title: "Course 4", date: '2018-06-12', day: 0, time: '14:00', duration: '2:00', description: ""},
-            {title: "Course 5", date: '2018-06-12', day: 0, time: '14:00', duration: '2:00', description: ""},
-            {title: "Course 6", date: '2018-06-12', day: 0, time: '14:00', duration: '2:00', description: ""},
-            {title: "Course 7", date: '2018-06-12', day: 0, time: '14:00', duration: '2:00', description: ""},
-            {title: "Course 8", date: '2018-06-12', day: 0, time: '14:00', duration: '2:00', description: ""},
-            {title: "Course 2", date: '2018-06-12', day: 1, time: '14:00', duration: '1:30', description: "Test"},
-            {title: "Course 2", date: '2018-06-12', day: 2, time: '14:00', duration: '1:30', description: "Test"},
-            {title: "Course 2", date: '2018-06-12', day: 3, time: '14:00', duration: '1:30', description: "Test"},
-            {title: "Course 2", date: '2018-06-12', day: 4, time: '14:00', duration: '1:30', description: "Test"},
-            {title: "Svenska för IT-studenter", day: 5, time: '14:00', duration: '1:30', description: "Test"},
-            {title: "Digital Communication", day: 6, time: '14:00', duration: '1:30', description: "Test"}
-          ],
+          index: 0,
           x: 10,
           y: 10,
           width: 815,
@@ -61,7 +56,7 @@ export class WeekCalendar extends React.Component {
       handler = (props) => {
         this.setState({
             open: true, ...props
-        })
+        });
       }
       renderTime = () => {
         if (this.state.modalEditable) {
@@ -144,9 +139,18 @@ export class WeekCalendar extends React.Component {
                 duration: this.state.newduration,
                 time: this.state.newtime
             })
+            const oldItem = this.state.courses.filter((item) => item.index === this.state.index ? true: false)[0]
+            const newCourses = this.state.courses.filter((item) => item.index !== this.state.index ? true: false).concat([{
+                title: this.state.newtitle, time: this.state.newtime, 
+                duration: this.state.newduration, description: this.state.newdescription, 
+                repeating: oldItem.repeating, repeatingTime: oldItem.repeatingTime,
+                index: this.state.index
+            }]);
             this.setState({
-                open: false
-            })
+                open: false,
+                courses: newCourses
+            });
+            this.setCourses(newCourses);
         }
     }
     handleInputChange = (event) => {
@@ -160,9 +164,15 @@ export class WeekCalendar extends React.Component {
         });
         event.preventDefault();
     };
+    handleCloseAddModal = (props) => {
+        this.openAddEventModal.current.closeModal();
+    }
+    handleOpenAddModal = () => {
+        this.openAddEventModal.current.openModal();
+    }
     render() {
         return (
-            <div>
+            <>
                 <Rnd disableDragging={!this.props.editable} enableResizing={this.props.editable} size={{ width: this.state.width,  height: this.state.height }}
             position={{ x: this.state.x, y: this.state.y }}
             onDragStop={(e, d) => { this.setState({ x: d.x, y: d.y }) }}
@@ -175,31 +185,37 @@ export class WeekCalendar extends React.Component {
             }}>
                 <div className="calendarRoot">
                     {
-                    //TODO Make add button work
                     //TODO Actually fetch data from the backend to display
                     this.days.map((day, index) => {
                         return (
                             <div className="day" key={index}>
                                 <div className="dayName">
                                     <b>{day}</b>
-                                    <p className="eventNumber"> {this.state.courses.filter((item) => item.day === index).length} </p>
+                                    <p className="eventNumber">
+                                        {this.state.courses.filter((item) => {
+                                            const d = new Date(item.time.split("T")[0]);
+                                            return [6,0,1,2,3,4,5][d.getDay()] === index;
+                                        }).length} 
+                                    </p>
                                 </div>
-                                {
-                                    this.state.courses.filter((item) => item.day === index).map((item, index) => {
+                                {this.state.courses.filter((item) => {
+                                        const d = new Date(item.time.split("T")[0]);
+                                        return [6,0,1,2,3,4,5][d.getDay()] === index;
+                                    }).map((item, index) => {
                                         return (
                                             <ClickableCalendarEvent
                                                 title = {item.title}
                                                 description = {item.description}
-                                                time = {`${item.date}T${item.time}`}
-                                                duration = {item.duration}
+                                                time = {item.time}
                                                 index = {item.index}
+                                                duration = {item.duration}
                                                 handler = {this.handler}
                                                 key = {index}
                                             />
                                         )
                                     })
                                 }
-                                <button className="newButton">
+                                <button className="newButton" onClick={this.handleOpenAddModal}>
                                     <AddIcon/> New
                                 </button>
                             </div>
@@ -209,7 +225,8 @@ export class WeekCalendar extends React.Component {
                 </div>
             </Rnd>
                 {this.renderModal()}
-            </div>
+                <AddEvent courses={this.state.courses} setCourses={this.setCourses} ref={this.openAddEventModal} onClose={this.handleCloseAddModal}/>
+            </>
         )
     }
 }
