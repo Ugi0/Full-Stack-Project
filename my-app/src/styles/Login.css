@@ -1,0 +1,96 @@
+.LoginRoot {
+    background-image: linear-gradient(180deg, rgb(50, 170, 170), rgb(35, 97, 179), #ae27ff);
+    background-color: #0005;
+    background-blend-mode: darken;
+    background-size: cover;
+    min-height: 100vh;
+}
+
+.inputBox {
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    height: fit-content;
+
+    background-color: whitesmoke;
+    border-radius: 25px;
+    border: #602285;
+    border-width: 12px;
+    border-style: solid;
+}
+
+.inputBox input {
+    background-color: #a3c6e9;
+    border-radius: 8px;
+    font-family: 'StudyAlone';
+}
+
+.inputBox div {
+    display: flex;
+    flex-direction: column;
+    margin: 2vh 50px 2vh 50px;
+    font-size: large;
+}
+
+.inputBox div button, .inputBox div p {
+    width: fit-content;
+    margin: 0;
+    
+    overflow: hidden;
+    font-weight: bold;
+    font-family: 'StudyAlone';
+}
+
+.inputBox div button {
+    text-align: center;
+    margin: auto;
+    font-size: large;
+    background-color: #a3c6e9;
+    color: whitesmoke;
+    border-radius: 8px;
+    padding: 5px 20px 5px 20px;
+    font-family: 'StudyAlone';
+}
+
+.loginButton {
+    margin: auto;
+    font-size: large;
+    background-color: aquamarine !important;
+    border-radius: 8px;
+    padding: 5px 10px 5px 10px;
+    border-style: solid;
+}
+
+
+.inputBox div h1 {
+    margin: 0;
+    text-align: center;
+    font-family: 'WallNotes';
+}
+
+.registerDiv {
+    align-items: center;
+}
+
+.errorMessage {
+    align-items: center;
+    color: red;
+}
+
+@media screen and (max-width: 750px) {
+    h1 {
+        font-size: 40px;
+    }
+}
+
+@media screen and (min-width: 751px) {
+    h1 {
+        font-size: 60px;
+    }
+}

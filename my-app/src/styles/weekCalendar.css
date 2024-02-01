@@ -1,0 +1,106 @@
+.calendarRoot {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: stretch;
+    border-bottom: 0.2px black dotted;
+    font-family: 'MonofontoRG';
+    font-weight: lighter;
+    height: 100%;
+    width: 100%;
+    border-top: 0.2px gray solid;
+}
+
+.day {
+    border-radius: 3px;
+    margin: 5px;
+    background-color: #1d2120;
+    flex: 1 1 0px;
+    padding: 5px;
+    height: fit-content !important;
+}
+
+.dayName {
+    align-items: center;
+    margin: 0 5px 0 5px;
+    height: fit-content;
+    width: 100%;
+}
+
+.dayName p {
+    margin: 0;
+    padding: 5px;
+}
+
+.calendarRoot div div {
+    display: inline-flex;
+}
+
+.event {
+    display: inline-flex;
+    background-color: #233028;
+    display: flex;
+    flex-direction: column;
+    border-radius: 3px;
+    width: 100%;
+    height: fit-content;
+    padding: 5px 0 5px 0;
+    margin: 2px 0 2px 0;
+}
+
+.event * {
+    height: fit-content;
+    margin: 0;
+}
+
+.eventTitle {
+    align-items: center;
+}
+
+.eventTitle * {
+    margin: 2px;
+}
+
+.eventTitle p {
+    padding: 0 4px 0 4px;
+    font-size: small;
+}
+
+.eventTime {
+    justify-content: start;
+    margin-left: 5px;
+}
+
+.eventTime * {
+    display: flex;
+    background-color: #2b583e;
+    border-radius: 3px;
+    margin: 2px;
+    padding: 2px;
+    font-size: small;
+}
+
+.newButton {
+    color: #2b583e;
+    bottom: 5px;
+    padding: 0;
+    margin: 5px 5px 5px 0;
+    display: flex;
+    align-items: center;
+    background: none;
+	border: none;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+
+.calendarRoot div div b {
+    border-radius: 5px;
+    background-color: #2b583e;
+    padding: 2px 4px 2px 4px;
+    height: fit-content;
+    font-size: 13px;
+}
+
+.eventNumber {
+    color: #2b583e;
+}

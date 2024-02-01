@@ -1,0 +1,16 @@
+.noteBody {
+    display: flex;
+    flex-direction: column;
+    max-width: 200px;
+    max-height: 200px;
+    border: red solid;
+    text-align: center;
+}
+
+.noteTitle {
+    font-weight: bold;
+}
+
+.noteTitle:hover {
+    cursor: pointer;
+}

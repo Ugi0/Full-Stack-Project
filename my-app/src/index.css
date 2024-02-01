@@ -11,3 +11,33 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.react-draggable * * {
+  height: auto;
+  width: auto;
+}
+
+#root {
+  min-width: 100vw;
+  min-height: 100vh;
+}
+
+@font-face {
+  font-family: 'StudyAlone';
+  src: local('StudyAlone'), url(./fonts/StudyAlone.woff) format('woff');
+}
+
+@font-face {
+  font-family: 'WallNotes';
+  src: local('WallNotes'), url(./fonts/Wall\ Notes.woff) format('woff');
+}
+
+@font-face {
+  font-family: 'Typewriter';
+  src: local('Typewriter'), url(./fonts/Typewriter.woff) format('woff');
+}
+
+@font-face {
+  font-family: 'MonofontoRG';
+  src: local('MonofontoRG'), url(./fonts/monofontoRg.woff) format('woff');
+}
