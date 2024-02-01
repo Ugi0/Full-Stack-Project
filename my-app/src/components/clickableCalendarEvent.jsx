@@ -7,7 +7,7 @@ export class ClickableCalendarEvent extends React.Component {
     constructor(props) {
         super(props);
         this.state = { 
-            index: props.index,
+            courseid: props.courseid,
             title: props.title,
             time: props.time,
             duration: props.duration,
@@ -17,7 +17,7 @@ export class ClickableCalendarEvent extends React.Component {
     handleClick = () => {
         this.props.handler({
             editable: false,
-            index: this.state.index,
+            courseid: this.state.courseid,
             title: this.state.title, newtitle: this.state.title,
             time: this.state.time, newtime: this.state.time,
             duration: this.state.duration, newduration: this.state.duration,
@@ -34,7 +34,7 @@ export class ClickableCalendarEvent extends React.Component {
         const [hours, minutes] = this.state.time.split("T")[1].split(":").map(e => parseInt(e))
         const [addHours, addMinutes] = this.state.duration.split(":").map(e => parseInt(e))
         return (
-            <div className="event" key={this.state.index} onClick={this.handleClick}>
+            <div className="event" key={this.state.courseid} onClick={this.handleClick}>
                 <div className="eventTitle">
                     <AccessTimeFilledIcon  style={{fill: '#2b583e'}} sx={{width: '15px', height: '15px'}}/>
                     <p> {this.state.title} </p>

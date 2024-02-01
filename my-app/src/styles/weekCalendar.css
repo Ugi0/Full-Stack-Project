@@ -13,7 +13,6 @@
 .day {
     border-radius: 3px;
     margin: 5px;
-    background-color: #1d2120;
     flex: 1 1 0px;
     padding: 5px;
     height: fit-content !important;

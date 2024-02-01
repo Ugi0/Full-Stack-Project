@@ -17,6 +17,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/user-event": "^13.5.0",
     "bcryptjs": "^2.4.3",
+    "get-random-values": "^3.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.6",
@@ -29,7 +30,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && del react_build && move build react_build",
+    "build": "react-scripts build && RMDIR /S /Q react_build && move build react_build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -54,5 +55,8 @@
   "devDependencies": {
     "@testing-library/react": "^14.1.2"
   },
-  "homepage": "."
+  "homepage": ".",
+  "env": {
+    "es2020": true
+  }
 }

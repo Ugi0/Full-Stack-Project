@@ -147,7 +147,7 @@ app.post('/courses', async (req, res) => {
         .values(req.body.courses.map(e => {
           return {
             creator: decoded.data,
-            courseid: e.index,
+            courseid: e.courseid,
             title: e.title, description: e.description,
             time: e.time, duration: e.duration,
             repeating: e.repeating, repeatingTime: e.repeatingTime
@@ -183,7 +183,7 @@ app.get('/courses', async (req, res) => {
             title: e.title, time: e.time, 
             duration: e.duration, description: e.description, repeating: e.repeating, 
             repeatingTime: e.repeatingTime, 
-            index: i
+            courseid: e.courseid
           }
         })
       })

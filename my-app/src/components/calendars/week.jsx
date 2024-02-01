@@ -3,13 +3,8 @@ import '../../styles/weekCalendar.css'
 import { Rnd } from "react-rnd";
 import AddIcon from '@mui/icons-material/Add';
 import { ClickableCalendarEvent } from "../clickableCalendarEvent";
-import Box from '@mui/material/Box';
-import { IconButton } from "@mui/material";
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
-import SaveIcon from '@mui/icons-material/Save';
 import { AddEvent } from "../addEvent";
+import { CalendarModal } from "../calendarModal";
 
 export class WeekCalendar extends React.Component {
     //Modal can't be closed if it's placed inside the Rnd
@@ -39,13 +34,13 @@ export class WeekCalendar extends React.Component {
         this.state = {
           courses: [],
           editable: props.editable,
-          open: false, modalEditable: false,
+          open: false,
           chHandler: "",
-          title: "", newtitle: "",
-          time: "", newtime: "",
-          duration: "", newduration: "",
-          description: "", newdescription: "",
-          index: 0,
+          title: "",
+          time: "",
+          duration: "",
+          description: "",
+          courseid: 0,
           x: 10,
           y: 10,
           width: 815,
@@ -53,105 +48,30 @@ export class WeekCalendar extends React.Component {
         };
       }
       //Create a handler so the children can update the open state
-      handler = (props) => {
+    handler = (props) => {
         this.setState({
             open: true, ...props
         });
       }
-      renderTime = () => {
-        if (this.state.modalEditable) {
-            return (
-                <input
-                    type="datetime-local"
-                    id="newtime"
-                    value={this.state.newtime}
-                    onChange={this.handleInputChange}
-                />
-            )
-        } else {
-            const date = new Date(this.state.time);
-            return (
-                <Typography id="newduration" sx={{ mt: 2, margin:0 }} suppressContentEditableWarning={true} contentEditable={this.state.modalEditable} onInput={this.handleInputChange}>
-                    {date.toLocaleDateString()} {date.toLocaleTimeString().slice(0,5)}
-                </Typography>
-            )
-        }
-      }
-      renderDuration = () => {
-        if (this.state.modalEditable) {
-            return (
-                <input type="time" id="newduration" value={this.state.newduration.padStart(5,'0')} onChange={this.handleInputChange}/>
-            )
-        } else {
-            return (
-                <Typography id="newduration" sx={{ mt: 2, margin:0 }} suppressContentEditableWarning={true} contentEditable={this.state.editable} onInput={this.handleInputChange}>
-                    {this.state.duration.split(":")[0]}h {this.state.duration.split(":")[1]}min
-                </Typography>
-            )
-        }
-      }
-      renderModal = () => {
-        return <div>
-            <Modal
-                open={this.state.open}
-                onClose={this.handleClose}
-            >
-                <Box className="modalContent">
-                    <Typography id="newtitle" variant="h6" component="h2" suppressContentEditableWarning={true} contentEditable={this.state.modalEditable} onInput={this.handleInputChange}>
-                        {this.state.title}
-                    </Typography>
-                    <Typography id="newdescription" sx={{ mt: 2 }} suppressContentEditableWarning={true} contentEditable={this.state.modalEditable} onInput={this.handleInputChange}>
-                        {this.state.description}
-                    </Typography>
-                    Time:
-                    {this.renderTime()}
-                    Duration:
-                    {this.renderDuration()}
-                    <IconButton sx={{position:'absolute', top:0, right:0}} onClick={this.handleEditClick}>
-                        {this.renderIcon()}
-                    </IconButton>
-                </Box>
-            </Modal>
-        </div>
-    }
-    renderIcon = () => {
-        if (this.state.modalEditable) {
-            return <SaveIcon />
-        }
-        return <BorderColorIcon/>
-    }
-    handleClose = () => {
+    saveEvent = (title, description, time, duration) => {
+        this.state.chHandler({
+            title: title,
+            description: description,
+            duration: duration,
+            time: time
+        })
+        const oldItem = this.state.courses.filter((item) => item.courseid === this.state.courseid ? true: false)[0]
+        const newCourses = this.state.courses.filter((item) => item.courseid !== this.state.courseid ? true: false).concat([{
+            title: title, time: time, 
+            duration: duration, description: description, 
+            repeating: oldItem.repeating, repeatingTime: oldItem.repeatingTime,
+            courseid: this.state.courseid
+        }]);
         this.setState({
             open: false,
-            modalEditable: false
-        })
-    }
-    handleEditClick = () => {
-        this.setState({
-            modalEditable: !this.state.modalEditable,
-            newtime: this.state.time,
-            newduration: this.state.duration
-        })
-        if (this.state.modalEditable) {
-            this.state.chHandler({
-                title: this.state.newtitle,
-                description: this.state.newdescription,
-                duration: this.state.newduration,
-                time: this.state.newtime
-            })
-            const oldItem = this.state.courses.filter((item) => item.index === this.state.index ? true: false)[0]
-            const newCourses = this.state.courses.filter((item) => item.index !== this.state.index ? true: false).concat([{
-                title: this.state.newtitle, time: this.state.newtime, 
-                duration: this.state.newduration, description: this.state.newdescription, 
-                repeating: oldItem.repeating, repeatingTime: oldItem.repeatingTime,
-                index: this.state.index
-            }]);
-            this.setState({
-                open: false,
-                courses: newCourses
-            });
-            this.setCourses(newCourses);
-        }
+            courses: newCourses
+        });
+        this.setCourses(newCourses);
     }
     handleInputChange = (event) => {
         const name = event.target.id;
@@ -170,6 +90,11 @@ export class WeekCalendar extends React.Component {
     handleOpenAddModal = () => {
         this.openAddEventModal.current.openModal();
     }
+    handleClose = () => {
+        this.setState({
+            open: false,
+        })
+    }
     render() {
         return (
             <>
@@ -185,10 +110,10 @@ export class WeekCalendar extends React.Component {
             }}>
                 <div className="calendarRoot">
                     {
-                    //TODO Actually fetch data from the backend to display
                     this.days.map((day, index) => {
+                        const today = new Date().getDay() === [1,2,3,4,5,6,0][index];
                         return (
-                            <div className="day" key={index}>
+                            <div className="day" key={index} style={{ backgroundColor: today ? '#3c4543' : '#1d2120'}}>
                                 <div className="dayName">
                                     <b>{day}</b>
                                     <p className="eventNumber">
@@ -201,16 +126,16 @@ export class WeekCalendar extends React.Component {
                                 {this.state.courses.filter((item) => {
                                         const d = new Date(item.time.split("T")[0]);
                                         return [6,0,1,2,3,4,5][d.getDay()] === index;
-                                    }).map((item, index) => {
+                                    }).map((item) => {
                                         return (
                                             <ClickableCalendarEvent
                                                 title = {item.title}
                                                 description = {item.description}
                                                 time = {item.time}
-                                                index = {item.index}
+                                                courseid = {item.courseid}
                                                 duration = {item.duration}
                                                 handler = {this.handler}
-                                                key = {index}
+                                                key = {item.courseid}
                                             />
                                         )
                                     })
@@ -224,7 +149,12 @@ export class WeekCalendar extends React.Component {
                     }
                 </div>
             </Rnd>
-                {this.renderModal()}
+                <CalendarModal 
+                    saveEvent={this.saveEvent} 
+                    handleClose = {this.handleClose}
+                    title = {this.state.title} description = {this.state.description}
+                    time={this.state.time} open={this.state.open} duration={this.state.duration}
+                />
                 <AddEvent courses={this.state.courses} setCourses={this.setCourses} ref={this.openAddEventModal} onClose={this.handleCloseAddModal}/>
             </>
         )

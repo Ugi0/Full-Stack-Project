@@ -52,7 +52,6 @@ export default class App extends React.Component {
                 console.log(error)
             });
     let responseJSON = await response.json()
-
     if (responseJSON.success) { //Update the courses in view only if sending to database succeeded
       this.setState({
         courses: courses

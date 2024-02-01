@@ -1,5 +1,5 @@
 let environment = {
-    BackendLocation: '16.170.248.48',
+    BackendLocation: 'localhost',
     BackendPort: 8080
 }
 
