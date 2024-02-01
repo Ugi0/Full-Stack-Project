@@ -3,7 +3,7 @@
   "description": "A backend for the full stack project",
   "main": "index.js",
   "scripts": {
-    "build": "tsc.cmd --build",
+    "build": "tsc.cmd --build && del backend_build && move build backend_build",
     "buildrun": "npm run build && npm run run",
     "run": "cd build && node index.js"
   },

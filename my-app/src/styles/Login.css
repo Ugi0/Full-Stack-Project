@@ -71,7 +71,6 @@
 .inputBox div h1 {
     margin: 0;
     text-align: center;
-    font-size: 60px;
     font-family: 'WallNotes';
 }
 
@@ -82,4 +81,16 @@
 .errorMessage {
     align-items: center;
     color: red;
+}
+
+@media screen and (max-width: 750px) {
+    h1 {
+        font-size: 40px;
+    }
+}
+
+@media screen and (min-width: 751px) {
+    h1 {
+        font-size: 60px;
+    }
 }

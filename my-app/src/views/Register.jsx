@@ -93,7 +93,7 @@ export class Register extends React.Component {
         return (
             <div className='LoginRoot'>
                 <form onSubmit={this.handleSubmit} className='inputBox' autoComplete="off">
-                    <div>
+                    <div className='title'>
                         <h1>
                             WELCOME
                         </h1>

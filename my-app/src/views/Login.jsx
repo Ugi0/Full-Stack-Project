@@ -120,7 +120,7 @@ export class Login extends React.Component {
         return (
             <div className='LoginRoot'>
                 <form onSubmit={this.handleSubmit} className='inputBox' autoComplete="off">
-                    <div>
+                    <div className='title'>
                         <h1>WELCOME</h1> 
                         <h1>BACK</h1> 
                     </div>

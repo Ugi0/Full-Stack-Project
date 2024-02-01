@@ -11,7 +11,7 @@ const jwt = require('jsonwebtoken');
 dotenv.config()
 
 const app = Express();
-const port = 8000
+const port = 8080
 
 app.use(cors())
 app.use(Express.json());
