@@ -1,4 +1,4 @@
-.calendarRoot {
+.weekCalendarRoot {
     display: flex;
     justify-content: space-evenly;
     align-items: stretch;
@@ -10,7 +10,7 @@
     border-top: 0.2px gray solid;
 }
 
-.day {
+.weekDay {
     border-radius: 3px;
     margin: 5px;
     flex: 1 1 0px;
@@ -30,7 +30,7 @@
     padding: 5px;
 }
 
-.calendarRoot div div {
+.weekCalendarRoot div div {
     display: inline-flex;
 }
 
@@ -92,7 +92,7 @@
 	outline: inherit;
 }
 
-.calendarRoot div div b {
+.weekCalendarRoot div div b {
     border-radius: 5px;
     background-color: #2b583e;
     padding: 2px 4px 2px 4px;

@@ -28,7 +28,7 @@ export class AddEvent extends React.Component {
             chosenCourse: ""
         }
     }
-    openModal = () => { this.setState({ modalOpen: true })}
+    openModal = (time) => { this.setState({ modalOpen: true, time: time })}
     closeModal = () => { this.setState({ modalOpen: false })}
     handleModalClose = () => {
         this.setState({

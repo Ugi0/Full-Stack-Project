@@ -11,14 +11,15 @@ export class WeekCalendar extends React.Component {
     //Therefore, the modal will be located in the WeekCalendar parent
     //and opened through the children
 
-    // Break this into smaller components
     static getDerivedStateFromProps(props, state) {
+        state.editable = props.editable;
         state.courses = props.courses;
         return state;
     }
     constructor(props) {
         super(props);
         this.setCourses = props.setCourses;
+        this.deleteCourse = props.deleteCourse;
         this.openAddEventModal = React.createRef();
         this.days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         this.hourOptions = Array.from(Array(24).keys()).map((e) => {
@@ -41,27 +42,36 @@ export class WeekCalendar extends React.Component {
           duration: "",
           description: "",
           courseid: 0,
-          x: 10,
-          y: 10,
-          width: 815,
-          height: 200
+          x: props.sx.x,
+          y: props.sx.y,
+          width: props.sx.width,
+          height: props.sx.height
         };
       }
       //Create a handler so the children can update the open state
     handler = (props) => {
+        if (this.state.editable) return
         this.setState({
             open: true, ...props
         });
       }
+    deleteEvent = () => {
+        this.setState({
+            courses: this.state.courses.filter((item) => item.courseid !== this.state.courseid),
+            open: false
+        })
+        this.deleteCourse(this.state.courseid)
+    }
     saveEvent = (title, description, time, duration) => {
+        let newCourses = this.state.courses;
         this.state.chHandler({
             title: title,
             description: description,
             duration: duration,
             time: time
         })
-        const oldItem = this.state.courses.filter((item) => item.courseid === this.state.courseid ? true: false)[0]
-        const newCourses = this.state.courses.filter((item) => item.courseid !== this.state.courseid ? true: false).concat([{
+        const oldItem = newCourses.find((item) => item.courseid === this.state.courseid)
+        newCourses = newCourses.filter((item) => item.courseid !== this.state.courseid).concat([{
             title: title, time: time, 
             duration: duration, description: description, 
             repeating: oldItem.repeating, repeatingTime: oldItem.repeatingTime,
@@ -87,8 +97,9 @@ export class WeekCalendar extends React.Component {
     handleCloseAddModal = (props) => {
         this.openAddEventModal.current.closeModal();
     }
-    handleOpenAddModal = () => {
-        this.openAddEventModal.current.openModal();
+    handleOpenAddModal = (time) => {
+        if (this.state.editable) return
+        this.openAddEventModal.current.openModal(time);
     }
     handleClose = () => {
         this.setState({
@@ -96,6 +107,11 @@ export class WeekCalendar extends React.Component {
         })
     }
     render() {
+        const today = new Date();
+        let cur = new Date();
+        cur.setDate(today.getDate()-[6,0,1,2,3,4,5][today.getDay()]); //Set current to previous monday
+        const monday = new Date(cur);
+        cur.setDate(cur.getDate() -1);
         return (
             <>
                 <Rnd disableDragging={!this.props.editable} enableResizing={this.props.editable} size={{ width: this.state.width,  height: this.state.height }}
@@ -108,24 +124,23 @@ export class WeekCalendar extends React.Component {
                 ...position,
               });
             }}>
-                <div className="calendarRoot">
+                <div className="weekCalendarRoot">
                     {
                     this.days.map((day, index) => {
-                        const today = new Date().getDay() === [1,2,3,4,5,6,0][index];
+                        const isItToday = today.getDay() === [1,2,3,4,5,6,0][index];
+                        cur.setDate(cur.getDate()+1);
                         return (
-                            <div className="day" key={index} style={{ backgroundColor: today ? '#3c4543' : '#1d2120'}}>
+                            <div className="weekDay" key={index} style={{ backgroundColor: isItToday ? '#3c4543' : '#1d2120'}}>
                                 <div className="dayName">
                                     <b>{day}</b>
                                     <p className="eventNumber">
                                         {this.state.courses.filter((item) => {
-                                            const d = new Date(item.time.split("T")[0]);
-                                            return [6,0,1,2,3,4,5][d.getDay()] === index;
+                                            return cur.toDateString() === new Date(item.time.split("T")[0]).toDateString()
                                         }).length} 
                                     </p>
                                 </div>
-                                {this.state.courses.filter((item) => {
-                                        const d = new Date(item.time.split("T")[0]);
-                                        return [6,0,1,2,3,4,5][d.getDay()] === index;
+                                { this.state.courses.filter((item) => {
+                                        return cur.toDateString() === new Date(item.time.split("T")[0]).toDateString();
                                     }).map((item) => {
                                         return (
                                             <ClickableCalendarEvent
@@ -140,7 +155,11 @@ export class WeekCalendar extends React.Component {
                                         )
                                     })
                                 }
-                                <button className="newButton" onClick={this.handleOpenAddModal}>
+                                <button className="newButton" onClick={() => { //Set date to clicked day in addComponent
+                                    const d = new Date(monday);
+                                    d.setDate(d.getDate() + index);
+                                    this.handleOpenAddModal(d.toISOString().slice(0,16))
+                                }}>
                                     <AddIcon/> New
                                 </button>
                             </div>
@@ -150,10 +169,11 @@ export class WeekCalendar extends React.Component {
                 </div>
             </Rnd>
                 <CalendarModal 
-                    saveEvent={this.saveEvent} 
+                    saveEvent={this.saveEvent} deleteEvent ={this.deleteEvent}
                     handleClose = {this.handleClose}
                     title = {this.state.title} description = {this.state.description}
                     time={this.state.time} open={this.state.open} duration={this.state.duration}
+                    courseid={this.state.courseid}
                 />
                 <AddEvent courses={this.state.courses} setCourses={this.setCourses} ref={this.openAddEventModal} onClose={this.handleCloseAddModal}/>
             </>

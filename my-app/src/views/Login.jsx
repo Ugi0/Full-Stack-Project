@@ -2,8 +2,9 @@ import React from 'react';
 import '../styles/Login.css'
 import environment from '../environment.js';
 import Cookies from 'universal-cookie';
-import bcrypt from 'bcryptjs'
 import { Navigate } from 'react-router-dom';
+
+var bcrypt = require('bcryptjs');
 
 export class Login extends React.Component {
     constructor(props) {
