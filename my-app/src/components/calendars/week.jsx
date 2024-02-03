@@ -18,8 +18,6 @@ export class WeekCalendar extends React.Component {
     }
     constructor(props) {
         super(props);
-        this.setCourses = props.setCourses;
-        this.deleteCourse = props.deleteCourse;
         this.openAddEventModal = React.createRef();
         this.days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         this.hourOptions = Array.from(Array(24).keys()).map((e) => {
@@ -60,7 +58,7 @@ export class WeekCalendar extends React.Component {
             courses: this.state.courses.filter((item) => item.courseid !== this.state.courseid),
             open: false
         })
-        this.deleteCourse(this.state.courseid)
+        this.props.deleteCourse(this.state.courseid)
     }
     saveEvent = (title, description, time, duration) => {
         let newCourses = this.state.courses;
@@ -81,7 +79,7 @@ export class WeekCalendar extends React.Component {
             open: false,
             courses: newCourses
         });
-        this.setCourses(newCourses);
+        this.props.setCourses(newCourses);
     }
     handleInputChange = (event) => {
         const name = event.target.id;
@@ -141,7 +139,9 @@ export class WeekCalendar extends React.Component {
                                 </div>
                                 { this.state.courses.filter((item) => {
                                         return cur.toDateString() === new Date(item.time.split("T")[0]).toDateString();
-                                    }).map((item) => {
+                                    })
+                                    .sort((a,b) => new Date(a.time) - new Date(b.time))
+                                    .map((item) => {
                                         return (
                                             <ClickableCalendarEvent
                                                 title = {item.title}
@@ -151,6 +151,8 @@ export class WeekCalendar extends React.Component {
                                                 duration = {item.duration}
                                                 handler = {this.handler}
                                                 key = {item.courseid}
+                                                draw = {["title", "icon", "times"]}
+                                                sx = {{padding: '5px 0 5px 0'}}
                                             />
                                         )
                                     })
@@ -175,7 +177,7 @@ export class WeekCalendar extends React.Component {
                     time={this.state.time} open={this.state.open} duration={this.state.duration}
                     courseid={this.state.courseid}
                 />
-                <AddEvent courses={this.state.courses} setCourses={this.setCourses} ref={this.openAddEventModal} onClose={this.handleCloseAddModal}/>
+                <AddEvent courses={this.state.courses} setCourses={this.props.setCourses} ref={this.openAddEventModal} onClose={this.handleCloseAddModal}/>
             </>
         )
     }

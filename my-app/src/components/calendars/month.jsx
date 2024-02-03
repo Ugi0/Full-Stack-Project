@@ -3,6 +3,7 @@ import '../../styles/monthCalendar.css'
 import { Rnd } from "react-rnd";
 import { CalendarModal } from "../calendarModal";
 import { AddEvent } from "../addEvent";
+import { ClickableCalendarEvent } from "../clickableCalendarEvent";
 
 export class MonthCalendar extends React.Component {
     static getDerivedStateFromProps(props, state) {
@@ -15,6 +16,7 @@ export class MonthCalendar extends React.Component {
         this.gridWidth = 7;
         this.gridHeight = 5;
         this.state = {
+            courses: props.courses,
             x: props.sx.x, y: props.sx.y,
             width: props.sx.width, height: props.sx.height,
             title: "", description: "",
@@ -22,6 +24,45 @@ export class MonthCalendar extends React.Component {
             courseid: 0,
             open: false
         }
+    }
+    deleteEvent = () => {
+        this.setState({
+            courses: this.state.courses.filter((item) => item.courseid !== this.state.courseid),
+            open: false
+        })
+        this.props.deleteCourse(this.state.courseid)
+    }
+    saveEvent = (title, description, time, duration) => {
+        let newCourses = this.state.courses;
+        this.state.chHandler({
+            title: title,
+            description: description,
+            duration: duration,
+            time: time
+        })
+        const oldItem = newCourses.find((item) => item.courseid === this.state.courseid)
+        newCourses = newCourses.filter((item) => item.courseid !== this.state.courseid).concat([{
+            title: title, time: time, 
+            duration: duration, description: description, 
+            repeating: oldItem.repeating, repeatingTime: oldItem.repeatingTime,
+            courseid: this.state.courseid
+        }]);
+        this.setState({
+            open: false,
+            courses: newCourses
+        });
+        this.props.setCourses(newCourses);
+    }
+    handler = (props) => {
+        if (this.state.editable) return
+        this.setState({
+            open: true, ...props
+        });
+      }
+    handleClose = () => {
+        this.setState({
+            open: false,
+        })
     }
     render() {
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
@@ -59,7 +100,22 @@ export class MonthCalendar extends React.Component {
                                     <div className={today.toDateString()===firstDayOfTheMonth.toDateString() ? 'currentDateNumber' : "dateNumber"} >
                                         {firstDayOfTheMonth.getDate()}
                                     </div>
-                                    <div className="monthEvent"> test </div>
+                                    {this.state.courses
+                                    .filter((item) => new Date(item.time).toDateString() === firstDayOfTheMonth.toDateString())
+                                    .sort((a,b) => new Date(a.time) - new Date(b.time))
+                                    .map((item,index) => {
+                                        return <ClickableCalendarEvent
+                                            title = {item.title}
+                                            description = {item.description}
+                                            time = {item.time}
+                                            courseid = {item.courseid}
+                                            duration = {item.duration}
+                                            handler = {this.handler}
+                                            key = {item.courseid}
+                                            draw = {["title"]}
+                                            sx = {{'overflow': 'hidden', 'whiteSpace': 'nowrap'}}
+                                        />
+                                    })}
                                 </div>
                             )
                         })}
@@ -72,7 +128,7 @@ export class MonthCalendar extends React.Component {
                     time={this.state.time} open={this.state.open} duration={this.state.duration}
                     courseid={this.state.courseid}
                 />
-                <AddEvent courses={this.state.courses} setCourses={this.setCourses} ref={this.openAddEventModal} onClose={this.handleCloseAddModal}/>
+                <AddEvent courses={this.state.courses} setCourses={this.props.setCourses} ref={this.openAddEventModal} onClose={this.handleCloseAddModal}/>
             </>
         )
     }

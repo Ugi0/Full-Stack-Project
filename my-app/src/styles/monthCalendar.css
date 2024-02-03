@@ -1,6 +1,7 @@
 .monthCalendarRoot {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-template-columns: repeat(7, minmax(80px, 1fr));
     height: calc(100% - 52px - 30px);
     font-family: 'MonofontoRG';
     font-weight: lighter;
@@ -14,17 +15,16 @@
     height: 30px;
 }
 
-.monthDay {
-    border-radius: 3px;
-}
-
 .dateNumber {
     height: fit-content;
     width: fit-content;
     position: relative;
     float: right;
-    right: 7px;
-    top: 3px;
+    right: 3px;
+}
+
+.monthDay {
+    padding: 3px;
 }
 
 .currentDateNumber {
