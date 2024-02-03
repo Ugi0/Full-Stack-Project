@@ -1,4 +1,4 @@
-.calendarRoot {
+.weekCalendarRoot {
     display: flex;
     justify-content: space-evenly;
     align-items: stretch;
@@ -10,10 +10,9 @@
     border-top: 0.2px gray solid;
 }
 
-.day {
+.weekDay {
     border-radius: 3px;
     margin: 5px;
-    background-color: #1d2120;
     flex: 1 1 0px;
     padding: 5px;
     height: fit-content !important;
@@ -31,7 +30,7 @@
     padding: 5px;
 }
 
-.calendarRoot div div {
+.weekCalendarRoot div div {
     display: inline-flex;
 }
 
@@ -43,8 +42,11 @@
     border-radius: 3px;
     width: 100%;
     height: fit-content;
-    padding: 5px 0 5px 0;
     margin: 2px 0 2px 0;
+}
+
+.event:hover {
+    cursor: pointer;
 }
 
 .event * {
@@ -93,7 +95,7 @@
 	outline: inherit;
 }
 
-.calendarRoot div div b {
+.weekCalendarRoot div div b {
     border-radius: 5px;
     background-color: #2b583e;
     padding: 2px 4px 2px 4px;

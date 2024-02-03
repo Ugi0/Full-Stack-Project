@@ -5,6 +5,7 @@ import Modal from '@mui/material/Modal';
 import { titleInput, descriptionInput } from "./inputElements";
 import { IconButton } from "@mui/material";
 import SaveIcon from '@mui/icons-material/Save';
+import { getRandomID } from "../api/getRandomID";
 
 export class AddEvent extends React.Component {
     static getDerivedStateFromProps(props, state) {
@@ -27,7 +28,7 @@ export class AddEvent extends React.Component {
             chosenCourse: ""
         }
     }
-    openModal = () => { this.setState({ modalOpen: true })}
+    openModal = (time) => { this.setState({ modalOpen: true, time: time })}
     closeModal = () => { this.setState({ modalOpen: false })}
     handleModalClose = () => {
         this.setState({
@@ -179,11 +180,10 @@ export class AddEvent extends React.Component {
                             {this.renderOptions()}
                             <IconButton sx={{position:'absolute', top:0, right:0}} onClick={() => {
                                 this.setCourses([...this.state.courses, {
-                                    //TODO Give each event a unique courseId that is passed along
                                     title: this.state.title, description: this.state.description,
                                     time: this.state.time, duration: this.state.duration,
                                     repeating: this.state.repeating, repeatingTime: this.state.repeatingTime,
-                                    index: this.state.courses.length
+                                    courseid: getRandomID()
                                 }]);
                                 this.handleModalClose();
                                 }}>

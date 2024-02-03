@@ -1,9 +1,10 @@
 import React from 'react';
 import '../styles/Login.css'
-import environment from '../environment.js';
+import myConfig from '../config.js';
 import Cookies from 'universal-cookie';
-import bcrypt from 'bcryptjs'
 import { Navigate } from 'react-router-dom';
+
+var bcrypt = require('bcryptjs');
 
 export class Login extends React.Component {
     constructor(props) {
@@ -37,7 +38,7 @@ export class Login extends React.Component {
                     username: this.state.username
                 })
             };
-            let response = await fetch(`http://${environment.BackendLocation}:${environment.BackendPort}/login`, requestOptions)
+            let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/login`, requestOptions)
                     .catch(error => {
                         console.log(error)
                     });
@@ -51,7 +52,7 @@ export class Login extends React.Component {
                         password: bcrypt.hashSync(this.state.password, responseJSON.salt)
                     })
                 }
-                response = await fetch(`http://${environment.BackendLocation}:${environment.BackendPort}/login`, requestOptions)
+                response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/login`, requestOptions)
                     .catch(error => {
                         console.log(error)
                     })
@@ -105,7 +106,7 @@ export class Login extends React.Component {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json', 'token': cookies.get('token') }
             }
-            fetch(`http://${environment.BackendLocation}:${environment.BackendPort}/verifyToken`, requestOptions).then((res) => {
+            fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/verifyToken`, requestOptions).then((res) => {
                 res.json().then(e => {
                     if (e.success) { //User already has a valid token
                         this.setState({ //Make window redirect
