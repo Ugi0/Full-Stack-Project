@@ -1,6 +1,6 @@
 import React from 'react'
 import '../styles/Login.css'
-import environment from '../environment.js';
+import myConfig from '../config.js';
 import Cookies from 'universal-cookie';
 import bcrypt from 'bcryptjs'
 import { Navigate } from 'react-router-dom';
@@ -43,7 +43,7 @@ export class Register extends React.Component {
                     salt: salt
                 })
             };
-            const response = await fetch(`http://${environment.BackendLocation}:${environment.BackendPort}/register`, requestOptions)
+            const response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/register`, requestOptions)
                 .catch(error => {
                     console.log(error)
                 });

@@ -1,6 +1,6 @@
 import React from 'react';
 import '../styles/App.css';
-import environment from '../environment.js';
+import myConfig from '../config.js';
 import { WeekCalendar } from '../components/calendars/week';
 import { MonthCalendar } from '../components/calendars/month.jsx';
 import { AddComponents } from '../components/addComponents';
@@ -27,7 +27,7 @@ export default class App extends React.Component {
       method: 'GET',
       headers: { 'Content-Type': 'application/json', 'token': cookies.get('token') },
     };
-    let response = await fetch(`http://${environment.BackendLocation}:${environment.BackendPort}/courses`, requestOptions)
+    let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/courses`, requestOptions)
             .catch(error => {
                 console.log(error)
             });
@@ -48,7 +48,7 @@ export default class App extends React.Component {
           courseid: courseid
       })
     };
-    let response = await fetch(`http://${environment.BackendLocation}:${environment.BackendPort}/courses`, requestOptions)
+    let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/courses`, requestOptions)
             .catch(error => {
                 console.log(error)
             });
@@ -70,7 +70,7 @@ export default class App extends React.Component {
           courses: courses
       })
     };
-    let response = await fetch(`http://${environment.BackendLocation}:${environment.BackendPort}/courses`, requestOptions)
+    let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/courses`, requestOptions)
             .catch(error => {
                 console.log(error)
             });

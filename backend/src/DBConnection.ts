@@ -1,6 +1,8 @@
-import {ColumnType,Generated,Insertable,JSONColumnType,Selectable,Updateable} from 'kysely'
 import { Kysely, MysqlDialect } from 'kysely'
 import { createPool } from "mysql2"
+
+const dotenv = require('dotenv');
+dotenv.config()
 
 export interface Database {
     users: users,
@@ -100,7 +102,7 @@ const dialect = new MysqlDialect({
         host: process.env.DATABASE_LOCATION,
         user: process.env.DATABASE_USERNAME,
         password: process.env.DATABASE_PASSWORD,
-        database: 'TestDB'
+        database: process.env.DATABASE_NAME
     })
 })
 
