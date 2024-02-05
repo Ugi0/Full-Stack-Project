@@ -10,7 +10,6 @@ function ClickableCalendarEvent(props) {
     const [description, setDescription] = useState(props.description);
 
     const handleClick = () => {
-        console.log("child handleClick")
         props.handler({
             editable: false,
             courseid: props.courseid,

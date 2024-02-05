@@ -17,16 +17,6 @@ function WeekCalendar(props) {
         return state;
     }*/
     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    const hourOptions = Array.from(Array(24).keys()).map((e) => {
-        return {
-            value: e.toLocaleString(undefined, {minimumIntegerDigits: 2}), 
-            label: e.toLocaleString(undefined, {minimumIntegerDigits: 2})
-        }});
-    const minuteOptions = Array.from(Array(60).keys()).map((e) => {
-        return {
-            value: e.toLocaleString(undefined, {minimumIntegerDigits: 2}), 
-            label: e.toLocaleString(undefined, {minimumIntegerDigits: 2})
-        }});
     const [x, setX] = useState(props.sx.x);
     const [y, setY] = useState(props.sx.y);
     const [width, setWidth] = useState(props.sx.width);
@@ -44,16 +34,13 @@ function WeekCalendar(props) {
 
       //Create a handler so the children can update the open state
     const handler = (values) => {
-        console.log("parent handler")
-        //if (props.editable) return
+        setChHandler(() => values.chHandler);
         setOpenCalendarModal(true);
-        setChHandler(values.chHandler);
         setTitle(values.title);
         setTime(values.time);
         setDuration(values.duration);
         setDescription(values.description);
         setCourseid(values.courseid);
-        console.log(chHandler)
       }
     const deleteEvent = () => {
         setOpenCalendarModal(false)
@@ -61,8 +48,6 @@ function WeekCalendar(props) {
     }
     const saveEvent = (newTitle, newDescription, newTime, newDuration) => {
         let newCourses = props.courses;
-        console.log(chHandler)
-        if (chHandler === undefined) return;
         chHandler({
             title: newTitle,
             description: newDescription,
@@ -80,14 +65,12 @@ function WeekCalendar(props) {
         props.setCourses(newCourses);
     }
 
-    const handleCloseAddModal = (props) => {
+    const handleCloseAddModal = () => {
         setOpenAddEventModal(false);
-        openAddEventModal.current.closeModal();
     }
     const handleOpenAddModal = (time) => {
         if (props.editable) return
         setOpenAddEventModal(true);
-        openAddEventModal.current.openModal(time);
     }
     const handleClose = () => {
         setOpenCalendarModal(false);
@@ -146,7 +129,8 @@ function WeekCalendar(props) {
                             <button className="newButton" onClick={() => { //Set date to clicked day in addComponent
                                 const d = new Date(monday);
                                 d.setDate(d.getDate() + index);
-                                handleOpenAddModal(d.toISOString().slice(0,16))
+                                setTime(d.toISOString().slice(0,16))
+                                handleOpenAddModal()
                             }}>
                                 <AddIcon/> New
                             </button>
@@ -163,7 +147,7 @@ function WeekCalendar(props) {
                 time={time} open={openCalendarModal} duration={duration}
                 courseid={courseid}
             />
-            <AddEvent courses={props.courses} setCourses={props.setCourses} open={openAddEventModal} onClose={handleCloseAddModal}/>
+            <AddEvent courses={props.courses} time={time} setCourses={props.setCourses} open={openAddEventModal} onClose={handleCloseAddModal}/>
         </>
     )
 }

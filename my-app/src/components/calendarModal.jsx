@@ -77,6 +77,7 @@ function CalendarModal(props) {
         }
     }
     const handleDeleteClick = () => {
+        setModalEditable(false);
         props.deleteEvent();
     }
     return <div>

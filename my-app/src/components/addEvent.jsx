@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import '../styles/addEvent.css'
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -11,8 +11,7 @@ function AddEvent(props){
     const now = new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
 
-    const [open, setOpen] = useState(false);
-    const [time, setTime] = useState(now.toISOString().slice(0,16));
+    const [time, setTime] = useState(props.time);
     const [duration, setDuration] = useState("1:00");
     const [title, setTitle] = useState("New title");
     const [description, setDescription] = useState("New description");
@@ -21,16 +20,12 @@ function AddEvent(props){
     const [repeating, setRepeating] = useState(false);
     const [repeatingTime, setRepeatingTime] = useState("");
 
-    const [chosenCourse, setChosenCourse] = useState(""); //Not in use yet
-    /*static getDerivedStateFromProps(props, state) {
-        state.courses = props.courses;
-        return state;
-    }*/
+    //const [chosenCourse, setChosenCourse] = useState(""); //Not in use yet
+    useEffect(() => {
+        setTime(props.time)
+    }, [props.time])
 
-    const openModal = (time) => { setOpen(true); setTime(time); }
-    const closeModal = () => { setOpen(false);}
     const handleModalClose = () => {
-        setOpen(false);
         props.onClose();
     }
     const handleCheckBoxClick = () => {
@@ -48,7 +43,7 @@ function AddEvent(props){
       }
     const renderDuration = () => {
         return (
-            <input type="time" id="duration" value={duration.padStart(5,'0')} onChange={(e => setTime(e.target.value))}/>
+            <input type="time" id="duration" value={duration.padStart(5,'0')} onChange={(e => setDuration(e.target.value))}/>
         )
     }
     
@@ -133,7 +128,7 @@ function AddEvent(props){
             <div>
                 <div>
                     <p>Repeating time</p>
-                    <select id="repeatingTime" onChange={(e) => setRepeating(e.target.value)}>
+                    <select id="repeatingTime" onChange={(e) => setRepeatingTime(e.target.value)}>
                         <option value="daily">Daily</option>
                         <option value="weekly">Weekly</option>
                         <option value="weekly">Monthly</option>
@@ -147,7 +142,7 @@ function AddEvent(props){
     return (
         <div>
             <Modal
-                open={open}
+                open={props.open ?? false}
                 onClose={handleModalClose}
             >
                 <Box className="modalContent">

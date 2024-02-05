@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import '../styles/App.css';
 import myConfig from '../config.js';
 import WeekCalendar from '../components/calendars/week';
-import { MonthCalendar } from '../components/calendars/month.jsx';
+import MonthCalendar from '../components/calendars/month.jsx';
 import AddComponents from '../components/addComponents';
 import Cookies from 'universal-cookie';
 import { Navigate } from 'react-router-dom';
@@ -15,7 +15,7 @@ function App() {
   const [redirect, setRedirect] = useState(false);
   const [redirectLocation, setRedirectLocation] = useState("");
   const [courses, setCourses] = useState([]);
-  const [events, setEvent] = useState([])
+  //const [events, setEvent] = useState([])
 
   useEffect(() => {
     // Fetch user data from backend and display if succeeded
@@ -27,7 +27,7 @@ function App() {
       };
       let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/courses`, requestOptions)
               .catch(error => {
-                  console.log(error)
+                  console.log("1",error)
               });
       if (response) {
         let responseJSON = await response.json()
@@ -37,7 +37,7 @@ function App() {
       }
     };
     fetchData();
-  })
+  }, [])
   
   const deleteCourse = async (courseid) => {
     const cookies = new Cookies();
@@ -51,7 +51,7 @@ function App() {
     };
     let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/courses`, requestOptions)
             .catch(error => {
-                console.log(error)
+              console.log("2",error)
             });
     if (response) {
       let responseJSON = await response.json()
@@ -71,7 +71,7 @@ function App() {
     };
     let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/courses`, requestOptions)
             .catch(error => {
-                console.log(error)
+            console.log("3",error)
             });
     let responseJSON = await response.json()
     if (responseJSON.success) { //Update the courses in view only if sending to database succeeded
