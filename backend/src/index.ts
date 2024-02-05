@@ -24,14 +24,8 @@ app.post('/register', async (req, res) => {
   try {
     let newId = getRandomID();
     //Validate user data
-    const [valid, Error] = validateUserData(req.body)
-    if (!valid) {
-      res.send({
-        success: false,
-        error: `${Error}`
-      })
-      return;
-    }
+    const [valid, error] = validateUserData(req.body)
+    if (!valid) throw new Error(error);
     let result = await db
       .insertInto('users')
       .values({
@@ -67,8 +61,8 @@ app.post('/register', async (req, res) => {
     }
     res.send({
       success: false,
-      error: `${e.code ?? ""}: ${e.sqlMessage ?? ""}`
-    })
+      error: `${e}`
+    });
   }
 })
 

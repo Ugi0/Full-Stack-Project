@@ -1,4 +1,4 @@
-export function validateUserData(request) {
+export function validateUserData(request): [boolean, string] {
         let passwordReg = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$"); //Regex to test for at least 8 characters, one letter and one number
         let usernameLengthReg = new RegExp(".{3,}");
         let emailReg = new RegExp("^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$")
