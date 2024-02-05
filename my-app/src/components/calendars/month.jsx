@@ -1,9 +1,9 @@
 import React from "react";
 import '../../styles/monthCalendar.css'
 import { Rnd } from "react-rnd";
-import { CalendarModal } from "../calendarModal";
-import { AddEvent } from "../addEvent";
-import { ClickableCalendarEvent } from "../clickableCalendarEvent";
+import CalendarModal from "../calendarModal";
+import AddEvent from "../addEvent";
+import ClickableCalendarEvent from "../clickableCalendarEvent";
 
 export class MonthCalendar extends React.Component {
     static getDerivedStateFromProps(props, state) {

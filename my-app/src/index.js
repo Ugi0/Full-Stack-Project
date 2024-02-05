@@ -4,8 +4,8 @@ import './index.css';
 import { BrowserRouter, Route, Routes} from "react-router-dom";
 import App from './views/App';
 import reportWebVitals from './reportWebVitals';
-import { Login } from './views/Login';
-import { Register } from './views/Register';
+import Login from './views/Login';
+import Register from './views/Register';
 
 import './fonts/StudyAlone.woff';
 import './fonts/Wall Notes.woff'

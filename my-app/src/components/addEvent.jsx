@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import '../styles/addEvent.css'
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -7,68 +7,52 @@ import { IconButton } from "@mui/material";
 import SaveIcon from '@mui/icons-material/Save';
 import { getRandomID } from "../api/getRandomID";
 
-export class AddEvent extends React.Component {
-    static getDerivedStateFromProps(props, state) {
+function AddEvent(props){
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+
+    const [open, setOpen] = useState(false);
+    const [time, setTime] = useState(now.toISOString().slice(0,16));
+    const [duration, setDuration] = useState("1:00");
+    const [title, setTitle] = useState("New title");
+    const [description, setDescription] = useState("New description");
+    
+    const [type, setType] = useState("0");
+    const [repeating, setRepeating] = useState(false);
+    const [repeatingTime, setRepeatingTime] = useState("");
+
+    const [chosenCourse, setChosenCourse] = useState(""); //Not in use yet
+    /*static getDerivedStateFromProps(props, state) {
         state.courses = props.courses;
         return state;
+    }*/
+
+    const openModal = (time) => { setOpen(true); setTime(time); }
+    const closeModal = () => { setOpen(false);}
+    const handleModalClose = () => {
+        setOpen(false);
+        props.onClose();
     }
-    constructor(props) {
-        super(props);
-        this.setCourses = props.setCourses;
-        this.onClose = props.onClose;
-        const now = new Date();
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        this.state = {
-            courses: props.courses,
-            modalOpen: false,
-            type: "0",
-            title: "New title", description: "New description",
-            time: now.toISOString().slice(0,16), duration: "01:00",
-            repeating: false, repeatingTime: "",
-            chosenCourse: ""
-        }
+    const handleCheckBoxClick = () => {
+        setRepeating(!repeating)
     }
-    openModal = (time) => { this.setState({ modalOpen: true, time: time })}
-    closeModal = () => { this.setState({ modalOpen: false })}
-    handleModalClose = () => {
-        this.setState({
-            modalOpen: false
-        })
-        this.onClose();
-    }
-    handleInputChange = (event) => {
-        const name = event.target.id;
-        let value = event.target.innerText.replace(/(\r\n|\n|\r)/gm, "");
-        if (event.target.value) {
-            value = event.target.value;
-        }
-        this.setState({
-          [name]: value,
-        });
-        event.preventDefault();
-    };
-    handleCheckBoxClick = () => {
-        this.setState({
-            repeating: !this.state.repeating
-        })
-    }
-    renderTime = () => {
+    const renderTime = () => {
         return (
             <input
                 type="datetime-local"
                 id="time"
-                value={this.state.time}
-                onChange={this.handleInputChange}
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
             />
         )
       }
-    renderDuration = () => {
+    const renderDuration = () => {
         return (
-            <input type="time" id="duration" value={this.state.duration.padStart(5,'0')} onChange={this.handleInputChange}/>
+            <input type="time" id="duration" value={duration.padStart(5,'0')} onChange={(e => setTime(e.target.value))}/>
         )
     }
     
-    renderCourseOptions = () => {
+    const renderCourseOptions = () => {
         return (
             <select id="chosenCourse">
 
@@ -76,80 +60,80 @@ export class AddEvent extends React.Component {
         )
     }
 
-    renderOptions = () => {
-        switch (this.state.type) {
+    const renderOptions = () => {
+        switch (type) {
             case '0': 
                 return (
                     <div className="options">
-                        {titleInput(this.handleInputChange)}
-                        {descriptionInput(this.handleInputChange)}
+                        {titleInput(setTitle)}
+                        {descriptionInput(setDescription)}
                         <div>
                             <p>Time</p>
-                            {this.renderTime()}
+                            {renderTime()}
                         </div>
                         <div>
                             <p>Duration</p>
-                            {this.renderDuration()}
+                            {renderDuration()}
                         </div>
                         <div>
                             <p>Repeating</p>
-                            <input type="checkbox" checked={this.state.repeating} id="repeating" onChange={this.handleCheckBoxClick} />
+                            <input type="checkbox" checked={repeating} id="repeating" onChange={handleCheckBoxClick} />
                         </div>
-                        {this.renderRepeating()}
+                        {renderRepeating()}
                     </div>
                 )
             case '1':
                 return (
                     <div className="options">
-                        {titleInput(this.handleInputChange)}
+                        {titleInput(setTitle)}
                         <div>
                             <p>Course</p>
-                            {this.renderCourseOptions()}
+                            {renderCourseOptions()}
                         </div>
-                        {descriptionInput(this.handleInputChange)}
+                        {descriptionInput(setDescription)}
                         <div>
                             <p>Deadline</p>
-                            {this.renderTime()}
+                            {renderTime()}
                         </div>
                     </div>
                 )
             case '2':
                 return (
                     <div className="options">
-                        {titleInput(this.handleInputChange)}
+                        {titleInput(setTitle)}
                         <div>
                             <p>Course</p>
-                            {this.renderCourseOptions()}
+                            {renderCourseOptions()}
                         </div>
-                        {descriptionInput(this.handleInputChange)}
+                        {descriptionInput(setDescription)}
                         <div>
                             <p>Time</p>
-                            {this.renderTime()}
+                            {renderTime()}
                         </div>
                     </div>
                 )
             case '3':
                 return (
                     <div className="options">
-                        {titleInput(this.handleInputChange)}
-                        {descriptionInput(this.handleInputChange)}
+                        {titleInput(setTitle)}
+                        {descriptionInput(setDescription)}
                         <div>
                             <p>Time</p>
-                            {this.renderTime()}
+                            {renderTime()}
                         </div>
                     </div>
                 )
             default:
-                return (<div></div>)
+                return (<></>)
         }
     }
-    renderRepeating = () => {
-        if (this.state.repeating) {
+    const renderRepeating = () => {
+        if (repeating) {
             return (
             <div>
                 <div>
                     <p>Repeating time</p>
-                    <select id="repeatingTime" onChange={this.handleInputChange}>
+                    <select id="repeatingTime" onChange={(e) => setRepeating(e.target.value)}>
                         <option value="daily">Daily</option>
                         <option value="weekly">Weekly</option>
                         <option value="weekly">Monthly</option>
@@ -159,40 +143,39 @@ export class AddEvent extends React.Component {
         }
 
     }
-    render() {
-        if (this.state.modalOpen) {
-            return (
-                <div>
-                    <Modal
-                        open={this.state.modalOpen}
-                        onClose={this.handleModalClose}
-                    >
-                        <Box className="modalContent">
-                            <div>
-                                <p>Type</p> 
-                                <select id="type" onChange={this.handleInputChange}>
-                                    <option value="0">Course</option>
-                                    <option value="1">Assignment</option>
-                                    <option value="2">Exam</option>
-                                    <option value="3">Event</option>
-                                </select>
-                            </div>
-                            {this.renderOptions()}
-                            <IconButton sx={{position:'absolute', top:0, right:0}} onClick={() => {
-                                this.setCourses([...this.state.courses, {
-                                    title: this.state.title, description: this.state.description,
-                                    time: this.state.time, duration: this.state.duration,
-                                    repeating: this.state.repeating, repeatingTime: this.state.repeatingTime,
-                                    courseid: getRandomID()
-                                }]);
-                                this.handleModalClose();
-                                }}>
-                                <SaveIcon />
-                            </IconButton>
-                        </Box>
-                    </Modal>
-                </div>
-            )
-        }
-    }
+    
+    return (
+        <div>
+            <Modal
+                open={open}
+                onClose={handleModalClose}
+            >
+                <Box className="modalContent">
+                    <div>
+                        <p>Type</p> 
+                        <select id="type" onChange={(e) => setType(e.target.value)}>
+                            <option value="0">Course</option>
+                            <option value="1">Assignment</option>
+                            <option value="2">Exam</option>
+                            <option value="3">Event</option>
+                        </select>
+                    </div>
+                    {renderOptions()}
+                    <IconButton sx={{position:'absolute', top:0, right:0}} onClick={() => {
+                        props.setCourses([...props.courses, {
+                            title: title, description: description,
+                            time: time, duration: duration,
+                            repeating: repeating, repeatingTime: repeatingTime,
+                            courseid: getRandomID()
+                        }]);
+                        handleModalClose();
+                        }}>
+                        <SaveIcon />
+                    </IconButton>
+                </Box>
+            </Modal>
+        </div>
+    )
 }
+
+export default AddEvent;

@@ -1,50 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
 import IconButton from '@mui/material/Button';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import SaveIcon from '@mui/icons-material/Save';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import '../styles/addComponents.css'
 
-export class AddComponents extends React.Component {
-    constructor(props) {
-        super(props);
-        this.toggleEditable = props.toggleEditable;
-        this.state = { editable: props.editable, addIconClicked: false, secondMenuNumber: -1 }
-        this.menuItems = [
-            {
-                title: 'Calendar',
-                subItems: ['Full calendar', 'Smaller calendar']
-            },
-            {
-                title: 'Projects',
-                subItems: []
-            },
-            {
-                title: 'Courses',
-                subItems: []
-            }
-        ]
-    }
+function AddComponents(props) {
+    const [addIconClicked, setAddIconClicked] = useState(false);
+    const [secondMenuNumber, setSecondMenuItem] = useState(-1);
+    const menuItems = [
+        {
+            title: 'Calendar',
+            subItems: ['Full calendar', 'Smaller calendar']
+        },
+        {
+            title: 'Projects',
+            subItems: []
+        },
+        {
+            title: 'Courses',
+            subItems: []
+        }
+    ]
 
-    renderIcon = () => {
-        if (this.state.editable) {
+    const renderIcon = () => {
+        if (props.editable) {
             return <SaveIcon />
         }
         return <BorderColorIcon/>
     }
 
-    renderAddMenu = () => {
-        if (this.state.addIconClicked) {
+    const renderAddMenu = () => {
+        if (addIconClicked) {
             return <ul className="addMenu1" data-testid="addMenu1">
-                {this.menuItems.map((menu, index) => {
+                {menuItems.map((menu, index) => {
                     return (
-                        <ul key={index} className="addMenu2" onClick={() => this.handleMenuItemClick(index)} data-testid="addMenu2">
+                        <ul key={index} className="addMenu2" onClick={() => handleMenuItemClick(index)} data-testid="addMenu2">
                             <p> {menu.title} </p>
                             <div>
-                                {(this.state.secondMenuNumber === index) ?
+                                {(secondMenuNumber === index) ?
                                     menu.subItems.map((item, index2) => {
                                         return (
-                                            <p key={index2} onClick={() => this.handleItemClick(index, index2)}>
+                                            <p key={index2} onClick={() => handleItemClick(index, index2)}>
                                                 {item}
                                             </p>
                                         )
@@ -58,50 +55,43 @@ export class AddComponents extends React.Component {
         }
     }
 
-    renderAddIcon = () => {
-        if (this.state.editable) {
+    const renderAddIcon = () => {
+        if (props.editable) {
             return <div>
                 <IconButton sx={{position:'absolute', top:'50%', left:0, scale:'2'}} data-testid="addButton"> 
-                    <AddCircleOutlineIcon onClick={this.handleAddClick}/>
+                    <AddCircleOutlineIcon onClick={handleAddClick}/>
                  </IconButton>
-                 {this.renderAddMenu()}
+                 {renderAddMenu()}
             </div>
         }
     }
 
-    handleEditClick = () => {
-        this.toggleEditable();
-        this.setState({
-            editable: !this.state.editable,
-            addIconClicked: false
-        })
+    const handleEditClick = () => {
+        props.toggleEditable();
+        setAddIconClicked(false);
     }
 
-    handleAddClick = () => {
-        this.setState({
-            addIconClicked: !this.state.addIconClicked,
-            secondMenuNumber: -1
-        })
+    const handleAddClick = () => {
+        setAddIconClicked(!addIconClicked);
+        setSecondMenuItem(-1);
     }
 
-    handleMenuItemClick = (index) => {
-        this.setState({
-            secondMenuNumber: index
-        })
+    const handleMenuItemClick = (index) => {
+        setSecondMenuItem(index);
     }
 
-    handleItemClick = (type, typeIndex) => {
+    const handleItemClick = (type, typeIndex) => {
         console.log(type, typeIndex)
     }
 
-    render() {
-        return (
-            <div>
-                <IconButton onClick={this.handleEditClick} sx={{position:'absolute', top:0, right:0}} data-testid="editButton">
-                    {this.renderIcon()}
-                </IconButton>
-                {this.renderAddIcon()}
-            </div>
-        )
-    }
+    return (
+        <div>
+            <IconButton onClick={handleEditClick} sx={{position:'absolute', top:0, right:0}} data-testid="editButton">
+                {renderIcon()}
+            </IconButton>
+            {renderAddIcon()}
+        </div>
+    )
 }
+
+export default AddComponents;
