@@ -46,6 +46,7 @@ function MonthCalendar(props) {
     }
 
     const handler = (values) => {
+        if (props.editable) return;
         setChHandler(() => values.chHandler);
         setOpenCalendarModal(true);
         setTitle(values.title);
