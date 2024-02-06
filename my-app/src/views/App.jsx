@@ -6,6 +6,7 @@ import MonthCalendar from '../components/calendars/month.jsx';
 import AddComponents from '../components/addComponents';
 import Cookies from 'universal-cookie';
 import { Navigate } from 'react-router-dom';
+import { fetchCourses, fetchAssignments, fetchEvents, fetchViews, fetchViewElements } from '../api/fetchers.js';
 
 function App() {
   // Make so App contains all of the information that is needed to render
@@ -14,29 +15,22 @@ function App() {
   const [editable, setEditable] = useState(false);
   const [redirect, setRedirect] = useState(false);
   const [redirectLocation, setRedirectLocation] = useState("");
+
+  const [views, setViews] = useState([]);
+  const [viewElements, setViewElements] = useState([]);
+
   const [courses, setCourses] = useState([]);
-  //const [events, setEvent] = useState([])
+  const [events, setEvents] = useState([]);
+  const [assingments, setAssignments] = useState([]);
+  const [exams, setExams] = useState([]);
 
   useEffect(() => {
-    // Fetch user data from backend and display if succeeded
-    async function fetchData() {
-      const cookies = new Cookies();
-      const requestOptions = {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json', 'token': cookies.get('token') },
-      };
-      let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/courses`, requestOptions)
-              .catch(error => {
-                  console.log("1",error)
-              });
-      if (response) {
-        let responseJSON = await response.json()
-        if (responseJSON.data) {
-          setCourses(responseJSON.data);
-        }
-      }
-    };
-    fetchData();
+    // Fetch user data from backend and display if succeeded on first render
+    fetchViews(setViews);
+    fetchViewElements(setViewElements);
+    fetchAssignments(setAssignments);
+    fetchEvents(setEvents);
+    fetchCourses(setCourses);
   }, [])
   
   const deleteCourse = async (courseid) => {

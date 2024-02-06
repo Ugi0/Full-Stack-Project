@@ -89,7 +89,7 @@ function MonthCalendar(props) {
                     {[...Array(gridHeight*gridWidth)].map((_,i) => {
                         firstDayOfTheMonth.setDate(firstDayOfTheMonth.getDate() + 1);
                         return (
-                            <div className="monthDay" key={i} style={{ backgroundColor: today.getMonth()===firstDayOfTheMonth.getMonth() ? '#1d2021' : '#1d212040'}}>
+                            <div className="monthDay" key={i} style={{ backgroundColor: today.getMonth() === firstDayOfTheMonth.getMonth() ? '#1d2021' : '#1d212040'}}>
                                 <div className={today.toDateString()===firstDayOfTheMonth.toDateString() ? 'currentDateNumber' : "dateNumber"} >
                                     {firstDayOfTheMonth.getDate()}
                                 </div>
@@ -104,7 +104,7 @@ function MonthCalendar(props) {
                                         courseid = {item.courseid}
                                         duration = {item.duration}
                                         handler = {handler}
-                                        key = {item.courseid}
+                                        key = {index}
                                         draw = {["title"]}
                                         sx = {{'overflow': 'hidden', 'whiteSpace': 'nowrap'}}
                                     />

@@ -17,6 +17,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/user-event": "^13.5.0",
     "bcryptjs": "^2.4.3",
+    "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.0",
     "get-random-values": "^3.0.0",
     "react": "^18.2.0",
@@ -26,6 +27,7 @@
     "react-router-dom": "^6.21.1",
     "react-scripts": "5.0.1",
     "react-select": "^5.8.0",
+    "stream": "^0.0.2",
     "universal-cookie": "^7.0.1",
     "web-vitals": "^2.1.4"
   },
@@ -38,8 +40,12 @@
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest"
-    ]
+      "react-app/jest",
+      "eslint:recommended"
+    ],
+    "rules": {
+      "no-unused-vars": "off"
+    }
   },
   "browserslist": {
     "production": [
@@ -54,6 +60,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@testing-library/react": "^14.1.2"
   },
   "homepage": ".",

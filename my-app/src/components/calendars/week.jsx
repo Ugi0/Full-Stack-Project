@@ -111,7 +111,7 @@ function WeekCalendar(props) {
                                     return cur.toDateString() === new Date(item.time.split("T")[0]).toDateString();
                                 })
                                 .sort((a,b) => new Date(a.time) - new Date(b.time))
-                                .map((item) => {
+                                .map((item, index) => {
                                     return (
                                         <ClickableCalendarEvent
                                             title = {item.title}
@@ -120,7 +120,7 @@ function WeekCalendar(props) {
                                             courseid = {item.courseid}
                                             duration = {item.duration}
                                             handler = {handler}
-                                            key = {item.courseid}
+                                            key = {index}
                                             draw = {["title", "icon", "times"]}
                                             sx = {{padding: '5px 0 5px 0'}}
                                         />

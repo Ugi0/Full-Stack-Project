@@ -135,12 +135,12 @@ app.post('/courses', async (req, res) => {
     let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
     if (!decoded.data) throw new Error("No token")
     if (!req.body.courses) throw new Error("No courses")
-    let result = await db
+    await db
       .replaceInto('courses')
       .values(req.body.courses.map(e => {
         return {
           creator: decoded.data,
-          courseid: e.courseid,
+          id: e.courseid,
           title: e.title, description: e.description,
           time: e.time, duration: e.duration,
           repeating: e.repeating, repeatingTime: e.repeatingTime
@@ -175,7 +175,7 @@ app.get('/courses', async (req, res) => {
           title: e.title, time: e.time, 
           duration: e.duration, description: e.description, repeating: e.repeating, 
           repeatingTime: e.repeatingTime, 
-          courseid: e.courseid
+          courseid: e.id
         }
       })
     })
@@ -193,9 +193,398 @@ app.delete('/courses', async (req, res) => {
     let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
     if (!decoded.data) throw new Error("No token")
     if (!req.body.courseid) throw new Error("No courseid specified")
-    let result = await db
+    await db
       .deleteFrom('courses')
-      .where('courseid', '=', req.body.courseid)
+      .where('id', '=', req.body.courseid)
+      .where('creator', '=', decoded.data)
+      .execute()
+    res.send({
+      success: true
+    })
+  } catch(e) {
+    console.log(e)
+    res.send({
+      success: false
+    })
+  }
+})
+
+app.get('/views', async (req, res) => {
+  try {
+    let token = req.headers.token;
+    let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    if (!decoded.data) throw new Error("No token")
+    let result = await db
+      .selectFrom('views')
+      .selectAll()
+      .where('creator', '=', decoded.data)
+      .execute()
+    res.send({
+      success: true,
+      data: result.map((e,i) => {
+        return {
+          title: e.title, id: e.id
+        }
+      })
+    })
+  } catch(e) {
+    console.log(e)
+    res.send({
+      success: false
+    })
+  }
+})
+
+app.post('/views', async (req, res) => {
+  try {
+    let token = req.headers.token;
+    let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    if (!decoded.data) throw new Error("No token")
+    if (!req.body.views) throw new Error("No views")
+    await db
+      .replaceInto('views')
+      .values(req.body.views.map(e => {
+        return {
+          id: e.id, title: e.title, creator: decoded.data
+        }
+      }))
+      .execute()
+    res.send({
+      success: true
+    })
+  } catch(e) {
+    console.log(e)
+    res.send({
+      success: false
+    })
+  }
+})
+
+app.delete('/views', async (req, res) => {
+  try {
+    let token = req.headers.token;
+    let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    if (!decoded.data) throw new Error("No token")
+    if (!req.body.id) throw new Error("No id for view specified")
+    await db
+      .deleteFrom('views')
+      .where('id', '=', req.body.id)
+      .where('creator', '=', decoded.data)
+      .execute()
+    res.send({
+      success: true
+    })
+  } catch(e) {
+    console.log(e)
+    res.send({
+      success: false
+    })
+  }
+})
+
+app.get('/viewelements', async (req, res) => {
+  try {
+    let token = req.headers.token;
+    let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    if (!decoded.data) throw new Error("No token")
+    let result = await db
+      .selectFrom('viewelements')
+      .selectAll()
+      .where('creator', '=', decoded.data)
+      .execute()
+    res.send({
+      success: true,
+      data: result.map((e,i) => {
+        return {
+          hostid: e.hostid, id: e.id,
+          type: e.type,
+          width: e.width, height: e.height,
+          x: e.x, y: e.y,
+          data: e.data
+        }
+      })
+    })
+  } catch(e) {
+    if (e.sqlMessage === "Unknown column 'creator' in 'where clause'") return;
+    console.log(e)
+    res.send({
+      success: false
+    })
+  }
+})
+
+app.post('/viewelements', async (req, res) => {
+  try {
+    let token = req.headers.token;
+    let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    if (!decoded.data) throw new Error("No token")
+    if (req.body.elements) throw new Error("No elements specified")
+    await db
+      .replaceInto('viewelements')
+      .values(req.body.views.map(e => {
+        return {
+          creator: decoded.data, 
+          hostid: e.hostid, id: e.id,
+          type: e.type,
+          width: e.width, height: e.height,
+          x: e.x, y: e.y,
+          data: e.data
+        }
+      }))
+      .execute()
+    res.send({
+      success: true
+    })
+  } catch(e) {
+    console.log(e)
+    res.send({
+      success: false
+    })
+  }
+})
+
+app.delete('/viewelements', async (req, res) => {
+  try {
+    let token = req.headers.token;
+    let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    if (!decoded.data) throw new Error("No token")
+    await db
+      .deleteFrom('viewelements')
+      .where('id', '=', req.body.id)
+      .where('creator', '=', decoded.data)
+      .execute()
+    res.send({
+      success: true
+    })
+  } catch(e) {
+    console.log(e)
+    res.send({
+      success: false
+    })
+  }
+})
+
+app.get('/assignments', async (req, res) => {
+  try {
+    let token = req.headers.token;
+    let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    if (!decoded.data) throw new Error("No token")
+    let result = await db
+      .selectFrom('assignments')
+      .selectAll()
+      .where('creator', '=', decoded.data)
+      .execute()
+    res.send({
+      success: true,
+      data: result.map((e,i) => {
+        return {
+          id: e.id, course: e.id,
+          status: e.status, type: e.type,
+          priority: e.priority, duedate: e.duedate,
+          grade: e.grade
+        }
+      })
+    })
+  } catch(e) {
+    console.log(e)
+    res.send({
+      success: false
+    })
+  }
+})
+
+app.post('/assignments', async (req, res) => {
+  try {
+    let token = req.headers.token;
+    let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    if (!decoded.data) throw new Error("No token")
+    if (!req.body.assignments) throw new Error("No assignments specified")
+    await db
+      .replaceInto('viewelements')
+      .values(req.body.views.map(e => {
+        return {
+          creator: decoded.data, 
+          hostid: e.hostid, id: e.id,
+          type: e.type,
+          width: e.width, height: e.height,
+          x: e.x, y: e.y,
+          data: e.data
+        }
+      }))
+      .execute()
+    res.send({
+      success: true
+    })
+  } catch(e) {
+    console.log(e)
+    res.send({
+      success: false
+    })
+  }
+})
+
+app.delete('/assignments', async (req, res) => {
+  try {
+    let token = req.headers.token;
+    let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    if (!decoded.data) throw new Error("No token")
+    await db
+      .deleteFrom('assignments')
+      .where('id', '=', req.body.id)
+      .where('creator', '=', decoded.data)
+      .execute()
+    res.send({
+      success: true
+    })
+  } catch(e) {
+    console.log(e)
+    res.send({
+      success: false
+    })
+  }
+})
+
+app.get('/events', async (req, res) => {
+  try {
+    let token = req.headers.token;
+    let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    if (!decoded.data) throw new Error("No token")
+    let result = await db
+      .selectFrom('events')
+      .selectAll()
+      .where('creator', '=', decoded.data)
+      .execute()
+    res.send({
+      success: true,
+      data: result.map((e,i) => {
+        return {
+          id: e.id, time: e.time,
+          title: e.title, description: e.description
+        }
+      })
+    })
+  } catch(e) {
+    console.log(e)
+    res.send({
+      success: false
+    })
+  }
+})
+
+app.post('/events', async (req, res) => {
+  try {
+    let token = req.headers.token;
+    let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    if (!decoded.data) throw new Error("No token")
+    if (!req.body.events) throw new Error("No events specified")
+    await db
+      .replaceInto('events')
+      .values(req.body.views.map(e => {
+        return {
+          creator: decoded.data, 
+          id: e.id,
+          hostid: e.hostid,
+          icon: e.icon, title: e.title,
+          body: e.body, checked: e.checked
+        }
+      }))
+      .execute()
+    res.send({
+      success: true
+    })
+  } catch(e) {
+    console.log(e)
+    res.send({
+      success: false
+    })
+  }
+})
+
+app.delete('/events', async (req, res) => {
+  try {
+    let token = req.headers.token;
+    let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    if (!decoded.data) throw new Error("No token")
+    await db
+      .deleteFrom('events')
+      .where('id', '=', req.body.id)
+      .where('creator', '=', decoded.data)
+      .execute()
+    res.send({
+      success: true
+    })
+  } catch(e) {
+    console.log(e)
+    res.send({
+      success: false
+    })
+  }
+})
+
+app.get('/exams', async (req, res) => {
+  try {
+    let token = req.headers.token;
+    let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    if (!decoded.data) throw new Error("No token")
+    let result = await db
+      .selectFrom('exams')
+      .selectAll()
+      .where('creator', '=', decoded.data)
+      .execute()
+    res.send({
+      success: true,
+      data: result.map((e,i) => {
+        return {
+          id: e.id, time: e.time,
+          title: e.title, description: e.description,
+          course: e.course
+        }
+      })
+    })
+  } catch(e) {
+    console.log(e)
+    res.send({
+      success: false
+    })
+  }
+})
+
+app.post('/exams', async (req, res) => {
+  try {
+    let token = req.headers.token;
+    let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    if (!decoded.data) throw new Error("No token")
+    if (!req.body.exams) throw new Error("No exams specified")
+    await db
+      .replaceInto('exams')
+      .values(req.body.views.map(e => {
+        return {
+          creator: decoded.data, 
+          id: e.id, time: e.time,
+          title: e.title, description: e.description,
+          course: e.course
+        }
+      }))
+      .execute()
+    res.send({
+      success: true
+    })
+  } catch(e) {
+    console.log(e)
+    res.send({
+      success: false
+    })
+  }
+})
+
+app.delete('/exams', async (req, res) => {
+  try {
+    let token = req.headers.token;
+    let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    if (!decoded.data) throw new Error("No token")
+    await db
+      .deleteFrom('exams')
+      .where('id', '=', req.body.id)
       .where('creator', '=', decoded.data)
       .execute()
     res.send({

@@ -13,7 +13,8 @@ export interface Database {
     assignments: assignments,
     projects: projects,
     events: events,
-    notes: notes
+    notes: notes,
+    exams: exams
   }
 
 interface users {
@@ -39,6 +40,7 @@ interface views {
 }
 
 interface viewelements {
+    creator: bigint,
     hostid: bigint,
     id: bigint,
     type: string,
@@ -52,7 +54,7 @@ interface viewelements {
 
 interface courses {
     creator: bigint,
-    courseid: bigint,
+    id: bigint,
     title: string,
     time: Date,
     duration: string,
@@ -61,14 +63,24 @@ interface courses {
     repeatingTime: string
 }
 
+interface exams {
+    creator: bigint,
+    id: bigint,
+    title: string,
+    description: string,
+    time: Date,
+    course: bigint
+}
+
 interface assignments {
     creator: bigint,
+    id: bigint,
     course: bigint,
     status: number,
     type: string,
     priority: number,
     duedate: Date,
-    grade: string
+    grade: string,
 }
 
 interface projects {
@@ -83,7 +95,8 @@ interface projects {
 
 interface events {
     creator: bigint,
-    eventTime: Date,
+    id: bigint,
+    time: Date,
     title: string,
     description: string
 }
