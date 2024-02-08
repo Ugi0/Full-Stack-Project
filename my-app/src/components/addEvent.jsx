@@ -5,7 +5,6 @@ import Modal from '@mui/material/Modal';
 import { titleInput, descriptionInput } from "./inputElements";
 import { IconButton } from "@mui/material";
 import SaveIcon from '@mui/icons-material/Save';
-import { getRandomID } from "../api/getRandomID";
 
 function AddEvent(props){
     const now = new Date();
@@ -20,17 +19,16 @@ function AddEvent(props){
     const [repeating, setRepeating] = useState(false);
     const [repeatingTime, setRepeatingTime] = useState("");
 
-    //const [chosenCourse, setChosenCourse] = useState(""); //Not in use yet
+    const [chosenCourse, setChosenCourse] = useState("");
+    const [priority, setPriority] = useState("");
     useEffect(() => {
-        setTime(props.time)
-    }, [props.time])
-
-    const handleModalClose = () => {
-        props.onClose();
-    }
-    const handleCheckBoxClick = () => {
-        setRepeating(!repeating)
-    }
+        setTime(props.time);
+        setDuration('1:00');
+        setType('0');
+        setRepeating(false);
+        setRepeatingTime('');
+        setChosenCourse([...props.userData.courses.values()].map((item) => item.id)[0])
+    }, [props.time, props.userData.courses])
     const renderTime = () => {
         return (
             <input
@@ -49,8 +47,16 @@ function AddEvent(props){
     
     const renderCourseOptions = () => {
         return (
-            <select id="chosenCourse">
-
+            <select id="chosenCourse" onChange={(e) =>  setChosenCourse(e.target.value) }>
+                {[...props.userData.courses.keys()]
+                    .map((e) => props.userData.courses.get(e))
+                    .map((e,i) => {
+                    return (
+                        <option value={e.id} key={i}>
+                            {e.title}
+                        </option>
+                    )
+                })}
             </select>
         )
     }
@@ -72,7 +78,7 @@ function AddEvent(props){
                         </div>
                         <div>
                             <p>Repeating</p>
-                            <input type="checkbox" checked={repeating} id="repeating" onChange={handleCheckBoxClick} />
+                            <input type="checkbox" checked={repeating} id="repeating" onChange={() => setRepeating(!repeating)} />
                         </div>
                         {renderRepeating()}
                     </div>
@@ -118,6 +124,27 @@ function AddEvent(props){
                         </div>
                     </div>
                 )
+            case '4':
+                return (
+                    <div className="options">
+                        {titleInput(setTitle)}
+                        {descriptionInput(setDescription)}
+                        <div>
+                            <p>Time</p>
+                            {renderTime()}
+                        </div>
+                        <div>
+                            <p>Priority</p>
+                            <select id="priority" onChange={(e) =>  setPriority(e.target.value)}>
+                                <option selected value="Lowest">Lowest</option>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                                <option value="Urgent">Urgent</option>
+                            </select>
+                        </div>
+                    </div>
+                )
             default:
                 return (<></>)
         }
@@ -136,14 +163,56 @@ function AddEvent(props){
                 </div>
             </div>)
         }
-
     }
-    
+    const handleAdd = () => {
+        switch (type) {
+            case '0':
+                props.setters.addCourse({
+                    title: title, description: description,
+                    time: time, duration: duration,
+                    repeating: repeating, repeatingTime: repeatingTime
+                });
+                break;
+            case '1':
+                props.setters.addAssignment({
+                    course: chosenCourse,
+                    title: title, description: description,
+                    status: "Not started",
+                    priority: priority, time: time,
+                    grade: ""
+                })
+                break;
+            case '2':
+                props.setters.addExam({
+                    title: title, description: description,
+                    time: time, course: chosenCourse
+                })
+                break;
+            case '3':
+                props.setters.addEvent({
+                    time: time,
+                    title: title, description: description
+                })
+                break;
+            case '4':
+                props.setters.addProject({
+                    status: "Not started",
+                    title: title,
+                    description: description,
+                    type: type,
+                    priority: priority,
+                    time: time
+                })
+                break;
+            default:
+                return
+        }
+    }
     return (
         <div>
             <Modal
                 open={props.open ?? false}
-                onClose={handleModalClose}
+                onClose={props.onClose}
             >
                 <Box className="modalContent">
                     <div>
@@ -153,17 +222,13 @@ function AddEvent(props){
                             <option value="1">Assignment</option>
                             <option value="2">Exam</option>
                             <option value="3">Event</option>
+                            <option value="4">Project</option>
                         </select>
                     </div>
                     {renderOptions()}
                     <IconButton sx={{position:'absolute', top:0, right:0}} onClick={() => {
-                        props.setCourses([...props.courses, {
-                            title: title, description: description,
-                            time: time, duration: duration,
-                            repeating: repeating, repeatingTime: repeatingTime,
-                            courseid: getRandomID()
-                        }]);
-                        handleModalClose();
+                        handleAdd();
+                        props.onClose();
                         }}>
                         <SaveIcon />
                     </IconButton>

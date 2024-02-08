@@ -67,14 +67,14 @@ function CalendarModal(props) {
         return <BorderColorIcon/>
     }
     const handleSaveClick = () => {
+        if (modalEditable) {
+            props.saveEvent(newtitle, newdescription, newtime, newduration);
+        }
         setModalEditable(!modalEditable)
         setNewdescription(props.description);
         setNewduration(props.duration);
         setNewtitle(props.title);
         setNewtime(props.time)
-        if (modalEditable) {
-            props.saveEvent(newtitle, newdescription, newtime, newduration);
-        }
     }
     const handleDeleteClick = () => {
         setModalEditable(false);
@@ -86,10 +86,10 @@ function CalendarModal(props) {
             onClose={props.handleClose}
         >
             <Box className="modalContent">
-                <Typography id="newtitle" variant="h6" component="h2" suppressContentEditableWarning={true} contentEditable={modalEditable} onInput={(e)  => setNewtitle(e.target.value)}>
+                <Typography id="newtitle" variant="h6" component="h2" suppressContentEditableWarning={true} contentEditable={modalEditable} onInput={(e)  => setNewtitle(e.target.innerText) }>
                     {props.title}
                 </Typography>
-                <Typography id="newdescription" sx={{ mt: 2 }} suppressContentEditableWarning={true} contentEditable={modalEditable} onInput={(e) => setNewdescription(e.target.value)}>
+                <Typography id="newdescription" sx={{ mt: 2 }} suppressContentEditableWarning={true} contentEditable={modalEditable} onInput={(e) => setNewdescription(e.target.innerText)}>
                     {props.description}
                 </Typography>
                 Time:

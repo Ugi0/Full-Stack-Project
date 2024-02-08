@@ -5,6 +5,7 @@ import AddIcon from '@mui/icons-material/Add';
 import ClickableCalendarEvent from "../clickableCalendarEvent";
 import AddEvent from "../addEvent";
 import CalendarModal from "../calendarModal";
+import { getEventCount, getAsList } from "../inputElements";
 
 function WeekCalendar(props) {
     //Modal can't be closed if it's placed inside the Rnd
@@ -30,7 +31,7 @@ function WeekCalendar(props) {
     const [time, setTime] = useState("");
     const [duration, setDuration] = useState("");
     const [description, setDescription] = useState("");
-    const [courseid, setCourseid] = useState(0);
+    const [id, setID] = useState(0);
 
       //Create a handler so the children can update the open state
     const handler = (values) => {
@@ -41,29 +42,28 @@ function WeekCalendar(props) {
         setTime(values.time);
         setDuration(values.duration);
         setDescription(values.description);
-        setCourseid(values.courseid);
+        setID(values.id);
       }
     const deleteEvent = () => {
         setOpenCalendarModal(false)
-        props.deleteCourse(courseid);
+        props.deleters.deleteCourse(id);
     }
     const saveEvent = (newTitle, newDescription, newTime, newDuration) => {
-        let newCourses = props.courses;
         chHandler({
             title: newTitle,
             description: newDescription,
             duration: newDuration,
             time: newTime
         })
-        const oldItem = newCourses.find((item) => item.courseid === courseid)
-        newCourses = newCourses.filter((item) => item.courseid !== courseid).concat([{
+        const oldItem = props.userData.courses.get(id);
+        const newCourse = {
             title: newTitle, time: newTime, 
             duration: newDuration, description: newDescription, 
             repeating: oldItem.repeating, repeatingTime: oldItem.repeatingTime,
-            courseid: courseid
-        }]);
+            id: oldItem.id
+        };
         setOpenCalendarModal(false);
-        props.setCourses(newCourses);
+        props.setters.addCourse(newCourse);
     }
 
     const handleCloseAddModal = () => {
@@ -102,27 +102,31 @@ function WeekCalendar(props) {
                             <div className="dayName">
                                 <b>{day}</b>
                                 <p className="eventNumber">
-                                    {props.courses.filter((item) => {
-                                        return cur.toDateString() === new Date(item.time.split("T")[0]).toDateString()
-                                    }).length} 
+                                    {getEventCount(props.userData, cur.toDateString())}
                                 </p>
                             </div>
-                            { props.courses.filter((item) => {
-                                    return cur.toDateString() === new Date(item.time.split("T")[0]).toDateString();
-                                })
-                                .sort((a,b) => new Date(a.time) - new Date(b.time))
-                                .map((item, index) => {
+                            { getAsList(props.userData.courses, cur.toDateString())
+                                .map((item) => {
                                     return (
                                         <ClickableCalendarEvent
-                                            title = {item.title}
-                                            description = {item.description}
-                                            time = {item.time}
-                                            courseid = {item.courseid}
+                                            title = {item.title} description = {item.description}
+                                            time = {item.time} id = {item.id}
                                             duration = {item.duration}
-                                            handler = {handler}
-                                            key = {index}
-                                            draw = {["title", "icon", "times"]}
-                                            sx = {{padding: '5px 0 5px 0'}}
+                                            handler = {handler} key = {item.id}
+                                            draw = {["title", "icon", "time", "duration"]} sx = {{padding: '5px 0 5px 0'}}
+                                        />
+                                    )
+                                })
+                            }
+                            { getAsList(props.userData.assignments, cur.toDateString())
+                                .map((item) => {
+                                    return (
+                                        <ClickableCalendarEvent
+                                            title = {item.title} description = {item.description}
+                                            time = {item.time} id = {item.id}
+                                            duration = {"1:00"}
+                                            handler = {handler} key = {item.id}
+                                            draw = {["title", "icon", "time"]} sx = {{padding: '5px 0 5px 0'}}
                                         />
                                     )
                                 })
@@ -146,9 +150,9 @@ function WeekCalendar(props) {
                 handleClose = {handleClose}
                 title = {title} description = {description}
                 time={time} open={openCalendarModal} duration={duration}
-                courseid={courseid}
+                id={id}
             />
-            <AddEvent courses={props.courses} time={time} setCourses={props.setCourses} open={openAddEventModal} onClose={handleCloseAddModal}/>
+            <AddEvent userData={props.userData} setters={props.setters} time={time} open={openAddEventModal} onClose={handleCloseAddModal}/>
         </>
     )
 }

@@ -20,29 +20,28 @@ function MonthCalendar(props) {
     const [time, setTime] = useState("");
     const [duration, setDuration] = useState("");
     const [description, setDescription] = useState("");
-    const [courseid, setCourseid] = useState(0);
+    const [id, setID] = useState(0);
 
     const deleteEvent = () => {
         setOpenCalendarModal(false)
-        props.deleteCourse(courseid);
+        props.deleters.deleteCourse(id);
     }
     const saveEvent = (newTitle, newDescription, newTime, newDuration) => {
-        let newCourses = props.courses;
         chHandler({
             title: newTitle,
             description: newDescription,
             duration: newDuration,
             time: newTime
         })
-        const oldItem = newCourses.find((item) => item.courseid === courseid)
-        newCourses = newCourses.filter((item) => item.courseid !== courseid).concat([{
+        const oldItem = props.userData.courses.get(id);
+        const newCourse = {
             title: newTitle, time: newTime, 
             duration: newDuration, description: newDescription, 
             repeating: oldItem.repeating, repeatingTime: oldItem.repeatingTime,
-            courseid: courseid
-        }]);
+            id: oldItem.id
+        };
         setOpenCalendarModal(false);
-        props.setCourses(newCourses);
+        props.setters.addCourse(newCourse);
     }
 
     const handler = (values) => {
@@ -53,7 +52,7 @@ function MonthCalendar(props) {
         setTime(values.time);
         setDuration(values.duration);
         setDescription(values.description);
-        setCourseid(values.courseid);
+        setID(values.id);
       }
 
     const handleClose = () => {
@@ -93,7 +92,8 @@ function MonthCalendar(props) {
                                 <div className={today.toDateString()===firstDayOfTheMonth.toDateString() ? 'currentDateNumber' : "dateNumber"} >
                                     {firstDayOfTheMonth.getDate()}
                                 </div>
-                                {props.courses
+                                {[...props.userData.courses.keys()]
+                                .map((e) => props.userData.courses.get(e))
                                 .filter((item) => new Date(item.time).toDateString() === firstDayOfTheMonth.toDateString())
                                 .sort((a,b) => new Date(a.time) - new Date(b.time))
                                 .map((item,index) => {
@@ -101,10 +101,10 @@ function MonthCalendar(props) {
                                         title = {item.title}
                                         description = {item.description}
                                         time = {item.time}
-                                        courseid = {item.courseid}
+                                        id = {item.id}
                                         duration = {item.duration}
                                         handler = {handler}
-                                        key = {index}
+                                        key = {item.id}
                                         draw = {["title"]}
                                         sx = {{'overflow': 'hidden', 'whiteSpace': 'nowrap'}}
                                     />
@@ -119,7 +119,7 @@ function MonthCalendar(props) {
                 handleClose = {handleClose}
                 title = {title} description = {description}
                 time={time} open={openCalendarModal} duration={duration}
-                courseid={courseid}
+                id={id}
             />
         </>
     )

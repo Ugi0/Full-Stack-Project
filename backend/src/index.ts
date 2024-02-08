@@ -3,6 +3,8 @@ import { assertEquals } from "./utils/assert";
 import { db } from "./DBConnection";
 import { getRandomID } from "./utils/getRandomID";
 import { validateUserData } from "./utils/validateUserData";
+import { fromStatus, toStatus } from "./utils/toStatus";
+import { fromPriority, toPriority } from "./utils/toPriority";
 
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -78,7 +80,6 @@ app.post('/login', async (req, res) => {
           ]))
         .execute()
       if (result) {
-          console.log({salt: result[0].passwordSalt})
           res.send({salt: result[0].passwordSalt})
       } else {
           throw new Error("Could not find in the database.");
@@ -106,7 +107,7 @@ app.post('/login', async (req, res) => {
           // Wrong password
         }
   } catch(e) {
-    console.log(e)
+    console.log(e.message)
     res.send({
       success: false
     })
@@ -118,11 +119,16 @@ app.get('/verifyToken', async (req, res) => {
     let token = req.headers.token;
     let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
     if (!decoded.data) throw new Error("No token")
+    let result = await db
+        .selectFrom('users')
+        .select('id')
+        .where('id', '=', decoded.data)
+        .execute()
+    if (result.length === 0) throw new Error("User not found")
     res.send({
       success: true
     })
   } catch(e) {
-    console.log(e)
     res.send({
       success: false
     })
@@ -134,24 +140,24 @@ app.post('/courses', async (req, res) => {
     let token = req.headers.token;
     let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
     if (!decoded.data) throw new Error("No token")
-    if (!req.body.courses) throw new Error("No courses")
+    if (!req.body.course) throw new Error("No course")
+    const newID = req.body.course.id ?? getRandomID();
     await db
       .replaceInto('courses')
-      .values(req.body.courses.map(e => {
-        return {
+      .values({
           creator: decoded.data,
-          id: e.courseid,
-          title: e.title, description: e.description,
-          time: e.time, duration: e.duration,
-          repeating: e.repeating, repeatingTime: e.repeatingTime
-        }
-      }))
+          id: newID,
+          title: req.body.course.title, description: req.body.course.description,
+          time: req.body.course.time, duration: req.body.course.duration,
+          repeating: req.body.course.repeating, repeatingTime: req.body.course.repeatingTime
+        })
       .execute()
     res.send({
-      success: true
+      success: true,
+      id: newID.toString()
     })
   } catch(e) {
-    console.log(e)
+    console.log(e.message)
     res.send({
       success: false
     })
@@ -175,12 +181,12 @@ app.get('/courses', async (req, res) => {
           title: e.title, time: e.time, 
           duration: e.duration, description: e.description, repeating: e.repeating, 
           repeatingTime: e.repeatingTime, 
-          courseid: e.id
+          id: e.id
         }
       })
     })
   } catch(e) {
-    console.log(e)
+    console.log(e.message)
     res.send({
       success: false
     })
@@ -192,17 +198,18 @@ app.delete('/courses', async (req, res) => {
     let token = req.headers.token;
     let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
     if (!decoded.data) throw new Error("No token")
-    if (!req.body.courseid) throw new Error("No courseid specified")
-    await db
+    if (!req.body.id) throw new Error("No id specified")
+    let result = await db
       .deleteFrom('courses')
-      .where('id', '=', req.body.courseid)
+      .where('id', '=', req.body.id)
       .where('creator', '=', decoded.data)
       .execute()
+    if (result[0].numDeletedRows === 0n) throw new Error("No course with that id found")
     res.send({
       success: true
     })
   } catch(e) {
-    console.log(e)
+    console.log(e.message)
     res.send({
       success: false
     })
@@ -228,7 +235,7 @@ app.get('/views', async (req, res) => {
       })
     })
   } catch(e) {
-    console.log(e)
+    console.log(e.message)
     res.send({
       success: false
     })
@@ -240,20 +247,20 @@ app.post('/views', async (req, res) => {
     let token = req.headers.token;
     let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
     if (!decoded.data) throw new Error("No token")
-    if (!req.body.views) throw new Error("No views")
+    if (!req.body.view) throw new Error("No views")
+    const newID = req.body.view.id ?? getRandomID();
     await db
       .replaceInto('views')
-      .values(req.body.views.map(e => {
-        return {
-          id: e.id, title: e.title, creator: decoded.data
-        }
-      }))
+      .values({
+          id: newID, title: req.body.view.title, 
+          creator: decoded.data
+        })
       .execute()
     res.send({
       success: true
     })
   } catch(e) {
-    console.log(e)
+    console.log(e.message)
     res.send({
       success: false
     })
@@ -275,7 +282,7 @@ app.delete('/views', async (req, res) => {
       success: true
     })
   } catch(e) {
-    console.log(e)
+    console.log(e.message)
     res.send({
       success: false
     })
@@ -306,7 +313,7 @@ app.get('/viewelements', async (req, res) => {
     })
   } catch(e) {
     if (e.sqlMessage === "Unknown column 'creator' in 'where clause'") return;
-    console.log(e)
+    console.log(e.message)
     res.send({
       success: false
     })
@@ -318,25 +325,24 @@ app.post('/viewelements', async (req, res) => {
     let token = req.headers.token;
     let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
     if (!decoded.data) throw new Error("No token")
-    if (req.body.elements) throw new Error("No elements specified")
+    if (req.body.viewelement) throw new Error("No elements specified")
+    const newID = req.body.viewelement.id ?? getRandomID();
     await db
       .replaceInto('viewelements')
-      .values(req.body.views.map(e => {
-        return {
+      .values({
           creator: decoded.data, 
-          hostid: e.hostid, id: e.id,
-          type: e.type,
-          width: e.width, height: e.height,
-          x: e.x, y: e.y,
-          data: e.data
-        }
-      }))
+          hostid: req.body.viewelement.hostid, id: newID,
+          type: req.body.viewelement.type,
+          width: req.body.viewelement.width, height: req.body.viewelement.height,
+          x: req.body.viewelement.x, y: req.body.viewelement.y,
+          data: req.body.viewelement.data
+        })
       .execute()
     res.send({
       success: true
     })
   } catch(e) {
-    console.log(e)
+    console.log(e.message)
     res.send({
       success: false
     })
@@ -357,7 +363,7 @@ app.delete('/viewelements', async (req, res) => {
       success: true
     })
   } catch(e) {
-    console.log(e)
+    console.log(e.message)
     res.send({
       success: false
     })
@@ -378,15 +384,17 @@ app.get('/assignments', async (req, res) => {
       success: true,
       data: result.map((e,i) => {
         return {
-          id: e.id, course: e.id,
-          status: e.status, type: e.type,
-          priority: e.priority, duedate: e.duedate,
+          id: e.id, course: e.course,
+          title: e.title,
+          description: e.description,
+          status: toStatus(e.status),
+          time: e.time,
           grade: e.grade
         }
       })
     })
   } catch(e) {
-    console.log(e)
+    console.log(e.message)
     res.send({
       success: false
     })
@@ -398,25 +406,25 @@ app.post('/assignments', async (req, res) => {
     let token = req.headers.token;
     let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
     if (!decoded.data) throw new Error("No token")
-    if (!req.body.assignments) throw new Error("No assignments specified")
+    if (!req.body.assignment) throw new Error("No assignments specified")
+    const newID = req.body.assignment.id ?? getRandomID();
     await db
-      .replaceInto('viewelements')
-      .values(req.body.views.map(e => {
-        return {
-          creator: decoded.data, 
-          hostid: e.hostid, id: e.id,
-          type: e.type,
-          width: e.width, height: e.height,
-          x: e.x, y: e.y,
-          data: e.data
-        }
-      }))
+      .replaceInto('assignments')
+      .values({
+          creator: decoded.data,
+          title: req.body.assignment.title,
+          description: req.body.assignment.description,
+          id: newID, course: req.body.assignment.course,
+          status: fromStatus(req.body.assignment.status),
+          time: req.body.assignment.time,
+          grade: req.body.assignment.grade
+        })
       .execute()
     res.send({
       success: true
     })
   } catch(e) {
-    console.log(e)
+    console.log(e.message)
     res.send({
       success: false
     })
@@ -437,7 +445,7 @@ app.delete('/assignments', async (req, res) => {
       success: true
     })
   } catch(e) {
-    console.log(e)
+    console.log(e.message)
     res.send({
       success: false
     })
@@ -464,7 +472,7 @@ app.get('/events', async (req, res) => {
       })
     })
   } catch(e) {
-    console.log(e)
+    console.log(e.message)
     res.send({
       success: false
     })
@@ -476,24 +484,23 @@ app.post('/events', async (req, res) => {
     let token = req.headers.token;
     let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
     if (!decoded.data) throw new Error("No token")
-    if (!req.body.events) throw new Error("No events specified")
+    if (!req.body.event) throw new Error("No events specified")
+    const newID = req.body.event.id ?? getRandomID();
     await db
       .replaceInto('events')
-      .values(req.body.views.map(e => {
-        return {
-          creator: decoded.data, 
-          id: e.id,
-          hostid: e.hostid,
-          icon: e.icon, title: e.title,
-          body: e.body, checked: e.checked
-        }
-      }))
+      .values({
+          creator: decoded.data,
+          id: newID,
+          time: req.body.event.time,
+          title: req.body.event.title,
+          description: req.body.event.description
+        })
       .execute()
     res.send({
       success: true
     })
   } catch(e) {
-    console.log(e)
+    console.log(e.message)
     res.send({
       success: false
     })
@@ -514,7 +521,7 @@ app.delete('/events', async (req, res) => {
       success: true
     })
   } catch(e) {
-    console.log(e)
+    console.log(e.message)
     res.send({
       success: false
     })
@@ -542,7 +549,7 @@ app.get('/exams', async (req, res) => {
       })
     })
   } catch(e) {
-    console.log(e)
+    console.log(e.message)
     res.send({
       success: false
     })
@@ -554,23 +561,22 @@ app.post('/exams', async (req, res) => {
     let token = req.headers.token;
     let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
     if (!decoded.data) throw new Error("No token")
-    if (!req.body.exams) throw new Error("No exams specified")
+    if (!req.body.exam) throw new Error("No exams specified")
+    const newID = req.body.exam.id ?? getRandomID();
     await db
       .replaceInto('exams')
-      .values(req.body.views.map(e => {
-        return {
+      .values({
           creator: decoded.data, 
-          id: e.id, time: e.time,
-          title: e.title, description: e.description,
-          course: e.course
-        }
-      }))
+          id: newID, time: req.body.exam.time,
+          title: req.body.exam.title, description: req.body.exam.description,
+          course: req.body.exam.course
+        })
       .execute()
     res.send({
       success: true
     })
   } catch(e) {
-    console.log(e)
+    console.log(e.message)
     res.send({
       success: false
     })
@@ -591,7 +597,7 @@ app.delete('/exams', async (req, res) => {
       success: true
     })
   } catch(e) {
-    console.log(e)
+    console.log(e.message)
     res.send({
       success: false
     })

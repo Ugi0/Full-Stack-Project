@@ -6,7 +6,6 @@ dotenv.config()
 
 export interface Database {
     users: users,
-    userTokens: userTokens,
     views: views,
     viewelements: viewelements,
     courses: courses,
@@ -26,17 +25,10 @@ interface users {
     passwordSalt: string
 }
 
-interface userTokens {
-    userId: bigint,
-    token: string,
-    expiryTime: Date
-}
-
 interface views {
     id: bigint,
     creator: bigint,
-    title: string,
-    themecolor: string
+    title: string
 }
 
 interface viewelements {
@@ -48,7 +40,6 @@ interface viewelements {
     height: number,
     x: number,
     y: number,
-    orderNumber: number,
     data: string
 }
 
@@ -73,24 +64,22 @@ interface exams {
 }
 
 interface assignments {
+    title: string,
+    description: string,
     creator: bigint,
     id: bigint,
     course: bigint,
     status: number,
-    type: string,
-    priority: number,
-    duedate: Date,
+    time: Date,
     grade: string,
 }
 
 interface projects {
     creator: bigint,
-    course: bigint,
     status: number,
     type: string,
     priority: number,
-    duedate: Date,
-    data: string
+    time: Date,
 }
 
 interface events {
