@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import '../../styles/monthCalendar.css'
 import { Rnd } from "react-rnd";
-import CalendarModal from "../calendarModal";
+import EventModal from "../eventModal";
 import ClickableCalendarEvent from "../clickableCalendarEvent";
 
 function MonthCalendar(props) {
@@ -13,7 +13,7 @@ function MonthCalendar(props) {
     const [width, setWidth] = useState(props.sx.width);
     const [height, setHeight] = useState(props.sx.height);
 
-    const [openCalendarModal, setOpenCalendarModal] = useState(false);
+    const [openEventModal, setOpenEventModal] = useState(false);
 
     const [chHandler, setChHandler] = useState();
     const [title, setTitle] = useState("");
@@ -23,7 +23,7 @@ function MonthCalendar(props) {
     const [id, setID] = useState(0);
 
     const deleteEvent = () => {
-        setOpenCalendarModal(false)
+        setOpenEventModal(false)
         props.deleters.deleteCourse(id);
     }
     const saveEvent = (newTitle, newDescription, newTime, newDuration) => {
@@ -40,14 +40,14 @@ function MonthCalendar(props) {
             repeating: oldItem.repeating, repeatingTime: oldItem.repeatingTime,
             id: oldItem.id
         };
-        setOpenCalendarModal(false);
+        setOpenEventModal(false);
         props.setters.addCourse(newCourse);
     }
 
     const handler = (values) => {
         if (props.editable) return;
         setChHandler(() => values.chHandler);
-        setOpenCalendarModal(true);
+        setOpenEventModal(true);
         setTitle(values.title);
         setTime(values.time);
         setDuration(values.duration);
@@ -56,7 +56,7 @@ function MonthCalendar(props) {
       }
 
     const handleClose = () => {
-        setOpenCalendarModal(false);
+        setOpenEventModal(false);
     }
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
     const today = new Date();
@@ -98,11 +98,7 @@ function MonthCalendar(props) {
                                 .sort((a,b) => new Date(a.time) - new Date(b.time))
                                 .map((item,index) => {
                                     return <ClickableCalendarEvent
-                                        title = {item.title}
-                                        description = {item.description}
-                                        time = {item.time}
-                                        id = {item.id}
-                                        duration = {item.duration}
+                                        item = {item}
                                         handler = {handler}
                                         key = {item.id}
                                         draw = {["title"]}
@@ -114,11 +110,11 @@ function MonthCalendar(props) {
                     })}
                 </div>
             </Rnd>
-            <CalendarModal 
+            <EventModal 
                 saveEvent={saveEvent} deleteEvent ={deleteEvent}
                 handleClose = {handleClose}
                 title = {title} description = {description}
-                time={time} open={openCalendarModal} duration={duration}
+                time={time} open={openEventModal} duration={duration}
                 id={id}
             />
         </>

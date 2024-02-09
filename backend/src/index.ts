@@ -129,9 +129,15 @@ app.get('/verifyToken', async (req, res) => {
       success: true
     })
   } catch(e) {
-    res.send({
-      success: false
-    })
+    if (e.message === 'connect ETIMEDOUT') {
+      res.send({
+        success: 'TIMEDOUT'
+      })
+    } else {
+      res.send({
+        success: false
+      })
+    }
   }
 })
 
@@ -142,15 +148,18 @@ app.post('/courses', async (req, res) => {
     if (!decoded.data) throw new Error("No token")
     if (!req.body.course) throw new Error("No course")
     const newID = req.body.course.id ?? getRandomID();
+    const data = req.body.course;
+    const course = {
+      creator: decoded.data,
+      id: newID,
+      title: data.title, description: data.description,
+      time: data.time, duration: data.duration,
+      repeating: data.repeating, repeatingTime: data.repeatingTime
+    }
     await db
-      .replaceInto('courses')
-      .values({
-          creator: decoded.data,
-          id: newID,
-          title: req.body.course.title, description: req.body.course.description,
-          time: req.body.course.time, duration: req.body.course.duration,
-          repeating: req.body.course.repeating, repeatingTime: req.body.course.repeatingTime
-        })
+      .insertInto('courses')
+      .values(course)
+      .onDuplicateKeyUpdate(course)
       .execute()
     res.send({
       success: true,
@@ -249,15 +258,19 @@ app.post('/views', async (req, res) => {
     if (!decoded.data) throw new Error("No token")
     if (!req.body.view) throw new Error("No views")
     const newID = req.body.view.id ?? getRandomID();
+    const data = req.body.view;
+    const view = {
+      id: newID, title: data.title, 
+      creator: decoded.data
+    }
     await db
-      .replaceInto('views')
-      .values({
-          id: newID, title: req.body.view.title, 
-          creator: decoded.data
-        })
+      .insertInto('views')
+      .values(view)
+      .onDuplicateKeyUpdate(view)
       .execute()
     res.send({
-      success: true
+      success: true,
+      id: newID.toString()
     })
   } catch(e) {
     console.log(e.message)
@@ -327,19 +340,23 @@ app.post('/viewelements', async (req, res) => {
     if (!decoded.data) throw new Error("No token")
     if (req.body.viewelement) throw new Error("No elements specified")
     const newID = req.body.viewelement.id ?? getRandomID();
+    const data = req.body.viewelement;
+    const viewelement = {
+      creator: decoded.data, 
+      hostid: data.hostid, id: newID,
+      type: data.type,
+      width: data.width, height: data.height,
+      x: data.x, y: data.y,
+      data: data.data
+    }
     await db
-      .replaceInto('viewelements')
-      .values({
-          creator: decoded.data, 
-          hostid: req.body.viewelement.hostid, id: newID,
-          type: req.body.viewelement.type,
-          width: req.body.viewelement.width, height: req.body.viewelement.height,
-          x: req.body.viewelement.x, y: req.body.viewelement.y,
-          data: req.body.viewelement.data
-        })
+      .insertInto('viewelements')
+      .values(viewelement)
+      .onDuplicateKeyUpdate(viewelement)
       .execute()
     res.send({
-      success: true
+      success: true,
+      id: newID.toString()
     })
   } catch(e) {
     console.log(e.message)
@@ -385,6 +402,7 @@ app.get('/assignments', async (req, res) => {
       data: result.map((e,i) => {
         return {
           id: e.id, course: e.course,
+          priority: toPriority(e.priority),
           title: e.title,
           description: e.description,
           status: toStatus(e.status),
@@ -408,20 +426,25 @@ app.post('/assignments', async (req, res) => {
     if (!decoded.data) throw new Error("No token")
     if (!req.body.assignment) throw new Error("No assignments specified")
     const newID = req.body.assignment.id ?? getRandomID();
+    const data = req.body.assignment;
+    const assignment = {
+      creator: decoded.data,
+      priority: fromPriority(data.priority),
+      title: data.title,
+      description: data.description,
+      id: newID, course: data.course,
+      status: fromStatus(data.status),
+      time: data.time,
+      grade: data.grade
+    }
     await db
-      .replaceInto('assignments')
-      .values({
-          creator: decoded.data,
-          title: req.body.assignment.title,
-          description: req.body.assignment.description,
-          id: newID, course: req.body.assignment.course,
-          status: fromStatus(req.body.assignment.status),
-          time: req.body.assignment.time,
-          grade: req.body.assignment.grade
-        })
+      .insertInto('assignments')
+      .values(assignment)
+      .onDuplicateKeyUpdate(assignment)
       .execute()
     res.send({
-      success: true
+      success: true,
+      id: newID.toString()
     })
   } catch(e) {
     console.log(e.message)
@@ -486,18 +509,22 @@ app.post('/events', async (req, res) => {
     if (!decoded.data) throw new Error("No token")
     if (!req.body.event) throw new Error("No events specified")
     const newID = req.body.event.id ?? getRandomID();
+    const data = req.body.event;
+    const event = {
+      creator: decoded.data,
+      id: newID,
+      time: data.time,
+      title: data.title,
+      description: data.description
+    }
     await db
-      .replaceInto('events')
-      .values({
-          creator: decoded.data,
-          id: newID,
-          time: req.body.event.time,
-          title: req.body.event.title,
-          description: req.body.event.description
-        })
+      .insertInto('events')
+      .values(event)
+      .onDuplicateKeyUpdate(event)
       .execute()
     res.send({
-      success: true
+      success: true,
+      id: newID.toString()
     })
   } catch(e) {
     console.log(e.message)
@@ -563,17 +590,21 @@ app.post('/exams', async (req, res) => {
     if (!decoded.data) throw new Error("No token")
     if (!req.body.exam) throw new Error("No exams specified")
     const newID = req.body.exam.id ?? getRandomID();
+    const data = req.body.exam;
+    const exam = {
+      creator: decoded.data, 
+      id: newID, time: data.time,
+      title: data.title, description: data.description,
+      course: data.course
+    }
     await db
-      .replaceInto('exams')
-      .values({
-          creator: decoded.data, 
-          id: newID, time: req.body.exam.time,
-          title: req.body.exam.title, description: req.body.exam.description,
-          course: req.body.exam.course
-        })
+      .insertInto('exams')
+      .values(exam)
+      .onDuplicateKeyUpdate(exam)
       .execute()
     res.send({
-      success: true
+      success: true,
+      id: newID.toString()
     })
   } catch(e) {
     console.log(e.message)
@@ -590,6 +621,90 @@ app.delete('/exams', async (req, res) => {
     if (!decoded.data) throw new Error("No token")
     await db
       .deleteFrom('exams')
+      .where('id', '=', req.body.id)
+      .where('creator', '=', decoded.data)
+      .execute()
+    res.send({
+      success: true
+    })
+  } catch(e) {
+    console.log(e.message)
+    res.send({
+      success: false
+    })
+  }
+})
+
+app.get('/projects', async (req, res) => {
+  try {
+    let token = req.headers.token;
+    let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    if (!decoded.data) throw new Error("No token")
+    let result = await db
+      .selectFrom('projects')
+      .selectAll()
+      .where('creator', '=', decoded.data)
+      .execute()
+    res.send({
+      success: true,
+      data: result.map((e,i) => {
+        return {
+          id: e.id, time: e.time,
+          status: toStatus(e.status), type: e.type,
+          priority: toPriority(e.priority),
+          title: e.title, description: e.description,
+          data: e.data
+        }
+      })
+    })
+  } catch(e) {
+    console.log(e.message)
+    res.send({
+      success: false
+    })
+  }
+})
+
+app.post('/projects', async (req, res) => {
+  try {
+    let token = req.headers.token;
+    let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    if (!decoded.data) throw new Error("No token")
+    if (!req.body.project) throw new Error("No project specified")
+    const newID = req.body.project.id ?? getRandomID();
+    const data = req.body.project;
+    const project = {
+      creator: decoded.data,
+      id: newID, time: data.time,
+      status: fromStatus(data.status), type: data.type,
+      priority: fromPriority(data.priority),
+      title: data.title, description: data.description,
+      data: data.data
+    }
+    await db
+      .insertInto('projects')
+      .values(project)
+      .onDuplicateKeyUpdate(project)
+      .execute()
+    res.send({
+      success: true,
+      id: newID.toString()
+    })
+  } catch(e) {
+    console.log(e.message)
+    res.send({
+      success: false
+    })
+  }
+})
+
+app.delete('/projects', async (req, res) => {
+  try {
+    let token = req.headers.token;
+    let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
+    if (!decoded.data) throw new Error("No token")
+    await db
+      .deleteFrom('projects')
       .where('id', '=', req.body.id)
       .where('creator', '=', decoded.data)
       .execute()

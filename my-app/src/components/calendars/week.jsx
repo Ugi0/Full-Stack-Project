@@ -4,7 +4,7 @@ import { Rnd } from "react-rnd";
 import AddIcon from '@mui/icons-material/Add';
 import ClickableCalendarEvent from "../clickableCalendarEvent";
 import AddEvent from "../addEvent";
-import CalendarModal from "../calendarModal";
+import EventModal from "../eventModal";
 import { getEventCount, getAsList } from "../inputElements";
 
 function WeekCalendar(props) {
@@ -23,47 +23,33 @@ function WeekCalendar(props) {
     const [width, setWidth] = useState(props.sx.width);
     const [height, setHeight] = useState(props.sx.height);
 
-    const [openCalendarModal, setOpenCalendarModal] = useState(false);
+    const [openEventModal, setOpenEventModal] = useState(false);
     const [openAddEventModal, setOpenAddEventModal] = useState(false);
 
     const [chHandler, setChHandler] = useState();
-    const [title, setTitle] = useState("");
     const [time, setTime] = useState("");
-    const [duration, setDuration] = useState("");
-    const [description, setDescription] = useState("");
-    const [id, setID] = useState(0);
+
+    const [selectedItem, setSelectedItem] = useState({});
 
       //Create a handler so the children can update the open state
     const handler = (values) => {
         if (props.editable) return;
         setChHandler(() => values.chHandler);
-        setOpenCalendarModal(true);
-        setTitle(values.title);
-        setTime(values.time);
-        setDuration(values.duration);
-        setDescription(values.description);
-        setID(values.id);
+        setOpenEventModal(true);
+        setSelectedItem(values.item)
       }
     const deleteEvent = () => {
-        setOpenCalendarModal(false)
-        props.deleters.deleteCourse(id);
+        setOpenEventModal(false)
+        props.handleDelete(selectedItem.type, selectedItem.id);
     }
-    const saveEvent = (newTitle, newDescription, newTime, newDuration) => {
-        chHandler({
-            title: newTitle,
-            description: newDescription,
-            duration: newDuration,
-            time: newTime
-        })
-        const oldItem = props.userData.courses.get(id);
-        const newCourse = {
-            title: newTitle, time: newTime, 
-            duration: newDuration, description: newDescription, 
-            repeating: oldItem.repeating, repeatingTime: oldItem.repeatingTime,
-            id: oldItem.id
-        };
-        setOpenCalendarModal(false);
-        props.setters.addCourse(newCourse);
+    const saveEvent = (values) => {
+        chHandler(values)
+        const newItem = selectedItem;
+        for (const [key, value] of Object.entries(values)) {
+            newItem[key] = value;
+          }
+        setOpenEventModal(false);
+        props.handleAdd(selectedItem.type,newItem)
     }
 
     const handleCloseAddModal = () => {
@@ -74,7 +60,7 @@ function WeekCalendar(props) {
         setOpenAddEventModal(true);
     }
     const handleClose = () => {
-        setOpenCalendarModal(false);
+        setOpenEventModal(false);
     }
     const today = new Date();
     let cur = new Date();
@@ -109,8 +95,7 @@ function WeekCalendar(props) {
                                 .map((item) => {
                                     return (
                                         <ClickableCalendarEvent
-                                            title = {item.title} description = {item.description}
-                                            time = {item.time} id = {item.id}
+                                            item = {item}
                                             duration = {item.duration}
                                             handler = {handler} key = {item.id}
                                             draw = {["title", "icon", "time", "duration"]} sx = {{padding: '5px 0 5px 0'}}
@@ -122,11 +107,9 @@ function WeekCalendar(props) {
                                 .map((item) => {
                                     return (
                                         <ClickableCalendarEvent
-                                            title = {item.title} description = {item.description}
-                                            time = {item.time} id = {item.id}
-                                            duration = {"1:00"}
+                                            item = {item}
                                             handler = {handler} key = {item.id}
-                                            draw = {["title", "icon", "time"]} sx = {{padding: '5px 0 5px 0'}}
+                                            draw = {["title", "icon"]} sx = {{padding: '5px 0 5px 0'}}
                                         />
                                     )
                                 })
@@ -145,14 +128,13 @@ function WeekCalendar(props) {
                 }
             </div>
         </Rnd>
-            <CalendarModal 
+            <EventModal 
                 saveEvent={saveEvent} deleteEvent ={deleteEvent}
                 handleClose = {handleClose}
-                title = {title} description = {description}
-                time={time} open={openCalendarModal} duration={duration}
-                id={id}
+                open = {openEventModal}
+                item = {selectedItem}
             />
-            <AddEvent userData={props.userData} setters={props.setters} time={time} open={openAddEventModal} onClose={handleCloseAddModal}/>
+            <AddEvent userData={props.userData} handleAdd={props.handleAdd} time={time} open={openAddEventModal} onClose={handleCloseAddModal}/>
         </>
     )
 }

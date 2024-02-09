@@ -20,7 +20,7 @@ function AddEvent(props){
     const [repeatingTime, setRepeatingTime] = useState("");
 
     const [chosenCourse, setChosenCourse] = useState("");
-    const [priority, setPriority] = useState("");
+    const [priority, setPriority] = useState("Lowest");
     useEffect(() => {
         setTime(props.time);
         setDuration('1:00');
@@ -28,7 +28,7 @@ function AddEvent(props){
         setRepeating(false);
         setRepeatingTime('');
         setChosenCourse([...props.userData.courses.values()].map((item) => item.id)[0])
-    }, [props.time, props.userData.courses])
+    }, [props.time, props.userData.courses, props.open])
     const renderTime = () => {
         return (
             <input
@@ -47,7 +47,7 @@ function AddEvent(props){
     
     const renderCourseOptions = () => {
         return (
-            <select id="chosenCourse" onChange={(e) =>  setChosenCourse(e.target.value) }>
+            <select id="chosenCourse" onChange={(e) => setChosenCourse(e.target.value) }>
                 {[...props.userData.courses.keys()]
                     .map((e) => props.userData.courses.get(e))
                     .map((e,i) => {
@@ -96,6 +96,16 @@ function AddEvent(props){
                             <p>Deadline</p>
                             {renderTime()}
                         </div>
+                        <div>
+                            <p>Priority</p>
+                            <select id="priority" onChange={(e) =>  setPriority(e.target.value)}>
+                                <option value="Lowest">Lowest</option>
+                                <option value="Low">Low</option>
+                                <option value="Medium">Medium</option>
+                                <option value="High">High</option>
+                                <option value="Urgent">Urgent</option>
+                            </select>
+                        </div>
                     </div>
                 )
             case '2':
@@ -136,7 +146,7 @@ function AddEvent(props){
                         <div>
                             <p>Priority</p>
                             <select id="priority" onChange={(e) =>  setPriority(e.target.value)}>
-                                <option selected value="Lowest">Lowest</option>
+                                <option value="Lowest">Lowest</option>
                                 <option value="Low">Low</option>
                                 <option value="Medium">Medium</option>
                                 <option value="High">High</option>
@@ -167,14 +177,14 @@ function AddEvent(props){
     const handleAdd = () => {
         switch (type) {
             case '0':
-                props.setters.addCourse({
+                props.handleAdd("courses",{
                     title: title, description: description,
                     time: time, duration: duration,
                     repeating: repeating, repeatingTime: repeatingTime
                 });
                 break;
             case '1':
-                props.setters.addAssignment({
+                props.handleAdd("assignments",{
                     course: chosenCourse,
                     title: title, description: description,
                     status: "Not started",
@@ -183,19 +193,19 @@ function AddEvent(props){
                 })
                 break;
             case '2':
-                props.setters.addExam({
+                props.handleAdd("exams",{
                     title: title, description: description,
                     time: time, course: chosenCourse
                 })
                 break;
             case '3':
-                props.setters.addEvent({
+                props.handleAdd("events",{
                     time: time,
                     title: title, description: description
                 })
                 break;
             case '4':
-                props.setters.addProject({
+                props.handleAdd("projects",{
                     status: "Not started",
                     title: title,
                     description: description,

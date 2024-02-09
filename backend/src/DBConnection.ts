@@ -69,6 +69,7 @@ interface assignments {
     creator: bigint,
     id: bigint,
     course: bigint,
+    priority: number,
     status: number,
     time: Date,
     grade: string,
@@ -76,10 +77,14 @@ interface assignments {
 
 interface projects {
     creator: bigint,
+    title: string,
+    description: string,
+    id: bigint,
     status: number,
     type: string,
     priority: number,
     time: Date,
+    data: string
 }
 
 interface events {

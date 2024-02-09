@@ -79,45 +79,51 @@ function App() {
       fetchData('assignments'),
       fetchData('events'),
       fetchData('courses')]).then(e => {
+        if (e === undefined || e[0] === undefined) return;
         let newMap = new Map();
         for (let view of e[0]) {
+          view.type = "view";
           newMap.set(view.id, view);
         }
         setViews(newMap)
         newMap = new Map();
         for (let viewelement of e[1]) {
+          viewelement.type = "viewelements";
           newMap.set(viewelement.id, viewelement);
         }
         setViewElements(newMap)
         newMap = new Map();
         for (let assignment of e[2]) {
+          assignment.type = "assignments";
           newMap.set(assignment.id, assignment);
         }
         setAssignmentsMapState(newMap)
         newMap = new Map();
         for (let event of e[3]) {
+          event.type = "events";
           newMap.set(event.id, event);
         }
         setEventsMapState(newMap)
         newMap = new Map();
         for (let course of e[4]) {
+          course.type = "courses";
           newMap.set(course.id, course);
         }
         setCourseMapState(newMap);
-      })
-    const cookies = new Cookies();
-    if (!cookies.get('token')) {
-      setRedirect(true);
-      setRedirectLocation("login")
-    } else {
-      checkToken(cookies.get('token')).then(res => {
-        if (res === false) {
-          cookies.remove('token');
+        const cookies = new Cookies();
+        if (!cookies.get('token')) {
           setRedirect(true);
-          setRedirectLocation("login");
-        }
+          setRedirectLocation("login")
+        } else {
+          checkToken(cookies.get('token')).then(res => {
+            if (res === false) {
+              cookies.remove('token');
+              setRedirect(true);
+              setRedirectLocation("login");
+            }
       });
     }
+      })
   }, [])
   
   const handleDelete = async (table, id) => {
@@ -129,13 +135,13 @@ function App() {
           id: id
       })
     };
-    let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/courses`, requestOptions)
+    let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/${table}`, requestOptions)
             .catch(error => {
               console.log("2",error)
             });
     if (response) {
       let responseJSON = await response.json()
-      if (responseJSON.success) { //Update the courses in view only if sending to database succeeded
+      if (responseJSON.success) { //Update the data in view only if sending to database succeeded
         deleteData(table, id)
       }
     }
@@ -154,16 +160,13 @@ function App() {
             console.log("3",error)
             });
     let responseJSON = await response.json()
-    if (responseJSON.success) { //Update the courses in view only if sending to database succeeded
+    if (responseJSON.success) { //Update the data in view only if sending to database succeeded
       if ('id' in data) {
         deleteData(table, data.id)
       }
       updateData(table, responseJSON.id, {...data, id: responseJSON.id});
     }
   }
-
-  //TODO Write handlers for all data
-  //TODO Change set handlers so they only accept one course and id is given in the backend
 
   const toggleEditable = () => {
     setEditable(!editable);
@@ -172,25 +175,10 @@ function App() {
     return <Navigate to={redirectLocation} />;
   }
 
-  let setters = {
-    addCourse: (e) => handleAdd('courses', e),
-    addAssignment: (e) => handleAdd('assignments', e),
-    addEvent: (e) => handleAdd('events', e),
-    addExam: (e) => handleAdd('exams', e),
-    addProject: (e) => handleAdd('projects', e),
-  };
-  let deleters = {
-    deleteCourse: (e) => handleDelete('courses', e),
-    deleteAssingment: (e) => handleDelete('assignments', e),
-    deleteEvent: (e) => handleDelete('events', e),
-    deleteExam: (e) => handleDelete('exams', e),
-    deleteProject: (e) => handleDelete('projects', e)
-  };
-
   return (
     <div className="App">
-      <MonthCalendar editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} setters={setters} deleters={deleters} sx={{x: 10, y:10, width: 815, height: 400}} />
-      <WeekCalendar editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} setters={setters} deleters={deleters} sx={{x: 10, y:500, width: 815, height: 200}} />
+      <MonthCalendar handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{x: 10, y:10, width: 815, height: 400}} />
+      <WeekCalendar handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{x: 10, y:500, width: 815, height: 200}} />
       <AddComponents editable={editable} toggleEditable={toggleEditable} />
     </div>
   );
