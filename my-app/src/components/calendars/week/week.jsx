@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import '../../styles/weekCalendar.css'
+import './weekCalendar.css'
 import { Rnd } from "react-rnd";
 import AddIcon from '@mui/icons-material/Add';
-import ClickableCalendarEvent from "../clickableCalendarEvent";
-import AddEvent from "../addEvent";
-import EventModal from "../eventModal";
-import { getEventCount, getAsList } from "../inputElements";
+import ClickableCalendarEvent from "../../clickableCalendarEvent/clickableCalendarEvent";
+import AddEvent from "../../addEvent/addEvent";
+import EventModal from "../../eventModal/eventModal";
+import { getEventCount, getAsList } from "../../inputElements";
 
 function WeekCalendar(props) {
     //Modal can't be closed if it's placed inside the Rnd

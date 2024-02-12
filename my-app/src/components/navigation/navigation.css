@@ -1,0 +1,55 @@
+
+.Navigation {
+    padding: 0 25px 0 25px;
+    width: fit-content;
+    max-width: 200px;
+    font-family: 'MonofontoRG';
+    display: flex;
+    flex-direction: column;
+    height: 60vh;
+    border-right: 1px red solid;
+}
+
+.Navigation p {
+    margin: 0;
+    color: green;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+.NavigationItem {
+    padding: 0 25px 0 25px;
+    display: flex;
+    flex-direction: row;
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.NavigationItem:hover {
+    cursor: pointer;
+    background-color: #00800060;
+}
+
+.NavigationItem p {
+    color: whitesmoke;
+    font-style: normal;
+    margin: 5px 5px 5px 10px;
+}
+
+.addView {
+    padding: 0 25px 0 25px;
+    margin: 10px 5px 5px 10px;
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.addView:hover {
+    cursor: pointer;
+    background-color: #00800060;
+}

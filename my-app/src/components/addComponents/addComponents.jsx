@@ -3,7 +3,7 @@ import IconButton from '@mui/material/Button';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import SaveIcon from '@mui/icons-material/Save';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import '../styles/addComponents.css'
+import './addComponents.css'
 
 function AddComponents(props) {
     const [addIconClicked, setAddIconClicked] = useState(false);

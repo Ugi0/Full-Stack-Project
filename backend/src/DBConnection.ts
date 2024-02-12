@@ -17,7 +17,7 @@ export interface Database {
   }
 
 interface users {
-    id: bigint
+    id: string
     email: string
     username: string
     created_at: Date
@@ -26,15 +26,15 @@ interface users {
 }
 
 interface views {
-    id: bigint,
-    creator: bigint,
+    id: string,
+    creator: string,
     title: string
 }
 
 interface viewelements {
-    creator: bigint,
-    hostid: bigint,
-    id: bigint,
+    creator: string,
+    hostid: string,
+    id: string,
     type: string,
     width: number,
     height: number,
@@ -44,8 +44,8 @@ interface viewelements {
 }
 
 interface courses {
-    creator: bigint,
-    id: bigint,
+    creator: string,
+    id: string,
     title: string,
     time: Date,
     duration: string,
@@ -55,20 +55,20 @@ interface courses {
 }
 
 interface exams {
-    creator: bigint,
-    id: bigint,
+    creator: string,
+    id: string,
     title: string,
     description: string,
     time: Date,
-    course: bigint
+    course: string
 }
 
 interface assignments {
     title: string,
     description: string,
-    creator: bigint,
-    id: bigint,
-    course: bigint,
+    creator: string,
+    id: string,
+    course: string,
     priority: number,
     status: number,
     time: Date,
@@ -76,10 +76,10 @@ interface assignments {
 }
 
 interface projects {
-    creator: bigint,
+    creator: string,
     title: string,
     description: string,
-    id: bigint,
+    id: string,
     status: number,
     type: string,
     priority: number,
@@ -88,16 +88,16 @@ interface projects {
 }
 
 interface events {
-    creator: bigint,
-    id: bigint,
+    creator: string,
+    id: string,
     time: Date,
     title: string,
     description: string
 }
 
 interface notes {
-    hostid: bigint,
-    creator: bigint,
+    hostid: string,
+    creator: string,
     icon: string,
     title: string,
     body: string,

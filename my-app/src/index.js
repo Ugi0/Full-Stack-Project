@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import { BrowserRouter, Route, Routes} from "react-router-dom";
-import App from './views/App';
 import reportWebVitals from './reportWebVitals';
-import Login from './views/Login';
-import Register from './views/Register';
+import Register from './views/Register/Register';
+import Login from './views/Login/Login';
+import App from './views/App/App';
 
 import './fonts/StudyAlone.woff';
 import './fonts/Wall Notes.woff'

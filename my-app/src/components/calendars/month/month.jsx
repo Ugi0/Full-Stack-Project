@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import '../../styles/monthCalendar.css'
+import './monthCalendar.css'
 import { Rnd } from "react-rnd";
-import EventModal from "../eventModal";
-import ClickableCalendarEvent from "../clickableCalendarEvent";
+import EventModal from "../../eventModal/eventModal";
+import ClickableCalendarEvent from "../../clickableCalendarEvent/clickableCalendarEvent";
 
 function MonthCalendar(props) {
     const gridHeight = 5;

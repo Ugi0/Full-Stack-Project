@@ -286,11 +286,12 @@ app.delete('/views', async (req, res) => {
     let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
     if (!decoded.data) throw new Error("No token")
     if (!req.body.id) throw new Error("No id for view specified")
-    await db
+    let result = await db
       .deleteFrom('views')
       .where('id', '=', req.body.id)
       .where('creator', '=', decoded.data)
       .execute()
+    if (result[0].numDeletedRows === 0n) throw new Error("No course with that id found")
     res.send({
       success: true
     })
@@ -371,11 +372,12 @@ app.delete('/viewelements', async (req, res) => {
     let token = req.headers.token;
     let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
     if (!decoded.data) throw new Error("No token")
-    await db
+    let result = await db
       .deleteFrom('viewelements')
       .where('id', '=', req.body.id)
       .where('creator', '=', decoded.data)
       .execute()
+    if (result[0].numDeletedRows === 0n) throw new Error("No course with that id found")
     res.send({
       success: true
     })
@@ -459,11 +461,12 @@ app.delete('/assignments', async (req, res) => {
     let token = req.headers.token;
     let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
     if (!decoded.data) throw new Error("No token")
-    await db
+    let result = await db
       .deleteFrom('assignments')
       .where('id', '=', req.body.id)
       .where('creator', '=', decoded.data)
       .execute()
+    if (result[0].numDeletedRows === 0n) throw new Error("No course with that id found")
     res.send({
       success: true
     })
@@ -539,11 +542,12 @@ app.delete('/events', async (req, res) => {
     let token = req.headers.token;
     let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
     if (!decoded.data) throw new Error("No token")
-    await db
+    let result = await db
       .deleteFrom('events')
       .where('id', '=', req.body.id)
       .where('creator', '=', decoded.data)
       .execute()
+    if (result[0].numDeletedRows === 0n) throw new Error("No course with that id found")
     res.send({
       success: true
     })
@@ -619,11 +623,12 @@ app.delete('/exams', async (req, res) => {
     let token = req.headers.token;
     let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
     if (!decoded.data) throw new Error("No token")
-    await db
+    let result = await db
       .deleteFrom('exams')
       .where('id', '=', req.body.id)
       .where('creator', '=', decoded.data)
       .execute()
+    if (result[0].numDeletedRows === 0n) throw new Error("No course with that id found")
     res.send({
       success: true
     })
@@ -703,11 +708,12 @@ app.delete('/projects', async (req, res) => {
     let token = req.headers.token;
     let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
     if (!decoded.data) throw new Error("No token")
-    await db
+    let result = await db
       .deleteFrom('projects')
       .where('id', '=', req.body.id)
       .where('creator', '=', decoded.data)
       .execute()
+    if (result[0].numDeletedRows === 0n) throw new Error("No course with that id found")
     res.send({
       success: true
     })

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import '../styles/clickableCalendarEvent.css'
-import '../styles/clickableModal.css'
+import './clickableCalendarEvent.css'
+import './clickableModal.css'
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 
 function ClickableCalendarEvent(props) {

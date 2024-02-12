@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import '../styles/Login.css'
-import myConfig from '../config.js';
+import '../Login/Login.css'
+import myConfig from '../../config.js';
 import Cookies from 'universal-cookie';
 import bcrypt from 'bcryptjs'
 import { Navigate } from 'react-router-dom';

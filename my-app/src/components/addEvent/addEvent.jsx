@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import '../styles/addEvent.css'
+import './addEvent.css'
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { titleInput, descriptionInput } from "./inputElements";
+import { titleInput, descriptionInput } from "../inputElements";
 import { IconButton } from "@mui/material";
 import SaveIcon from '@mui/icons-material/Save';
 

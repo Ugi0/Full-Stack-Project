@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import '../styles/App.css';
-import myConfig from '../config.js';
-import WeekCalendar from '../components/calendars/week';
-import MonthCalendar from '../components/calendars/month.jsx';
-import AddComponents from '../components/addComponents';
+import './App.css';
+import myConfig from '../../config.js';
+import WeekCalendar from '../../components/calendars/week/week.jsx';
+import MonthCalendar from '../../components/calendars/month/month.jsx';
+import AddComponents from '../../components/addComponents/addComponents.jsx';
+import Navigation from '../../components/navigation/Navigation.jsx';
+import Banner from '../../components/banner/banner.jsx';
+import Divider from '../../components/divider/Divider.jsx';
 import Cookies from 'universal-cookie';
 import { Navigate } from 'react-router-dom';
-import { fetchData } from '../api/fetchers.js';
-import { checkToken } from '../api/checkToken.js';
+import { fetchData } from '../../api/fetchers.js';
+import { checkToken } from '../../api/checkToken.js';
 
 function App() {
   // Make so App contains all of the information that is needed to render
@@ -17,8 +20,9 @@ function App() {
   const [redirect, setRedirect] = useState(false);
   const [redirectLocation, setRedirectLocation] = useState("");
 
-  const [views, setViews] = useState([]);
+  const [views, setViews] = useState(new Map());
   const [viewElements, setViewElements] = useState([]);
+  const [selectedView, setSelectedView] = useState(0);
 
   const [courses, setCourseMapState] = useState(new Map());
   const [events, setEventsMapState] = useState(new Map());
@@ -38,6 +42,8 @@ function App() {
         return exams
       case 'projects':
         return projects
+      case 'views':
+        return views
       default:
         throw new Error("Not allowed")
     }
@@ -55,6 +61,8 @@ function App() {
         return setExamsMapState
       case 'projects':
         return setProjectsMapState
+      case 'views':
+        return setViews
       default:
         throw new Error("Not allowed")
     }
@@ -127,6 +135,7 @@ function App() {
   }, [])
   
   const handleDelete = async (table, id) => {
+    console.log(id)
     const cookies = new Cookies();
     const requestOptions = {
       method: 'DELETE',
@@ -177,8 +186,11 @@ function App() {
 
   return (
     <div className="App">
-      <MonthCalendar handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{x: 10, y:10, width: 815, height: 400}} />
-      <WeekCalendar handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{x: 10, y:500, width: 815, height: 200}} />
+      <Banner />
+      <Divider views={views} selectedView={selectedView} />
+      <Navigation views={views} editable={editable} setSelectedView={(id) => setSelectedView(id)} addView={(title) => handleAdd("views", {title: title})} deleteView={(id) => handleDelete("views", id)}/>
+      {/*<MonthCalendar handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{x: 10, y:10, width: 815, height: 400}} />*/}
+      {/*<WeekCalendar handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{x: 10, y:500, width: 815, height: 200}} />*/}
       <AddComponents editable={editable} toggleEditable={toggleEditable} />
     </div>
   );
