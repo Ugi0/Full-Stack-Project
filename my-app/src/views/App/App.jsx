@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, createRef, useRef } from 'react';
 import './App.css';
 import myConfig from '../../config.js';
 import WeekCalendar from '../../components/calendars/week/week.jsx';
@@ -11,6 +11,9 @@ import Cookies from 'universal-cookie';
 import { Navigate } from 'react-router-dom';
 import { fetchData } from '../../api/fetchers.js';
 import { checkToken } from '../../api/checkToken.js';
+import { fetchViewData } from '../../api/fetchViewData.js';
+import { saveViewElement } from '../../api/saveViewElement.js';
+import { defaultViewSize } from '../../api/defaultViewSizes.js';
 
 function App() {
   // Make so App contains all of the information that is needed to render
@@ -21,7 +24,7 @@ function App() {
   const [redirectLocation, setRedirectLocation] = useState("");
 
   const [views, setViews] = useState(new Map());
-  const [viewElements, setViewElements] = useState([]);
+  const [viewElements, setViewElements] = useState(new Map());
   const [selectedView, setSelectedView] = useState(0);
 
   const [courses, setCourseMapState] = useState(new Map());
@@ -29,6 +32,18 @@ function App() {
   const [assignments, setAssignmentsMapState] = useState(new Map());
   const [exams, setExamsMapState] = useState(new Map());
   const [projects, setProjectsMapState] = useState(new Map());
+
+  const chooseComponent = (item, index) => {
+    //TODO Read child's state so position and size can be updated to database
+    switch (item.type) {
+      case 0:
+        if (item.size === 2) return <MonthCalendar key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        if (item.size === 1) return <WeekCalendar key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        break;
+      default:
+        throw new Error("Not a valid component")
+    }
+  }
 
   const dataMap = (e) => {
     switch (e) {
@@ -83,7 +98,6 @@ function App() {
     // Fetch user data from backend and display if succeeded on first render
     Promise.all([
       fetchData('views'),
-      fetchData('viewelements'),
       fetchData('assignments'),
       fetchData('events'),
       fetchData('courses')]).then(e => {
@@ -95,30 +109,28 @@ function App() {
         }
         setViews(newMap)
         newMap = new Map();
-        for (let viewelement of e[1]) {
-          viewelement.type = "viewelements";
-          newMap.set(viewelement.id, viewelement);
-        }
-        setViewElements(newMap)
-        newMap = new Map();
-        for (let assignment of e[2]) {
+        for (let assignment of e[1]) {
           assignment.type = "assignments";
           newMap.set(assignment.id, assignment);
         }
         setAssignmentsMapState(newMap)
         newMap = new Map();
-        for (let event of e[3]) {
+        for (let event of e[2]) {
           event.type = "events";
           newMap.set(event.id, event);
         }
         setEventsMapState(newMap)
         newMap = new Map();
-        for (let course of e[4]) {
+        for (let course of e[3]) {
           course.type = "courses";
           newMap.set(course.id, course);
         }
         setCourseMapState(newMap);
         const cookies = new Cookies();
+        let result = fetchViewData(0, cookies.get('token'))
+        newMap = new Map();
+        newMap.set(0, result.data ?? [])
+        setViewElements(newMap)
         if (!cookies.get('token')) {
           setRedirect(true);
           setRedirectLocation("login")
@@ -135,7 +147,6 @@ function App() {
   }, [])
   
   const handleDelete = async (table, id) => {
-    console.log(id)
     const cookies = new Cookies();
     const requestOptions = {
       method: 'DELETE',
@@ -178,20 +189,53 @@ function App() {
   }
 
   const toggleEditable = () => {
+    if (editable) { //Save current view state
+      for (let item of viewElements.get(selectedView)) {
+        console.log(item.x)
+      }
+      console.log("close")
+    }
     setEditable(!editable);
   }
   if (redirect) {
     return <Navigate to={redirectLocation} />;
   }
 
+  const updateSelectedView = (id) => {
+    if (!viewElements.has(id)) {
+      const cookies = new Cookies();
+      fetchViewData(id, cookies.get('token')).then(result => {
+        if (result.success) {
+          let newMap = new Map(viewElements);
+          newMap.set(id, result.data)
+          setViewElements(newMap)
+        }
+      })
+    }
+    setSelectedView(id);
+  }
+
+  const addDataToElement = (item) => {
+    const [width, height] = defaultViewSize(item.type, item.size);
+    item['hostid'] = selectedView;
+    item['width'] = width;
+    item['height'] = height;
+    item['x'] = 250;
+    item['y'] = 200;
+    const result = saveViewElement(item);
+    //if (result.success) {
+    //  updateData("viewelements", result.id, item)
+    //}
+  }
   return (
     <div className="App">
       <Banner />
       <Divider views={views} selectedView={selectedView} />
-      <Navigation views={views} editable={editable} setSelectedView={(id) => setSelectedView(id)} addView={(title) => handleAdd("views", {title: title})} deleteView={(id) => handleDelete("views", id)}/>
-      {/*<MonthCalendar handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{x: 10, y:10, width: 815, height: 400}} />*/}
-      {/*<WeekCalendar handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{x: 10, y:500, width: 815, height: 200}} />*/}
-      <AddComponents editable={editable} toggleEditable={toggleEditable} />
+      <Navigation views={views} editable={editable} setSelectedView={updateSelectedView} addView={(title) => handleAdd("views", {title: title})} deleteView={(id) => handleDelete("views", id)}/>
+      {(viewElements.get(selectedView) ?? []).map((e,i) => {
+        return chooseComponent(e,i)
+      })}
+      <AddComponents editable={editable} toggleEditable={toggleEditable} saveViewElement={addDataToElement} />
     </div>
   );
 }

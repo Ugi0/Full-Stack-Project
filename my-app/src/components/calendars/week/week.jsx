@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef, useImperativeHandle, useRef } from "react";
 import './weekCalendar.css'
 import { Rnd } from "react-rnd";
 import AddIcon from '@mui/icons-material/Add';
@@ -12,11 +12,6 @@ function WeekCalendar(props) {
     //Therefore, the modal will be located in the WeekCalendar parent
     //and opened through the children
 
-    /*static getDerivedStateFromProps(props, state) {
-        state.editable = props.editable;
-        state.courses = props.courses;
-        return state;
-    }*/
     const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
     const [x, setX] = useState(props.sx.x);
     const [y, setY] = useState(props.sx.y);

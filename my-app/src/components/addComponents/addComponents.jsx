@@ -11,7 +11,7 @@ function AddComponents(props) {
     const menuItems = [
         {
             title: 'Calendar',
-            subItems: ['Full calendar', 'Smaller calendar']
+            subItems: ['Day calendar','Week calendar', 'Month calendar']
         },
         {
             title: 'Projects',
@@ -81,7 +81,14 @@ function AddComponents(props) {
     }
 
     const handleItemClick = (type, typeIndex) => {
-        console.log(type, typeIndex)
+        const item = {
+            type: type,
+            size: typeIndex,
+            data: ""
+        }
+        props.saveViewElement(item);
+        setAddIconClicked(false);
+        setSecondMenuItem(-1);
     }
 
     return (
