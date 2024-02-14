@@ -40,6 +40,7 @@ app.post('/register', async (req, res) => {
       })
       .executeTakeFirstOrThrow()
     if (result.numInsertedOrUpdatedRows === 1n) {
+      initialize(newId);
       res.send({
         success: true,
         token: jwt.sign({
@@ -726,3 +727,17 @@ app.delete('/projects', async (req, res) => {
     })
   }
 })
+
+const initialize = (id) => {
+  const createMainPage = async () => {
+    const view = {
+      id: getRandomID(), title: "_mainpage", 
+      creator: id
+    }
+    await db
+      .insertInto('views')
+      .values(view)
+      .execute()
+  }
+  createMainPage();
+}

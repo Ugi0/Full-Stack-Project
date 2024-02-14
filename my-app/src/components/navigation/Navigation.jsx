@@ -6,8 +6,6 @@ import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from "@mui/material";
 
-const mainpage = {id: 0, title: "Main Page", themecolor: "#2b583e"}
-
 function Navigation(props) {
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState("");
@@ -21,24 +19,30 @@ function Navigation(props) {
             )
         }
     }
-    const renderDelete = (id) => {
+    const renderDelete = (item) => {
         if (props.editable) {
-            if (id === 0) return
+            if (item.title !== '_mainpage') return
             return (
-                <DeleteIcon id="delete" onClick={() => { props.setSelectedView(0); props.deleteView(id); }}/>
+                <DeleteIcon id="delete" onClick={() => { props.deleteView(item.id); }}/>
             )
         }
+    }
+    const renderItemTitle = (item) => {
+        if (item.title === '_mainpage') {
+            return "Main Page"
+        }
+        return item.title
     }
     return (
         <>
             <div className="Navigation">
                 <p>Navigation</p>
                 <div className="NavigationList">
-                    {[mainpage].concat([...props.views.values()]).map((e,i) => {
+                    {[...props.views.values()].map((e,i) => {
                         return (
                             <div className="NavigationItem" key={i} onClick={(event) => { if (!event.target.outerHTML.includes('path')) props.setSelectedView(e.id) }} >
-                                <p> {e.title} </p>
-                                {renderDelete(e.id)}
+                                <p> {renderItemTitle(e)} </p>
+                                {renderDelete(e)}
                             </div>
                         )
                     })}

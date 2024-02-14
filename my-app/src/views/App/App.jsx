@@ -34,11 +34,10 @@ function App() {
   const [projects, setProjectsMapState] = useState(new Map());
 
   const chooseComponent = (item, index) => {
-    //TODO Read child's state so position and size can be updated to database
     switch (item.type) {
       case 0:
-        if (item.size === 2) return <MonthCalendar key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
-        if (item.size === 1) return <WeekCalendar key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        if (item.size === 2) return <MonthCalendar innerRef={item.ref} key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        if (item.size === 1) return <WeekCalendar innerRef={item.ref} key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
         break;
       default:
         throw new Error("Not a valid component")
@@ -105,6 +104,9 @@ function App() {
         let newMap = new Map();
         for (let view of e[0]) {
           view.type = "view";
+          if (view.title === '_mainpage') {
+            updateSelectedView(view.id)
+          }
           newMap.set(view.id, view);
         }
         setViews(newMap)
@@ -191,9 +193,17 @@ function App() {
   const toggleEditable = () => {
     if (editable) { //Save current view state
       for (let item of viewElements.get(selectedView)) {
-        console.log(item.x)
+        const cur = item.ref.current();
+        item.x = cur.x;
+        item.y = cur.y;
+        if (typeof cur.width === 'string') {
+          cur.width = cur.width.slice(0,-2);
+          cur.height = cur.height.slice(0,-2);
+        }
+        item.width = cur.width;
+        item.height = cur.height;
+        saveViewElement(item);
       }
-      console.log("close")
     }
     setEditable(!editable);
   }
@@ -206,6 +216,10 @@ function App() {
       const cookies = new Cookies();
       fetchViewData(id, cookies.get('token')).then(result => {
         if (result.success) {
+          for (let element of result.data) {
+            const ref = createRef(); //Create a ref for each viewElement in current view
+            element['ref'] = ref;
+          }
           let newMap = new Map(viewElements);
           newMap.set(id, result.data)
           setViewElements(newMap)
@@ -222,10 +236,18 @@ function App() {
     item['height'] = height;
     item['x'] = 250;
     item['y'] = 200;
-    const result = saveViewElement(item);
-    //if (result.success) {
-    //  updateData("viewelements", result.id, item)
-    //}
+    saveViewElement(item).then(result => {
+      if (result.success) {
+        let newMap = new Map(viewElements);
+        let newData = viewElements.get(selectedView);
+        item.hostid = selectedView;
+        item.id = result.id;
+        item.ref = createRef();
+        newData.push(item);
+        newMap.set(selectedView, newData);
+        setViewElements(newMap);
+      }
+    });
   }
   return (
     <div className="App">

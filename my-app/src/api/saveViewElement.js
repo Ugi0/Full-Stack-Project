@@ -10,7 +10,6 @@ export async function saveViewElement(item) {
         viewelement: item
       })
     };
-    console.log()
     let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/viewelements`, requestOptions)
             .catch(error => {
                 console.log("1",error)
