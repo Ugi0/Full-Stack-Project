@@ -14,11 +14,19 @@ function AddComponents(props) {
             subItems: ['Day calendar','Week calendar', 'Month calendar']
         },
         {
+            title: 'Courses',
+            subItems: []
+        },
+        {
+            title: 'Exams',
+            subItems: []
+        },
+        {
             title: 'Projects',
             subItems: []
         },
         {
-            title: 'Courses',
+            title: 'Note',
             subItems: []
         }
     ]

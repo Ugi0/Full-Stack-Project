@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import './monthCalendar.css'
 import { Rnd } from "react-rnd";
-import EventModal from "../../eventModal/eventModal";
-import ClickableCalendarEvent from "../../clickableCalendarEvent/clickableCalendarEvent";
+import EventModal from "../../../components/eventModal/eventModal";
+import ClickableCalendarEvent from "../../../components/clickableCalendarEvent/clickableCalendarEvent";
+import DeleteComponentButton from "../../../components/deleteComponentButton/deleteComponentButton";
 
 function MonthCalendar(props) {
     const gridHeight = 5;
@@ -16,46 +17,31 @@ function MonthCalendar(props) {
     const [openEventModal, setOpenEventModal] = useState(false);
 
     const [chHandler, setChHandler] = useState();
-    const [title, setTitle] = useState("");
-    const [time, setTime] = useState("");
-    const [duration, setDuration] = useState("");
-    const [description, setDescription] = useState("");
-    const [id, setID] = useState(0);
+
+    const [selectedItem, setSelectedItem] = useState({});
 
     // A function that the parent can use to get the current position and size
     props.innerRef.current = () => { return {x :x, y:y, width: width, height: height} }
 
     const deleteEvent = () => {
         setOpenEventModal(false)
-        props.deleters.deleteCourse(id);
+        props.handleDelete(selectedItem.type, selectedItem.id);
     }
-    const saveEvent = (newTitle, newDescription, newTime, newDuration) => {
-        chHandler({
-            title: newTitle,
-            description: newDescription,
-            duration: newDuration,
-            time: newTime
-        })
-        const oldItem = props.userData.courses.get(id);
-        const newCourse = {
-            title: newTitle, time: newTime, 
-            duration: newDuration, description: newDescription, 
-            repeating: oldItem.repeating, repeatingTime: oldItem.repeatingTime,
-            id: oldItem.id
-        };
+    const saveEvent = (values) => {
+        chHandler(values)
+        const newItem = selectedItem;
+        for (const [key, value] of Object.entries(values)) {
+            newItem[key] = value;
+          }
         setOpenEventModal(false);
-        props.setters.addCourse(newCourse);
+        props.handleAdd(selectedItem.type,newItem)
     }
 
     const handler = (values) => {
         if (props.editable) return;
         setChHandler(() => values.chHandler);
         setOpenEventModal(true);
-        setTitle(values.title);
-        setTime(values.time);
-        setDuration(values.duration);
-        setDescription(values.description);
-        setID(values.id);
+        setSelectedItem(values.item)
       }
 
     const handleClose = () => {
@@ -88,6 +74,7 @@ function MonthCalendar(props) {
                     <div className="monthDayName">Sat</div>
                     <div className="monthDayName">Sun</div>
                 </div>
+                <DeleteComponentButton editable={props.editable} id={props.id} deleteComponent={props.deleteComponent} />
                 <div className="monthCalendarRoot" >
                     {[...Array(gridHeight*gridWidth)].map((_,i) => {
                         firstDayOfTheMonth.setDate(firstDayOfTheMonth.getDate() + 1);
@@ -117,9 +104,8 @@ function MonthCalendar(props) {
             <EventModal 
                 saveEvent={saveEvent} deleteEvent ={deleteEvent}
                 handleClose = {handleClose}
-                title = {title} description = {description}
-                time={time} open={openEventModal} duration={duration}
-                id={id}
+                open = {openEventModal}
+                item = {selectedItem}
             />
         </>
     )

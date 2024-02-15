@@ -9,6 +9,7 @@ export interface Database {
     views: views,
     viewelements: viewelements,
     courses: courses,
+    lectures: lectures,
     assignments: assignments,
     projects: projects,
     events: events,
@@ -48,11 +49,17 @@ interface courses {
     creator: string,
     id: string,
     title: string,
-    time: Date,
+    description: string
+}
+
+interface lectures {
+    creator: string,
+    id: string,
+    course: string,
+    time: string,
     duration: string,
     description: string,
-    repeating: string,
-    repeatingTime: string
+    creationID: string
 }
 
 interface exams {

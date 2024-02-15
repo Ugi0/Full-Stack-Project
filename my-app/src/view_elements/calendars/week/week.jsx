@@ -2,10 +2,12 @@ import React, { useState, forwardRef, useImperativeHandle, useRef } from "react"
 import './weekCalendar.css'
 import { Rnd } from "react-rnd";
 import AddIcon from '@mui/icons-material/Add';
-import ClickableCalendarEvent from "../../clickableCalendarEvent/clickableCalendarEvent";
-import AddEvent from "../../addEvent/addEvent";
-import EventModal from "../../eventModal/eventModal";
-import { getEventCount, getAsList } from "../../inputElements";
+import ClickableCalendarEvent from "../../../components/clickableCalendarEvent/clickableCalendarEvent";
+import AddEvent from "../../../components/addEvent/addEvent";
+import EventModal from "../../../components/eventModal/eventModal";
+import DeleteComponentButton from "../../../components/deleteComponentButton/deleteComponentButton";
+import { getEventCount, getAsList } from "../../../utils/inputElements";
+import { getWeek } from "../../../utils/getWeek";
 
 function WeekCalendar(props) {
     //Modal can't be closed if it's placed inside the Rnd
@@ -77,6 +79,10 @@ function WeekCalendar(props) {
             setX(position.x);
             setY(position.y);
         }}>
+            <div className="weekNumber"> 
+                <h2> Week {getWeek(today)} </h2>
+            </div>
+            <DeleteComponentButton editable={props.editable} id={props.id} deleteComponent={props.deleteComponent} />
             <div className="weekCalendarRoot">
                 {
                 days.map((day, index) => {

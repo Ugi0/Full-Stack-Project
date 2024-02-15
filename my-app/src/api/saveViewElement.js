@@ -22,3 +22,25 @@ export async function saveViewElement(item) {
     }
     return {success: false}
 }
+
+export async function deleteViewElement(id) {
+  const cookies = new Cookies();
+  const requestOptions = {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', 'token': cookies.get('token') },
+    body: JSON.stringify({
+      id: id
+    })
+  };
+  let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/viewelements`, requestOptions)
+          .catch(error => {
+              console.log("1",error)
+          });
+  if (response) {
+    let responseJSON = await response.json()
+    if (responseJSON.success) {
+      return responseJSON
+    }
+  }
+  return {success: false}
+}

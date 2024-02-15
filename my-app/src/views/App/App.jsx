@@ -1,8 +1,9 @@
 import React, { useEffect, useState, createRef, useRef } from 'react';
 import './App.css';
 import myConfig from '../../config.js';
-import WeekCalendar from '../../components/calendars/week/week.jsx';
-import MonthCalendar from '../../components/calendars/month/month.jsx';
+import WeekCalendar from '../../view_elements/calendars/week/week.jsx'
+import MonthCalendar from '../../view_elements/calendars/month/month.jsx'
+import DayCalendar from '../../view_elements/calendars/day/day.jsx'
 import AddComponents from '../../components/addComponents/addComponents.jsx';
 import Navigation from '../../components/navigation/Navigation.jsx';
 import Banner from '../../components/banner/banner.jsx';
@@ -12,7 +13,7 @@ import { Navigate } from 'react-router-dom';
 import { fetchData } from '../../api/fetchers.js';
 import { checkToken } from '../../api/checkToken.js';
 import { fetchViewData } from '../../api/fetchViewData.js';
-import { saveViewElement } from '../../api/saveViewElement.js';
+import { saveViewElement, deleteViewElement } from '../../api/saveViewElement.js';
 import { defaultViewSize } from '../../api/defaultViewSizes.js';
 
 function App() {
@@ -36,8 +37,8 @@ function App() {
   const chooseComponent = (item, index) => {
     switch (item.type) {
       case 0:
-        if (item.size === 2) return <MonthCalendar innerRef={item.ref} key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
-        if (item.size === 1) return <WeekCalendar innerRef={item.ref} key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        if (item.size === 2) return <MonthCalendar id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        if (item.size === 1) return <WeekCalendar id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
         break;
       default:
         throw new Error("Not a valid component")
@@ -230,6 +231,9 @@ function App() {
   }
 
   const addDataToElement = (item) => {
+    if (defaultViewSize(item.type, item.size) === undefined) {
+      return
+    }
     const [width, height] = defaultViewSize(item.type, item.size);
     item['hostid'] = selectedView;
     item['width'] = width;
@@ -249,6 +253,19 @@ function App() {
       }
     });
   }
+
+  const deleteComponent = (id) => {
+    deleteViewElement(id).then(result => {
+      if (result.success) {
+        let newMap = new Map(viewElements);
+        let newData = viewElements.get(selectedView);
+        newData = newData.filter(e => e.id !== id);
+        newMap.set(selectedView, newData);
+        setViewElements(newMap)
+      }
+    })
+  }
+
   return (
     <div className="App">
       <Banner />
@@ -257,6 +274,7 @@ function App() {
       {(viewElements.get(selectedView) ?? []).map((e,i) => {
         return chooseComponent(e,i)
       })}
+      {/*<DayCalendar weekday={"Monday"} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{height: 200, width:100, x: 250, y: 200}} />*/}
       <AddComponents editable={editable} toggleEditable={toggleEditable} saveViewElement={addDataToElement} />
     </div>
   );

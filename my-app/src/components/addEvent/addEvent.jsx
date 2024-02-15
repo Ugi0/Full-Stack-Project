@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import './addEvent.css'
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { titleInput, descriptionInput } from "../inputElements";
+import { titleInput, descriptionInput } from "../../utils/inputElements";
 import { IconButton } from "@mui/material";
 import SaveIcon from '@mui/icons-material/Save';
 
@@ -68,6 +68,7 @@ function AddEvent(props){
                     <div className="options">
                         {titleInput(setTitle)}
                         {descriptionInput(setDescription)}
+                        {renderCourseOptions()}
                         <div>
                             <p>Time</p>
                             {renderTime()}
@@ -177,7 +178,8 @@ function AddEvent(props){
     const handleAdd = () => {
         switch (type) {
             case '0':
-                props.handleAdd("courses",{
+                props.handleAdd("lectures",{
+                    course: chosenCourse,
                     title: title, description: description,
                     time: time, duration: duration,
                     repeating: repeating, repeatingTime: repeatingTime
@@ -228,7 +230,7 @@ function AddEvent(props){
                     <div>
                         <p>Type</p> 
                         <select id="type" onChange={(e) => setType(e.target.value)}>
-                            <option value="0">Course</option>
+                            <option value="0">Lecture</option>
                             <option value="1">Assignment</option>
                             <option value="2">Exam</option>
                             <option value="3">Event</option>

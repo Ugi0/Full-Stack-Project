@@ -1,0 +1,18 @@
+
+.dayCalendarRoot {
+    background-color: #2b583e60;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.dayCalendarRoot h5 {
+    color: #56a678;
+    text-align: center;
+    align-items: center;
+}
+
+.dayCalendarEvents {
+    flex-grow: 1;
+}
