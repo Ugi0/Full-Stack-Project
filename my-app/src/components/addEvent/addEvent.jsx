@@ -227,7 +227,7 @@ function AddEvent(props){
                 onClose={props.onClose}
             >
                 <Box className="modalContent">
-                    <div>
+                    <div className="modalContentEventType">
                         <p>Type</p> 
                         <select id="type" onChange={(e) => setType(e.target.value)}>
                             <option value="0">Lecture</option>

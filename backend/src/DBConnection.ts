@@ -49,7 +49,8 @@ interface courses {
     creator: string,
     id: string,
     title: string,
-    description: string
+    description: string,
+    icon: string
 }
 
 interface lectures {

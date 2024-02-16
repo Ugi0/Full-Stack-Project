@@ -1,0 +1,9 @@
+
+.courseItemModalSelect img {
+    width: 20px;
+    height: 20px;
+}
+
+.courseItemModalSelect * {
+    flex-direction: column;
+}

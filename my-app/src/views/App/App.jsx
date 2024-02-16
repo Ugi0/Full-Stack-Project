@@ -4,6 +4,7 @@ import myConfig from '../../config.js';
 import WeekCalendar from '../../view_elements/calendars/week/week.jsx'
 import MonthCalendar from '../../view_elements/calendars/month/month.jsx'
 import DayCalendar from '../../view_elements/calendars/day/day.jsx'
+import CoursesView from '../../view_elements/courses/coursesView/coursesView.jsx'
 import AddComponents from '../../components/addComponents/addComponents.jsx';
 import Navigation from '../../components/navigation/Navigation.jsx';
 import Banner from '../../components/banner/banner.jsx';
@@ -103,6 +104,7 @@ function App() {
       fetchData('courses')]).then(e => {
         if (e === undefined || e[0] === undefined) return;
         let newMap = new Map();
+        e[0].sort((a,b) => a.title.localeCompare(b.title))
         for (let view of e[0]) {
           view.type = "view";
           if (view.title === '_mainpage') {
@@ -271,6 +273,7 @@ function App() {
       <Banner />
       <Divider views={views} selectedView={selectedView} />
       <Navigation views={views} editable={editable} setSelectedView={updateSelectedView} addView={(title) => handleAdd("views", {title: title})} deleteView={(id) => handleDelete("views", id)}/>
+      <CoursesView editable={editable} sx={{height: 400, width: 800, x: 250, y: 250}} />
       {(viewElements.get(selectedView) ?? []).map((e,i) => {
         return chooseComponent(e,i)
       })}

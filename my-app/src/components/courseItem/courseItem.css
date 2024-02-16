@@ -1,0 +1,25 @@
+.courseItem {
+    width: 250px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+    user-select: none;
+    margin-top: 10px;
+    border: 1px solid #262626a0;
+}
+
+.courseItem:hover {
+    cursor: pointer;
+}
+
+.courseItemText {
+    display: flex;
+    height: 50px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.courseItemText * {
+    margin: 5px;
+}

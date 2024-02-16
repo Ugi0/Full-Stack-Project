@@ -1,0 +1,26 @@
+
+.coursesViewRoot {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.coursesViewSmallText {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-bottom: 1px white solid;
+    padding-bottom: 4px;
+}
+
+.coursesViewSmallText p {
+    margin: 0;
+}
+
+.coursesViewList {
+    display: grid;
+    column-gap: 15px;
+    row-gap: 5px;
+    border-top: 1px solid gray;
+}
