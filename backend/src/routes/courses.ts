@@ -16,7 +16,7 @@ app.post('/courses', async (req, res) => {
         creator: decoded.data,
         id: newID,
         title: data.title, description: data.description,
-        icon: data.icon
+        subject: data.subject
         }
         await db
         .insertInto('courses')
@@ -51,7 +51,7 @@ app.get('/courses', async (req, res) => {
             return {
             title: e.title,
             description: e.description,
-            id: e.id, icon: e.icon
+            id: e.id, subject: e.subject
             }
         })
         })

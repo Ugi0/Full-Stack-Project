@@ -273,7 +273,7 @@ function App() {
       <Banner />
       <Divider views={views} selectedView={selectedView} />
       <Navigation views={views} editable={editable} setSelectedView={updateSelectedView} addView={(title) => handleAdd("views", {title: title})} deleteView={(id) => handleDelete("views", id)}/>
-      <CoursesView editable={editable} sx={{height: 400, width: 800, x: 250, y: 250}} />
+      <CoursesView courses={courses} editable={editable} sx={{height: 400, width: 800, x: 250, y: 250}} addCourse={(course) => handleAdd("courses", course)} />
       {(viewElements.get(selectedView) ?? []).map((e,i) => {
         return chooseComponent(e,i)
       })}

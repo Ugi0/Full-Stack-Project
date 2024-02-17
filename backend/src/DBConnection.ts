@@ -50,7 +50,7 @@ interface courses {
     id: string,
     title: string,
     description: string,
-    icon: string
+    subject: string
 }
 
 interface lectures {

@@ -5,6 +5,11 @@ import CourseItem from '../../../components/courseItem/courseItem'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import GavelIcon from '@mui/icons-material/Gavel';
 import CourseItemModal from '../../../components/courseItemModal/courseItemModal';
+import { getFilename } from '../../../api/getFileName';
+
+const icons = new Map();
+const iconsFolder = require.context('../../../images/icons/', true);
+iconsFolder.keys().map(image => icons.set(getFilename(image), iconsFolder(`${image}`)));
 
 function CoursesView(props) {
     const [x, setX] = useState(props.sx.x);
@@ -15,8 +20,22 @@ function CoursesView(props) {
     const [open, setOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState();
 
-    const switchOpen = (value) => {
+    const switchOpen = () => {
         setOpen(!open);
+    }
+
+    const handleSubmit = (values) => {
+        const course = {
+            title: values.title,
+            description: values.description,
+            subject: values.subject.value
+        }
+        props.addCourse(course);
+    }
+
+    const courseIconsFromSubject = (subject) => {
+        let icon = subject.toLowerCase().replace(" ","_");
+        return [icons.get(icon), icons.get(`${icon}_color`)]
     }
 
     return (
@@ -38,12 +57,14 @@ function CoursesView(props) {
                     <p> Course </p>
                 </div>
                 <div className='coursesViewList' style={{'gridTemplateColumns': `repeat(${Math.floor(width/250)}, 1fr)`}}>
-                    <CourseItem icon={GavelIcon} title={"Svenska för IT-studenter"} />
+                    {[...props.courses.values()].map((e,i) => (
+                        <CourseItem icons={courseIconsFromSubject(e.subject)} item={e} key={i} />
+                    ))}
                     <CourseItem onClick={() => { setSelectedItem(undefined); setOpen(true) }} title={"+ New"} />
                 </div>
             </div>
         </Rnd>
-        <CourseItemModal item={selectedItem} switchOpen={switchOpen} open={open} />
+        <CourseItemModal item={selectedItem} switchOpen={switchOpen} open={open} handleSubmit={handleSubmit} />
         </>
     )
 }

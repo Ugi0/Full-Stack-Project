@@ -6,12 +6,8 @@
     align-content: center;
 }
 
-.modalContent div * {
-    margin: 5px;
-}
-
 .modalContent div p {
-    padding-bottom: 5px;
+    padding: 5px;
 }
 
 .options {

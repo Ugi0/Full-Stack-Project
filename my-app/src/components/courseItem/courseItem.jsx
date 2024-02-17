@@ -1,14 +1,16 @@
 import './courseItem.css'
 
 function CourseItem(props) {
-    if (props.icon) {
+    if (props.item) {
         return (
-            <div onClick={props.onClick} className='courseItem' style={{'backgroundColor': '#262626a0'}}>
-                <props.icon sx={{width: '250px', height: '100px', margin: '5px'}} />
+            <div className='courseItem' style={{'backgroundColor': '#262626a0'}}>
+                <img src={props.icons[1]} alt={props.item.subject} style={{width: '100px', height: '100px', margin: '5px', paddingLeft: '75px'}} />
+                {/*<props.icon sx={{width: '250px', height: '100px', margin: '5px'}} />*/}
                 <div className='courseItemText'>
-                    <props.icon />
+                    <img src={props.icons[0]} alt={props.item.subject} style={{width: '30px', height: '30px'}}/>
+                    {/*<props.icon />*/}
                     <p>
-                        {props.title}
+                        {props.item.title}
                     </p>
                 </div>
             </div>
