@@ -16,8 +16,8 @@ async function exec(){
         await sftp.connect(options);
         console.log("Connected!\n");
         const promises = [];
-        promises.push(sftp.uploadDir(`./my-app/react_build`,`./react_build`))
-        promises.push(sftp.put(`./my-app/servePage.js`,`./servePage.js`))
+        promises.push(sftp.uploadDir(`./frontend/react_build`,`./react_build`))
+        promises.push(sftp.put(`./frontend/servePage.js`,`./servePage.js`))
         fs.readdir("./backend/backend_build",(e,files)=> { //Handle uploading the backend files
             files.filter(x => x.endsWith(".js")).forEach(async filename => {
                 promises.push(sftp.put(`${__dirname}/backend/backend_build/${filename}`,`./backend_build/${filename}`));

@@ -4,6 +4,6 @@
     "ssh2-sftp-client": "^10.0.3"
   },
   "scripts": {
-    "deploy": "cd backend && npm run build && cd ../my-app && npm run build && cd .. && node deploy.js"
+    "deploy": "cd backend && npm run build && cd ../frontend && npm run build && cd .. && node deploy.js"
   }
 }
