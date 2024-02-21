@@ -40,7 +40,7 @@ function DayCalendar(props) {
                         </div>
                     </div>
             </Rnd>
-            <AddEvent userData={props.userData} handleAdd={props.handleAdd} time={time} open={openAddEventModal} onClose={handleCloseAddModal}/>
+            <AddEvent courses={props.userData.courses} events={props.userData.events} handleAdd={props.handleAdd} time={time} open={openAddEventModal} onClose={handleCloseAddModal}/>
         </>
     )
 }

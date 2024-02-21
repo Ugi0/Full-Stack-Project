@@ -34,12 +34,13 @@ function App() {
   const [assignments, setAssignmentsMapState] = useState(new Map());
   const [exams, setExamsMapState] = useState(new Map());
   const [projects, setProjectsMapState] = useState(new Map());
+  const [lectures, setLectures] = useState(new Map());
 
   const chooseComponent = (item, index) => {
     switch (item.type) {
       case 0:
-        if (item.size === 2) return <MonthCalendar id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
-        if (item.size === 1) return <WeekCalendar id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        if (item.size === 2) return <MonthCalendar id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        if (item.size === 1) return <WeekCalendar id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
         break;
       default:
         throw new Error("Not a valid component")
@@ -58,6 +59,8 @@ function App() {
         return exams
       case 'projects':
         return projects
+      case 'lectures':
+        return lectures
       case 'views':
         return views
       default:
@@ -77,6 +80,8 @@ function App() {
         return setExamsMapState
       case 'projects':
         return setProjectsMapState
+      case 'lectures':
+        return setLectures
       case 'views':
         return setViews
       default:
@@ -99,6 +104,7 @@ function App() {
     // Fetch user data from backend and display if succeeded on first render
     Promise.all([
       fetchData('views'),
+      fetchData('lectures'),
       fetchData('assignments'),
       fetchData('events'),
       fetchData('courses')]).then(e => {
@@ -106,7 +112,7 @@ function App() {
         let newMap = new Map();
         e[0].sort((a,b) => a.title.localeCompare(b.title))
         for (let view of e[0]) {
-          view.type = "view";
+          view.type = "views";
           if (view.title === '_mainpage') {
             updateSelectedView(view.id)
           }
@@ -114,19 +120,25 @@ function App() {
         }
         setViews(newMap)
         newMap = new Map();
-        for (let assignment of e[1]) {
+        for (let lecture of e[1]) {
+          lecture.type = "lectures";
+          newMap.set(lecture.id, lecture);
+        }
+        setLectures(newMap);
+        newMap = new Map();
+        for (let assignment of e[2]) {
           assignment.type = "assignments";
           newMap.set(assignment.id, assignment);
         }
         setAssignmentsMapState(newMap)
         newMap = new Map();
-        for (let event of e[2]) {
+        for (let event of e[3]) {
           event.type = "events";
           newMap.set(event.id, event);
         }
         setEventsMapState(newMap)
         newMap = new Map();
-        for (let course of e[3]) {
+        for (let course of e[4]) {
           course.type = "courses";
           newMap.set(course.id, course);
         }

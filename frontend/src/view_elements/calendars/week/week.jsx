@@ -93,14 +93,15 @@ function WeekCalendar(props) {
                             <div className="dayName">
                                 <b>{day}</b>
                                 <p className="eventNumber">
-                                    {getEventCount(props.userData, cur.toDateString())}
+                                    {getEventCount(props.userData.events, cur.toDateString())}
                                 </p>
                             </div>
-                            { getAsList(props.userData.courses, cur.toDateString())
+                            { getAsList(props.userData.events.lectures, cur.toDateString())
                                 .map((item) => {
                                     return (
                                         <ClickableCalendarEvent
                                             item = {item}
+                                            title = {[...props.userData.courses.values()].filter(e => e.id === item.course)[0].title}
                                             duration = {item.duration}
                                             handler = {handler} key = {item.id}
                                             draw = {["title", "icon", "time", "duration"]} sx = {{padding: '5px 0 5px 0'}}
@@ -108,7 +109,7 @@ function WeekCalendar(props) {
                                     )
                                 })
                             }
-                            { getAsList(props.userData.assignments, cur.toDateString())
+                            { getAsList(props.userData.events.assignments, cur.toDateString())
                                 .map((item) => {
                                     return (
                                         <ClickableCalendarEvent
@@ -139,7 +140,7 @@ function WeekCalendar(props) {
                 open = {openEventModal}
                 item = {selectedItem}
             />
-            <AddEvent userData={props.userData} handleAdd={props.handleAdd} time={time} open={openAddEventModal} onClose={handleCloseAddModal}/>
+            <AddEvent courses={props.userData.courses} events={props.userData.events} handleAdd={props.handleAdd} time={time} open={openAddEventModal} onClose={handleCloseAddModal}/>
         </>
     )
 }

@@ -83,8 +83,8 @@ function MonthCalendar(props) {
                                 <div className={today.toDateString()===firstDayOfTheMonth.toDateString() ? 'currentDateNumber' : "dateNumber"} >
                                     {firstDayOfTheMonth.getDate()}
                                 </div>
-                                {[...props.userData.courses.keys()]
-                                .map((e) => props.userData.courses.get(e))
+                                {[...props.userData.events.lectures.keys()]
+                                .map((e) => props.userData.events.lectures.get(e))
                                 .filter((item) => new Date(item.time).toDateString() === firstDayOfTheMonth.toDateString())
                                 .sort((a,b) => new Date(a.time) - new Date(b.time))
                                 .map((item,index) => {

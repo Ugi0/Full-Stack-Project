@@ -27,8 +27,8 @@ function AddEvent(props){
         setType('0');
         setRepeating(false);
         setRepeatingTime('');
-        setChosenCourse([...props.userData.courses.values()].map((item) => item.id)[0])
-    }, [props.time, props.userData.courses, props.open])
+        setChosenCourse([...props.courses.values()].map((item) => item.id)[0])
+    }, [props.time, props.courses, props.open])
     const renderTime = () => {
         return (
             <input
@@ -48,8 +48,8 @@ function AddEvent(props){
     const renderCourseOptions = () => {
         return (
             <select id="chosenCourse" onChange={(e) => setChosenCourse(e.target.value) }>
-                {[...props.userData.courses.keys()]
-                    .map((e) => props.userData.courses.get(e))
+                {[...props.courses.keys()]
+                    .map((e) => props.courses.get(e))
                     .map((e,i) => {
                     return (
                         <option value={e.id} key={i}>
@@ -66,7 +66,6 @@ function AddEvent(props){
             case '0': 
                 return (
                     <div className="options">
-                        {titleInput(setTitle)}
                         {descriptionInput(setDescription)}
                         {renderCourseOptions()}
                         <div>

@@ -25,10 +25,20 @@ function CoursesView(props) {
     }
 
     const handleSubmit = (values) => {
-        const course = {
-            title: values.title,
-            description: values.description,
-            subject: values.subject.value
+        let course;
+        if (values.item) {
+            course = {
+                title: values.title,
+                description: values.description,
+                subject: values.subject.value,
+                id: values.item.id
+            }
+        } else {
+            course = {
+                title: values.title,
+                description: values.description,
+                subject: values.subject.value
+            }
         }
         props.addCourse(course);
     }
@@ -57,8 +67,8 @@ function CoursesView(props) {
                     <p> Course </p>
                 </div>
                 <div className='coursesViewList' style={{'gridTemplateColumns': `repeat(${Math.floor(width/250)}, 1fr)`}}>
-                    {[...props.courses.values()].map((e,i) => (
-                        <CourseItem icons={courseIconsFromSubject(e.subject)} item={e} key={i} />
+                    {[...props.courses.values()].sort((a,b) => a.id - b.id).map((e,i) => (
+                        <CourseItem onClick={() => { setSelectedItem(e); setOpen(true); }} icons={courseIconsFromSubject(e.subject)} item={e} key={i} />
                     ))}
                     <CourseItem onClick={() => { setSelectedItem(undefined); setOpen(true) }} title={"+ New"} />
                 </div>

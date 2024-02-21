@@ -1,5 +1,5 @@
 import './courseItemModal.css'
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Select from 'react-select';
 import { Modal } from '@mui/material';
 import { Box } from '@mui/material';
@@ -14,21 +14,29 @@ iconsFolder.keys().map(image => icons.set(getFilename(image), iconsFolder(`${ima
 function CourseItemModal(props) {
     const [title, setTitle] = useState("")
     const [description, setDescription] = useState("")
-    const [selectedSubject, setSelectedSubject] = useState({});
+    const [selectedSubject, setSelectedSubject] = useState("");
 
-    const iconOptions = [
-        {value:"Computer Science", icon:"computer_science"},
-        {value:"Economics", icon:'economics'},
-        {value:"Geography", icon:'geography'},
-        {value: "History", icon: 'history'},
-        {value: "Languages", icon: 'language'},
-        {value: "Law", icon: 'law'},
-        {value: 'Math', icon: 'math'},
-        {value: "Physical Education", icon: "physical_education"},
-        {value: "Sciences", icon: "sciences"},
-        {value: "Social Studies", icon: 'social_studies'},
-        {value: "Other", icon: "other"}
-    ]
+    useEffect(() => {
+        if (props.item) {
+            setTitle(props.item.title);
+            setDescription(props.item.description);
+            setSelectedSubject(iconOptions.filter((e) => e.value === props.item.subject)[0]);
+        }
+    }, [props.item])
+
+    const iconOptions = useMemo(() => [
+        {value: "Computer Science",     icon: "computer_science"},
+        {value: "Economics",            icon: 'economics'},
+        {value: "Geography",            icon: 'geography'},
+        {value: "History",              icon: 'history'},
+        {value: "Languages",            icon: 'languages'},
+        {value: "Law",                  icon: 'law'},
+        {value: 'Math',                 icon: 'math'},
+        {value: "Physical Education",   icon: "physical_education"},
+        {value: "Sciences",             icon: "sciences"},
+        {value: "Social Studies",       icon: 'social_studies'},
+        {value: "Other",                icon: "other"}
+    ], [])
 
     const customStyles = {
         option: (provided, state) => ({
@@ -102,7 +110,7 @@ function CourseItemModal(props) {
                     />
                 </div>
                 <IconButton sx={{position:'absolute', top:0, right:0}} onClick={() => {
-                        props.handleSubmit({title, description, subject: selectedSubject})
+                        props.handleSubmit({title, description, subject: selectedSubject, item: props.item})
                         reset();
                         props.switchOpen();
                     }}>

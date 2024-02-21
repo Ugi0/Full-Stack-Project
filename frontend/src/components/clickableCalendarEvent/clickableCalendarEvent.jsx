@@ -25,7 +25,7 @@ function ClickableCalendarEvent(props) {
         if (props.draw.includes("title")) {
             return <div className="eventTitle">
                         {renderIcon()}
-                        <p> {item.title} </p>
+                        <p> {props.title ? props.title : item.title} </p>
                     </div>
         }
     }
