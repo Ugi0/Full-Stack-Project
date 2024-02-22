@@ -158,6 +158,20 @@ function EventModal(props) {
         setModalEditable(false);
         props.deleteEvent();
     }
+    const renderTitle = () => {
+        if (item.title) {
+            return <Typography id="newtitle" variant="h6" component="h2" suppressContentEditableWarning={true} contentEditable={modalEditable} onInput={(e)  => updateItem("title", e.target.innerText) }>
+                        {item.title}
+                    </Typography>
+        }
+    }
+    const renderDescription = () => {
+        if (item.description) {
+            return <Typography id="newdescription" sx={{ mt: 2 }} suppressContentEditableWarning={true} contentEditable={modalEditable} onInput={(e) => updateItem("description", e.target.innerText)}>
+                        {item.description}
+                    </Typography>
+        }
+    }
     if (!props.item) {
         return
     }
@@ -167,12 +181,8 @@ function EventModal(props) {
             onClose={props.handleClose}
         >
             <Box className="modalContent">
-                <Typography id="newtitle" variant="h6" component="h2" suppressContentEditableWarning={true} contentEditable={modalEditable} onInput={(e)  => updateItem("title", e.target.innerText) }>
-                    {item.title}
-                </Typography>
-                <Typography id="newdescription" sx={{ mt: 2 }} suppressContentEditableWarning={true} contentEditable={modalEditable} onInput={(e) => updateItem("description", e.target.innerText)}>
-                    {item.description}
-                </Typography>
+                {renderTitle()}
+                {renderDescription()}
                 {renderTime()}
                 {renderDuration()}
                 {renderStatus()}

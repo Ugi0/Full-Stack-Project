@@ -15,7 +15,7 @@ function AddComponents(props) {
         },
         {
             title: 'Courses',
-            subItems: []
+            subItems: ['Courses list']
         },
         {
             title: 'Exams',

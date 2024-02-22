@@ -5,7 +5,8 @@ import { Modal } from '@mui/material';
 import { Box } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import { IconButton } from '@mui/material';
-import { getFilename } from '../../api/getFileName';
+import { getFilename } from '../../utils/getFileName';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const icons = new Map();
 const iconsFolder = require.context('../../images/icons/', true);
@@ -115,6 +116,13 @@ function CourseItemModal(props) {
                         props.switchOpen();
                     }}>
                     <SaveIcon />
+                </IconButton>
+                <IconButton sx={{position:'absolute', top:0, left:0}} onClick={() => {
+                        props.deleteCourse(props.item.id)
+                        reset();
+                        props.switchOpen();
+                    }}>
+                    <DeleteIcon />
                 </IconButton>
             </Box>
         </Modal>

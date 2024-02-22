@@ -10,6 +10,7 @@ import Navigation from '../../components/navigation/Navigation.jsx';
 import Banner from '../../components/banner/banner.jsx';
 import Divider from '../../components/divider/Divider.jsx';
 import Cookies from 'universal-cookie';
+import shallowEqual from '../../utils/shallowEqual.js'
 import { Navigate } from 'react-router-dom';
 import { fetchData } from '../../api/fetchers.js';
 import { checkToken } from '../../api/checkToken.js';
@@ -41,6 +42,9 @@ function App() {
       case 0:
         if (item.size === 2) return <MonthCalendar id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
         if (item.size === 1) return <WeekCalendar id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        break;
+      case 1:
+        if (item.size === 0) return <CoursesView id={item.id} courses={courses} deleteComponent={deleteComponent} editable={editable} innerRef={item.ref} key={index} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} addCourse={(course) => handleAdd("courses", course)} deleteCourse={(id) => handleDelete('courses', id)}  />
         break;
       default:
         throw new Error("Not a valid component")
@@ -208,6 +212,7 @@ function App() {
   const toggleEditable = () => {
     if (editable) { //Save current view state
       for (let item of viewElements.get(selectedView)) {
+        const saved = {...item};
         const cur = item.ref.current();
         item.x = cur.x;
         item.y = cur.y;
@@ -217,6 +222,7 @@ function App() {
         }
         item.width = cur.width;
         item.height = cur.height;
+        if (shallowEqual(saved, cur)) break;
         saveViewElement(item);
       }
     }
@@ -285,7 +291,6 @@ function App() {
       <Banner />
       <Divider views={views} selectedView={selectedView} />
       <Navigation views={views} editable={editable} setSelectedView={updateSelectedView} addView={(title) => handleAdd("views", {title: title})} deleteView={(id) => handleDelete("views", id)}/>
-      <CoursesView courses={courses} editable={editable} sx={{height: 400, width: 800, x: 250, y: 250}} addCourse={(course) => handleAdd("courses", course)} />
       {(viewElements.get(selectedView) ?? []).map((e,i) => {
         return chooseComponent(e,i)
       })}

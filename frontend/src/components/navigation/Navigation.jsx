@@ -21,7 +21,7 @@ function Navigation(props) {
     }
     const renderDelete = (item) => {
         if (props.editable) {
-            if (item.title !== '_mainpage') return
+            if (item.title === '_mainpage') return
             return (
                 <DeleteIcon id="delete" onClick={() => { props.deleteView(item.id); }}/>
             )
