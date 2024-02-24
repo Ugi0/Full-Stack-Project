@@ -20,13 +20,14 @@ app.get('/assignments', async (req, res) => {
         success: true,
         data: result.map((e,i) => {
             return {
-            id: e.id, course: e.course,
-            priority: toPriority(e.priority),
-            title: e.title,
-            description: e.description,
-            status: toStatus(e.status),
-            time: e.time,
-            grade: e.grade
+                id: e.id, course: e.course,
+                priority: toPriority(e.priority),
+                title: e.title,
+                description: e.description,
+                status: toStatus(e.status),
+                time: e.time,
+                grade: e.grade,
+                completed: e.completed
             }
         })
         })
@@ -47,14 +48,15 @@ app.get('/assignments', async (req, res) => {
         const newID = req.body.assignment.id ?? getRandomID();
         const data = req.body.assignment;
         const assignment = {
-        creator: decoded.data,
-        priority: fromPriority(data.priority),
-        title: data.title,
-        description: data.description,
-        id: newID, course: data.course,
-        status: fromStatus(data.status),
-        time: data.time,
-        grade: data.grade
+            creator: decoded.data,
+            priority: fromPriority(data.priority),
+            title: data.title,
+            description: data.description,
+            id: newID, course: data.course,
+            status: fromStatus(data.status),
+            time: data.time,
+            grade: data.grade,
+            completed: data.completed
         }
         await db
         .insertInto('assignments')

@@ -21,7 +21,8 @@ app.get('/lectures', async (req, res) => {
                 id: e.id,
                 course: e.course, time: e.time,
                 duration: e.duration, description: e.description,
-                creationID: e.creationID
+                creationID: e.creationID,
+                completed: e.completed
             }
             })
         })
@@ -46,7 +47,8 @@ app.post('/lectures', async (req, res) => {
             course: data.course,
             description: data.description,
             time: data.time, duration: data.duration,
-            creationID: data.creationID
+            creationID: data.creationID,
+            completed: data.completed
         }
         await db
         .insertInto('lectures')

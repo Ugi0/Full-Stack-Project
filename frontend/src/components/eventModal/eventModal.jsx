@@ -136,6 +136,20 @@ function EventModal(props) {
             }
         }
     }
+    const renderCompleted = () => {
+        if (item.completed !== undefined) {
+            if (modalEditable) {
+                return <>
+                    Completed:
+                    <input type="checkbox" checked={item.completed} onChange={(e) => updateItem('completed', !item.completed)}/>
+                </>
+            } else {
+                return <>
+                    Completed: {item.completed ? '✓' : 'X'}
+                </>
+            }
+        }
+    }
     const renderDeleteIcon = () => {
         if (modalEditable) {
             return <DeleteIcon />
@@ -188,6 +202,7 @@ function EventModal(props) {
                 {renderStatus()}
                 {renderGrade()}
                 {renderPriority()}
+                {renderCompleted()}
 
                 {/* Icons */}
                 <IconButton sx={{position:'absolute', top:0, right:0}} onClick={handleSaveClick}>

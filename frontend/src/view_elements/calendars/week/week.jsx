@@ -94,7 +94,7 @@ function WeekCalendar(props) {
                 {
                 days.map((day, index) => {
                     cur.setDate(cur.getDate()+1);
-                    const isItToday = today.toISOString() === cur.toISOString();
+                    const isItToday = today.toDateString() === cur.toDateString();
                     return (
                         <div className="weekDay" key={index} style={{ backgroundColor: isItToday ? '#3c4543' : '#1d2120'}}>
                             <div className="dayName">
@@ -129,7 +129,7 @@ function WeekCalendar(props) {
                             }
                             <button className="newButton" onClick={() => { //Set date to clicked day in addComponent
                                 const d = new Date(monday);
-                                d.setDate(d.getDate() + index);
+                                d.setDate(d.getDate() + index + 1);
                                 setTime(d.toISOString().slice(0,16))
                                 handleOpenAddModal()
                             }}>

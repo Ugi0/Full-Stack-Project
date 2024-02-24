@@ -60,7 +60,8 @@ interface lectures {
     time: string,
     duration: string,
     description: string,
-    creationID: string
+    creationID: string,
+    completed: boolean
 }
 
 interface exams {
@@ -69,7 +70,8 @@ interface exams {
     title: string,
     description: string,
     time: Date,
-    course: string
+    course: string,
+    completed: boolean
 }
 
 interface assignments {
@@ -82,6 +84,7 @@ interface assignments {
     status: number,
     time: Date,
     grade: string,
+    completed: boolean
 }
 
 interface projects {
@@ -93,7 +96,8 @@ interface projects {
     type: string,
     priority: number,
     time: Date,
-    data: string
+    data: string,
+    completed: boolean
 }
 
 interface events {
@@ -101,7 +105,8 @@ interface events {
     id: string,
     time: Date,
     title: string,
-    description: string
+    description: string,
+    completed: boolean
 }
 
 interface notes {

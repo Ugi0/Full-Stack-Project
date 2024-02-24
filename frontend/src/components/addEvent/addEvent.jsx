@@ -181,7 +181,8 @@ function AddEvent(props){
                     course: chosenCourse,
                     title: title, description: description,
                     time: time, duration: duration,
-                    repeating: repeating, repeatingTime: repeatingTime
+                    repeating: repeating, repeatingTime: repeatingTime,
+                    completed: false
                 });
                 break;
             case '1':
@@ -190,19 +191,21 @@ function AddEvent(props){
                     title: title, description: description,
                     status: "Not started",
                     priority: priority, time: time,
-                    grade: ""
+                    grade: "", completed: false
                 })
                 break;
             case '2':
                 props.handleAdd("exams",{
                     title: title, description: description,
-                    time: time, course: chosenCourse
+                    time: time, course: chosenCourse,
+                    completed: false
                 })
                 break;
             case '3':
                 props.handleAdd("events",{
                     time: time,
-                    title: title, description: description
+                    title: title, description: description,
+                    completed: false
                 })
                 break;
             case '4':
@@ -212,7 +215,8 @@ function AddEvent(props){
                     description: description,
                     type: type,
                     priority: priority,
-                    time: time
+                    time: time,
+                    completed: false
                 })
                 break;
             default:

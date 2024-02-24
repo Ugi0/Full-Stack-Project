@@ -20,7 +20,8 @@ app.get('/exams', async (req, res) => {
             return {
             id: e.id, time: e.time,
             title: e.title, description: e.description,
-            course: e.course
+            course: e.course,
+            completed: e.completed
             }
         })
         })
@@ -41,10 +42,11 @@ app.get('/exams', async (req, res) => {
         const newID = req.body.exam.id ?? getRandomID();
         const data = req.body.exam;
         const exam = {
-        creator: decoded.data, 
-        id: newID, time: data.time,
-        title: data.title, description: data.description,
-        course: data.course
+            creator: decoded.data, 
+            id: newID, time: data.time,
+            title: data.title, description: data.description,
+            course: data.course,
+            completed: data.completed
         }
         await db
         .insertInto('exams')

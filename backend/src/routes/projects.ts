@@ -20,11 +20,12 @@ app.get('/projects', async (req, res) => {
         success: true,
         data: result.map((e,i) => {
             return {
-            id: e.id, time: e.time,
-            status: toStatus(e.status), type: e.type,
-            priority: toPriority(e.priority),
-            title: e.title, description: e.description,
-            data: e.data
+                id: e.id, time: e.time,
+                status: toStatus(e.status), type: e.type,
+                priority: toPriority(e.priority),
+                title: e.title, description: e.description,
+                data: e.data,
+                completed: e.completed
             }
         })
         })
@@ -45,12 +46,13 @@ app.get('/projects', async (req, res) => {
         const newID = req.body.project.id ?? getRandomID();
         const data = req.body.project;
         const project = {
-        creator: decoded.data,
-        id: newID, time: data.time,
-        status: fromStatus(data.status), type: data.type,
-        priority: fromPriority(data.priority),
-        title: data.title, description: data.description,
-        data: data.data
+            creator: decoded.data,
+            id: newID, time: data.time,
+            status: fromStatus(data.status), type: data.type,
+            priority: fromPriority(data.priority),
+            title: data.title, description: data.description,
+            data: data.data,
+            completed: data.completed
         }
         await db
         .insertInto('projects')

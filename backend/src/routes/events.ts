@@ -19,7 +19,8 @@ app.get('/events', async (req, res) => {
         data: result.map((e,i) => {
             return {
             id: e.id, time: e.time,
-            title: e.title, description: e.description
+            title: e.title, description: e.description,
+            completed: e.completed
             }
         })
         })
@@ -40,11 +41,12 @@ app.get('/events', async (req, res) => {
         const newID = req.body.event.id ?? getRandomID();
         const data = req.body.event;
         const event = {
-        creator: decoded.data,
-        id: newID,
-        time: data.time,
-        title: data.title,
-        description: data.description
+            creator: decoded.data,
+            id: newID,
+            time: data.time,
+            title: data.title,
+            description: data.description,
+            completed: data.completed
         }
         await db
         .insertInto('events')

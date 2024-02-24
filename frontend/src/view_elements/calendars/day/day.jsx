@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import './dayCalendar.css'
 import { Rnd } from "react-rnd";
-import AddEvent from '../../../components/addEvent/addEvent'
-
+import { getAsList } from "../../../utils/inputElements";
+import DeleteComponentButton from "../../../components/deleteComponentButton/deleteComponentButton";
 
 function DayCalendar(props) {
     const [x, setX] = useState(props.sx.x);
@@ -10,17 +10,18 @@ function DayCalendar(props) {
     const [width, setWidth] = useState(props.sx.width);
     const [height, setHeight] = useState(props.sx.height);
 
-    const [openEventModal, setOpenEventModal] = useState(false);
-    const [openAddEventModal, setOpenAddEventModal] = useState(false);
-
-    const [time, setTime] = useState("");
-
     const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-    const handleCloseAddModal = () => {
-        setOpenAddEventModal(false);
+    // A function that the parent can use to get the current position and size
+    props.innerRef.current = () => { return {x :x, y:y, width: width, height: height} }
+
+    const handleBoxClick = (item) => {
+        item.completed = !item.completed;
+        props.handleAdd(item.type, item)
     }
 
+    const cur = new Date();
+    cur.setDate(cur.getDate()-[6,0,1,2,3,4,5][cur.getDay()]+weekDays.indexOf(props.weekday));
     return (
         <>
             <Rnd disableDragging={!props.editable} enableResizing={props.editable} size={{ width: width,  height: height }}
@@ -35,12 +36,21 @@ function DayCalendar(props) {
                 }}>
                     <div className="dayCalendarRoot">
                         <h5> {props.weekday} </h5>
+                        <DeleteComponentButton editable={props.editable} id={props.id} deleteComponent={props.deleteComponent} />
                         <div className="dayCalendarEvents">
-
+                            {getAsList(props.userData.events.lectures, cur.toDateString()).map((item,index) => (
+                                (<div key={index} className="dayCalendarEvent">
+                                    <input type="checkbox" checked={item.completed} onChange={() => handleBoxClick(item)}/>
+                                    <p style={{textDecoration: `${item.completed ? "line-through" : ""}`}}>
+                                    {item.time.split("T")[1]}
+                                    {" "}
+                                    {[...props.userData.courses.values()].filter(e => e.id === item.course)[0].title}
+                                    </p>
+                                </div>)
+                            ))}
                         </div>
                     </div>
             </Rnd>
-            <AddEvent courses={props.userData.courses} events={props.userData.events} handleAdd={props.handleAdd} time={time} open={openAddEventModal} onClose={handleCloseAddModal}/>
         </>
     )
 }

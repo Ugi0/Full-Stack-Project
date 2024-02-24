@@ -5,6 +5,7 @@ export const defaultViewSize = (type, size) => {
         case 0:
             if (size === 2) return [815, 400]
             if (size === 1) return [815, 200]
+            if (size === 0) return [400, 200]
             break;
         case 1:
             if (size === 0) return [800, 400]

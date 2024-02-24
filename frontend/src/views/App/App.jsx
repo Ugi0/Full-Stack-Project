@@ -42,6 +42,7 @@ function App() {
       case 0:
         if (item.size === 2) return <MonthCalendar id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
         if (item.size === 1) return <WeekCalendar id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        if (item.size === 0) return <DayCalendar id={item.id} deleteComponent={deleteComponent} handleAdd={handleAdd} innerRef={item.ref} editable={editable} weekday={"Saturday"} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
         break;
       case 1:
         if (item.size === 0) return <CoursesView id={item.id} courses={courses} deleteComponent={deleteComponent} editable={editable} innerRef={item.ref} key={index} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} addCourse={(course) => handleAdd("courses", course)} deleteCourse={(id) => handleDelete('courses', id)}  />
@@ -294,7 +295,6 @@ function App() {
       {(viewElements.get(selectedView) ?? []).map((e,i) => {
         return chooseComponent(e,i)
       })}
-      {/*<DayCalendar weekday={"Monday"} userData={{courses: courses, assignments: assignments, events: events, exams: exams, projects: projects}} sx={{height: 200, width:100, x: 250, y: 200}} />*/}
       <AddComponents editable={editable} toggleEditable={toggleEditable} saveViewElement={addDataToElement} />
     </div>
   );

@@ -11,8 +11,23 @@
     color: #56a678;
     text-align: center;
     align-items: center;
+    margin: 5px;
 }
 
 .dayCalendarEvents {
     flex-grow: 1;
+    flex-direction: column;
+    display: flex;
+}
+
+.dayCalendarEvent {
+    display: flex;
+    flex-direction: row;
+    margin: 0 10px 0 10px ;
+    flex-grow: 1;
+    align-items: center;
+}
+
+.dayCalendarEvent p {
+    margin: 0 5px 0 5px;
 }
