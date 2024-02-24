@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import './monthCalendar.css'
 import { Rnd } from "react-rnd";
 import EventModal from "../../../components/eventModal/eventModal";
+import AddIcon from '@mui/icons-material/Add';
+import AddEvent from "../../../components/addEvent/addEvent";
 import ClickableCalendarEvent from "../../../components/clickableCalendarEvent/clickableCalendarEvent";
+import ChangeCalendarTimeButtons from "../../../components/changeCalendarTime/changeCalendarTime";
 import DeleteComponentButton from "../../../components/deleteComponentButton/deleteComponentButton";
 
 function MonthCalendar(props) {
@@ -14,7 +17,12 @@ function MonthCalendar(props) {
     const [width, setWidth] = useState(props.sx.width);
     const [height, setHeight] = useState(props.sx.height);
 
+    const [monthDiff, setMonthDiff] = useState(0);
+
+    const changeMonthDiff = (value) => setMonthDiff(monthDiff+value);
+
     const [openEventModal, setOpenEventModal] = useState(false);
+    const [openAddEventModal, setOpenAddEventModal] = useState(false);
 
     const [chHandler, setChHandler] = useState();
 
@@ -37,6 +45,14 @@ function MonthCalendar(props) {
         props.handleAdd(selectedItem.type,newItem)
     }
 
+    const handleCloseAddModal = () => {
+        setOpenAddEventModal(false);
+    }
+    const handleOpenAddModal = (time) => {
+        if (props.editable) return
+        setOpenAddEventModal(true);
+    }
+
     const handler = (values) => {
         if (props.editable) return;
         setChHandler(() => values.chHandler);
@@ -49,9 +65,9 @@ function MonthCalendar(props) {
     }
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
     const today = new Date();
-    let firstDayOfTheMonth = new Date();
-    firstDayOfTheMonth.setDate(0);
-    firstDayOfTheMonth.setDate(firstDayOfTheMonth.getDate() - [6,0,1,2,3,4,5][firstDayOfTheMonth.getDay()] - 1);
+    let curMonth = new Date(today.getFullYear(), today.getMonth()+monthDiff);
+    let cur = new Date(curMonth)
+    cur.setDate(cur.getDate() - [6,0,1,2,3,4,5][cur.getDay()] - 1);
     return (
         <>
             <Rnd disableDragging={!props.editable} enableResizing={props.editable} size={{ width: width,  height: height }}
@@ -64,7 +80,7 @@ function MonthCalendar(props) {
                 setX(position.x);
                 setY(position.y);
             }}>
-                <h2> {monthNames[today.getMonth()]} {today.getFullYear()} </h2>
+                <h2> {monthNames[curMonth.getMonth()]} {curMonth.getFullYear()} </h2>
                 <div className="dayOfTheWeek">
                     <div className="monthDayName">Mon</div>
                     <div className="monthDayName">Tue</div>
@@ -75,26 +91,34 @@ function MonthCalendar(props) {
                     <div className="monthDayName">Sun</div>
                 </div>
                 <DeleteComponentButton editable={props.editable} id={props.id} deleteComponent={props.deleteComponent} />
+                <ChangeCalendarTimeButtons changeTime={changeMonthDiff} />
+                <button className="newButton" style={{position: 'absolute', top: '5px', right: '80px', height: 'fit-content'}} onClick={() => {
+                    handleOpenAddModal()
+                }}>
+                    <AddIcon/> New
+                </button>
                 <div className="monthCalendarRoot" >
                     {[...Array(gridHeight*gridWidth)].map((_,i) => {
-                        firstDayOfTheMonth.setDate(firstDayOfTheMonth.getDate() + 1);
+                        cur.setDate(cur.getDate() + 1);
                         return (
-                            <div className="monthDay" key={i} style={{ backgroundColor: today.getMonth() === firstDayOfTheMonth.getMonth() ? '#1d2021' : '#1d212040'}}>
-                                <div className={today.toDateString()===firstDayOfTheMonth.toDateString() ? 'currentDateNumber' : "dateNumber"} >
-                                    {firstDayOfTheMonth.getDate()}
+                            <div className="monthDay" key={i} style={{ backgroundColor: today.getMonth() === cur.getMonth() ? '#1d2021' : '#1d212040'}}>
+                                <div className={today.toDateString()===cur.toDateString() ? 'currentDateNumber' : "dateNumber"} >
+                                    {cur.getDate()}
                                 </div>
                                 {[...props.userData.events.lectures.keys()]
                                 .map((e) => props.userData.events.lectures.get(e))
-                                .filter((item) => new Date(item.time).toDateString() === firstDayOfTheMonth.toDateString())
+                                .filter((item) => new Date(item.time).toDateString() === cur.toDateString())
                                 .sort((a,b) => new Date(a.time) - new Date(b.time))
                                 .map((item,index) => {
                                     return <ClickableCalendarEvent
-                                        item = {item}
-                                        handler = {handler}
-                                        key = {item.id}
-                                        draw = {["title"]}
-                                        sx = {{'overflow': 'hidden', 'whiteSpace': 'nowrap'}}
-                                    />
+                                            item = {item}
+                                            title = {[...props.userData.courses.values()].filter(e => e.id === item.course)[0].title}
+                                            duration = {item.duration}
+                                            handler = {handler}
+                                            key = {item.id}
+                                            draw = {["title"]}
+                                            sx = {{'overflow': 'hidden', 'whiteSpace': 'nowrap'}}
+                                        />
                                 })}
                             </div>
                         )
@@ -107,6 +131,7 @@ function MonthCalendar(props) {
                 open = {openEventModal}
                 item = {selectedItem}
             />
+            <AddEvent courses={props.userData.courses} events={props.userData.events} handleAdd={props.handleAdd} time={new Date().toISOString().slice(0,16)} open={openAddEventModal} onClose={handleCloseAddModal}/>
         </>
     )
 }

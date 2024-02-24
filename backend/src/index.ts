@@ -1,10 +1,7 @@
 import Express from "express";
-import { assertEquals } from "./utils/assert";
 import { db } from "./DBConnection";
 import { getRandomID } from "./utils/getRandomID";
 import { validateUserData } from "./utils/validateUserData";
-import { fromStatus, toStatus } from "./utils/toStatus";
-import { fromPriority, toPriority } from "./utils/toPriority";
 
 const cors = require('cors');
 const dotenv = require('dotenv');

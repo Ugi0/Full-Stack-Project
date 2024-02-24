@@ -31,7 +31,7 @@ app.get('/lectures', async (req, res) => {
         success: false
         })
     }
-    })
+})
     
 app.post('/lectures', async (req, res) => {
     try {
@@ -65,7 +65,7 @@ app.post('/lectures', async (req, res) => {
     }
 })
 
-app.delete('lectures', async (req, res) => {
+app.delete('/lectures', async (req, res) => {
     try {
         let token = req.headers.token;
         let decoded = jwt.verify(token, process.env.PRIVATE_KEY);

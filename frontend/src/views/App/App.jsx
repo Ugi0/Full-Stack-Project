@@ -222,7 +222,7 @@ function App() {
         }
         item.width = cur.width;
         item.height = cur.height;
-        if (shallowEqual(saved, cur)) break;
+        if (shallowEqual(saved, item)) continue;
         saveViewElement(item);
       }
     }

@@ -40,7 +40,7 @@ function Navigation(props) {
                 <div className="NavigationList">
                     {[...props.views.values()].map((e,i) => {
                         return (
-                            <div className="NavigationItem" key={i} onClick={(event) => { if (!event.target.outerHTML.includes('path')) props.setSelectedView(e.id) }} >
+                            <div className="NavigationItem" key={i} onClick={(event) => { props.setSelectedView(e.id) }} >
                                 <p> {renderItemTitle(e)} </p>
                                 {renderDelete(e)}
                             </div>

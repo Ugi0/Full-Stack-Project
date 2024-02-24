@@ -25,6 +25,8 @@ function CourseItemModal(props) {
         }
     }, [props.item])
 
+    // image title and it's name in the icons folder
+    // Ideally the icons would be hosted somewhere instead of packaged in the frontend build
     const iconOptions = useMemo(() => [
         {value: "Computer Science",     icon: "computer_science"},
         {value: "Economics",            icon: 'economics'},

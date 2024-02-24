@@ -1,0 +1,33 @@
+
+.changeCalendarTimeRoot {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
+
+.changeCalendarTimeRoot button {
+    background: none;
+    border: none;
+    padding: 10px;
+}
+
+.changeCalendarTimeRoot button:hover {
+    cursor: pointer;
+}
+
+.changeCalendarTimeRoot .arrow {
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+}
+
+.changeCalendarTimeRoot .right {
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+}
+
+.changeCalendarTimeRoot .left {
+    transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+}

@@ -6,6 +6,7 @@ import ClickableCalendarEvent from "../../../components/clickableCalendarEvent/c
 import AddEvent from "../../../components/addEvent/addEvent";
 import EventModal from "../../../components/eventModal/eventModal";
 import DeleteComponentButton from "../../../components/deleteComponentButton/deleteComponentButton";
+import ChangeCalendarTimeButtons from "../../../components/changeCalendarTime/changeCalendarTime";
 import { getEventCount, getAsList } from "../../../utils/inputElements";
 import { getWeek } from "../../../utils/getWeek";
 
@@ -19,6 +20,10 @@ function WeekCalendar(props) {
     const [y, setY] = useState(props.sx.y);
     const [width, setWidth] = useState(props.sx.width);
     const [height, setHeight] = useState(props.sx.height);
+
+    const [dayDiff, setDayDiff] = useState(0);
+
+    const changeDayDiff = (value) => setDayDiff(dayDiff+value);
 
     const [openEventModal, setOpenEventModal] = useState(false);
     const [openAddEventModal, setOpenAddEventModal] = useState(false);
@@ -63,8 +68,9 @@ function WeekCalendar(props) {
         setOpenEventModal(false);
     }
     const today = new Date();
-    let cur = new Date();
-    cur.setDate(today.getDate()-[6,0,1,2,3,4,5][today.getDay()]); //Set current to previous monday
+    let curWeek = new Date(today.getFullYear(), today.getMonth(),  today.getDate()+7*dayDiff);
+    let cur = new Date(curWeek)
+    cur.setDate(curWeek.getDate()-[6,0,1,2,3,4,5][curWeek.getDay()]); //Set current to previous monday
     const monday = new Date(cur);
     cur.setDate(cur.getDate() -1);
     return (
@@ -80,14 +86,15 @@ function WeekCalendar(props) {
             setY(position.y);
         }}>
             <div className="weekNumber"> 
-                <h2> Week {getWeek(today)} </h2>
+                <h2> Week {getWeek(curWeek)} </h2>
             </div>
             <DeleteComponentButton editable={props.editable} id={props.id} deleteComponent={props.deleteComponent} />
+            <ChangeCalendarTimeButtons changeTime={changeDayDiff} />
             <div className="weekCalendarRoot">
                 {
                 days.map((day, index) => {
-                    const isItToday = today.getDay() === [1,2,3,4,5,6,0][index];
                     cur.setDate(cur.getDate()+1);
+                    const isItToday = today.toISOString() === cur.toISOString();
                     return (
                         <div className="weekDay" key={index} style={{ backgroundColor: isItToday ? '#3c4543' : '#1d2120'}}>
                             <div className="dayName">
