@@ -113,6 +113,7 @@ function CourseItemModal(props) {
                     />
                 </div>
                 <IconButton sx={{position:'absolute', top:0, right:0}} onClick={() => {
+                        if (!selectedSubject) return;
                         props.handleSubmit({title, description, subject: selectedSubject, item: props.item})
                         reset();
                         props.switchOpen();

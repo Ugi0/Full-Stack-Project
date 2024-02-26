@@ -42,7 +42,7 @@ function App() {
       case 0:
         if (item.size === 2) return <MonthCalendar id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
         if (item.size === 1) return <WeekCalendar id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
-        if (item.size === 0) return <DayCalendar id={item.id} deleteComponent={deleteComponent}  innerRef={item.ref} key={index} handleAdd={handleAdd} editable={editable} weekday={"Saturday"} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        if (item.size === 0) return <DayCalendar id={item.id} deleteComponent={deleteComponent}  innerRef={item.ref} key={index} handleAdd={handleAdd} editable={editable} weekday={item.data} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
         break;
       case 1:
         if (item.size === 0) return <CoursesView id={item.id} courses={courses} deleteComponent={deleteComponent} editable={editable} innerRef={item.ref} key={index} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} addCourse={(course) => handleAdd("courses", course)} deleteCourse={(id) => handleDelete('courses', id)}  />
@@ -115,6 +115,19 @@ function App() {
       fetchData('events'),
       fetchData('exams'),
       fetchData('courses')]).then(e => {
+        const cookies = new Cookies();
+        if (!cookies.get('token')) {
+          setRedirect(true);
+          setRedirectLocation("login")
+          } else {
+            checkToken(cookies.get('token')).then(res => {
+              if (res === false) {
+                cookies.remove('token');
+                setRedirect(true);
+                setRedirectLocation("login");
+              }
+        });
+        }
         if (e === undefined || e[0] === undefined) return;
         let newMap = new Map();
         e[0].sort((a,b) => a.title.localeCompare(b.title))
@@ -162,23 +175,10 @@ function App() {
           newMap.set(course.id, course);
         }
         setCourseMapState(newMap);
-        const cookies = new Cookies();
         let result = fetchViewData(0, cookies.get('token'))
         newMap = new Map();
         newMap.set(0, result.data ?? [])
         setViewElements(newMap)
-        if (!cookies.get('token')) {
-          setRedirect(true);
-          setRedirectLocation("login")
-        } else {
-          checkToken(cookies.get('token')).then(res => {
-            if (res === false) {
-              cookies.remove('token');
-              setRedirect(true);
-              setRedirectLocation("login");
-            }
-      });
-    }
       })
   }, [])
   
@@ -220,7 +220,7 @@ function App() {
       if ('id' in data) {
         deleteData(table, data.id)
       }
-      updateData(table, responseJSON.id, {...data, id: responseJSON.id});
+      updateData(table, responseJSON.id, {...data, id: responseJSON.id, type: table});
     }
   }
 
