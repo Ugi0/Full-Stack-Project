@@ -5,3 +5,12 @@
   width: 100vw;
   color: whitesmoke;
 }
+
+.NavAndComponents {
+  display: flex;
+  flex-direction: row;
+}
+
+.Components {
+  flex-grow: 1;
+}

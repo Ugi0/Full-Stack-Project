@@ -54,7 +54,7 @@ function CoursesView(props) {
         <>
         <Rnd disableDragging={!props.editable} enableResizing={props.editable} size={{ width: width,  height: height }}
         position={{ x: x, y: y }}
-        style={{border: props.editable ? "solid whitesmoke 1px" : ""}}
+        style={{border: props.editable ? "solid whitesmoke 1px" : "", position: 'relative'}}
         onDragStop={(e, d) => { setX(d.x); setY(d.y); }}
         onResizeStop={(e, direction, ref, delta, position) => {
             setWidth(`${Math.max(Number(ref.style.width.slice(0,-2)), 200)}px`)

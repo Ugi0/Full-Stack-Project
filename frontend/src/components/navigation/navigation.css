@@ -1,13 +1,19 @@
 
+.NavigationRoot {
+    position: relative;
+    width: fit-content;
+}
+
 .Navigation {
     padding: 0 25px 0 25px;
     width: fit-content;
     max-width: 200px;
     font-family: 'MonofontoRG';
     display: flex;
+    position: relative;
     flex-direction: column;
     height: 60vh;
-    border-right: 1px red solid;
+    border-right: solid 1px darkgray;
 }
 
 .Navigation p {
@@ -37,6 +43,19 @@
     color: whitesmoke;
     font-style: normal;
     margin: 5px 5px 5px 10px;
+}
+
+.navCloseButton {
+    position: absolute;
+    top: 0;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 25px;
+}
+
+.navCloseButton:hover {
+    cursor: pointer;
 }
 
 .addView {

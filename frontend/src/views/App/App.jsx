@@ -291,10 +291,14 @@ function App() {
     <div className="App">
       <Banner />
       <Divider views={views} selectedView={selectedView} />
-      <Navigation views={views} editable={editable} setSelectedView={updateSelectedView} addView={(title) => handleAdd("views", {title: title})} deleteView={(id) => handleDelete("views", id)}/>
-      {(viewElements.get(selectedView) ?? []).map((e,i) => {
-        return chooseComponent(e,i)
-      })}
+      <div className='NavAndComponents'>
+        <Navigation views={views} editable={editable} setSelectedView={updateSelectedView} addView={(title) => handleAdd("views", {title: title})} deleteView={(id) => handleDelete("views", id)}/>
+          <div className='Components'>
+          {(viewElements.get(selectedView) ?? []).map((e,i) => {
+            return chooseComponent(e,i)
+          })}
+        </div>
+      </div>
       <AddComponents editable={editable} toggleEditable={toggleEditable} saveViewElement={addDataToElement} />
     </div>
   );

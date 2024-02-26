@@ -10,6 +10,12 @@ function Navigation(props) {
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState("");
 
+    const [navOpen, setNavOpen] = useState(false);
+
+    const ToggleNav = () => {
+        setNavOpen(!navOpen);
+    }
+
     const renderAdd = () => {
         if (props.editable) {
             return (
@@ -33,21 +39,31 @@ function Navigation(props) {
         }
         return item.title
     }
+    const renderCloseButton = () => {
+        return (
+            <button onClick={() => ToggleNav()} className="navCloseButton" style={{left: `${ navOpen ? '10px' : '150px'}`}}>
+                { navOpen ? '→' : '←'}
+            </button>
+        )
+    }
     return (
         <>
-            <div className="Navigation">
-                <p>Navigation</p>
-                <div className="NavigationList">
-                    {[...props.views.values()].map((e,i) => {
-                        return (
-                            <div className="NavigationItem" key={i} onClick={(event) => { props.setSelectedView(e.id) }} >
-                                <p> {renderItemTitle(e)} </p>
-                                {renderDelete(e)}
-                            </div>
-                        )
-                    })}
-                    {renderAdd()}
+            <div className="NavigationRoot">
+                <div className="Navigation" style={{display: `${ navOpen ? 'none' : ""}`}}>
+                    <p>Navigation</p>
+                    <div className="NavigationList">
+                        {[...props.views.values()].map((e,i) => {
+                            return (
+                                <div className="NavigationItem" key={i} onClick={(event) => { props.setSelectedView(e.id) }} >
+                                    <p> {renderItemTitle(e)} </p>
+                                    {renderDelete(e)}
+                                </div>
+                            )
+                        })}
+                        {renderAdd()}
+                    </div>
                 </div>
+                {renderCloseButton()}
             </div>
             <Modal
                 open={open}
