@@ -30,10 +30,9 @@ export const getEventCount = (events, curDate) => {
 }
 
 export const getAsList = (events, curDate) => {
-    let res = [];
-    return res.concat([...events.values()]
+    return Object.values(events).map((list) => [...list.values()]).flat(1)
         .filter((e) => {
             return new Date(e.time.split("T")[0]).toDateString() === curDate
-        }))
+        })
         .sort((a,b) => new Date(a.time) - new Date(b.time))
 }

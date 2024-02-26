@@ -42,7 +42,7 @@ function App() {
       case 0:
         if (item.size === 2) return <MonthCalendar id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
         if (item.size === 1) return <WeekCalendar id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} key={index} handleAdd={handleAdd} handleDelete={handleDelete} editable={editable} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
-        if (item.size === 0) return <DayCalendar id={item.id} deleteComponent={deleteComponent} handleAdd={handleAdd} innerRef={item.ref} editable={editable} weekday={"Saturday"} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        if (item.size === 0) return <DayCalendar id={item.id} deleteComponent={deleteComponent}  innerRef={item.ref} key={index} handleAdd={handleAdd} editable={editable} weekday={"Saturday"} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
         break;
       case 1:
         if (item.size === 0) return <CoursesView id={item.id} courses={courses} deleteComponent={deleteComponent} editable={editable} innerRef={item.ref} key={index} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} addCourse={(course) => handleAdd("courses", course)} deleteCourse={(id) => handleDelete('courses', id)}  />
@@ -111,7 +111,9 @@ function App() {
       fetchData('views'),
       fetchData('lectures'),
       fetchData('assignments'),
+      fetchData('projects'),
       fetchData('events'),
+      fetchData('exams'),
       fetchData('courses')]).then(e => {
         if (e === undefined || e[0] === undefined) return;
         let newMap = new Map();
@@ -137,13 +139,25 @@ function App() {
         }
         setAssignmentsMapState(newMap)
         newMap = new Map();
-        for (let event of e[3]) {
+        for (let project of e[3]) {
+          project.type = "projects";
+          newMap.set(project.id, project);
+        }
+        setProjectsMapState(newMap)
+        newMap = new Map();
+        for (let event of e[4]) {
           event.type = "events";
           newMap.set(event.id, event);
         }
         setEventsMapState(newMap)
         newMap = new Map();
-        for (let course of e[4]) {
+        for (let exam of e[5]) {
+          exam.type = "exams";
+          newMap.set(exam.id, exam);
+        }
+        setExamsMapState(newMap);
+        newMap = new Map();
+        for (let course of e[6]) {
           course.type = "courses";
           newMap.set(course.id, course);
         }

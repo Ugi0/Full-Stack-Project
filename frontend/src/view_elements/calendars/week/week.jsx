@@ -9,6 +9,7 @@ import DeleteComponentButton from "../../../components/deleteComponentButton/del
 import ChangeCalendarTimeButtons from "../../../components/changeCalendarTime/changeCalendarTime";
 import { getEventCount, getAsList } from "../../../utils/inputElements";
 import { getWeek } from "../../../utils/getWeek";
+import { getCalendarWeekRenders } from "../../../utils/calendarEventRenders";
 
 function WeekCalendar(props) {
     //Modal can't be closed if it's placed inside the Rnd
@@ -103,26 +104,16 @@ function WeekCalendar(props) {
                                     {getEventCount(props.userData.events, cur.toDateString())}
                                 </p>
                             </div>
-                            { getAsList(props.userData.events.lectures, cur.toDateString())
+                            { getAsList(props.userData.events, cur.toDateString())
                                 .map((item) => {
                                     return (
                                         <ClickableCalendarEvent
                                             item = {item}
-                                            title = {[...props.userData.courses.values()].filter(e => e.id === item.course)[0].title}
                                             duration = {item.duration}
                                             handler = {handler} key = {item.id}
-                                            draw = {["title", "icon", "time", "duration"]} sx = {{padding: '5px 0 5px 0'}}
-                                        />
-                                    )
-                                })
-                            }
-                            { getAsList(props.userData.events.assignments, cur.toDateString())
-                                .map((item) => {
-                                    return (
-                                        <ClickableCalendarEvent
-                                            item = {item}
-                                            handler = {handler} key = {item.id}
-                                            draw = {["title", "icon"]} sx = {{padding: '5px 0 5px 0'}}
+                                            draw = {getCalendarWeekRenders(item.type)} sx = {{padding: '5px 0 5px 0'}}
+                                            //React magic to add 'title' props if item object doesn't have a title
+                                            {...(!('title' in item) ? {title: [...props.userData.courses.values()].filter(e => e.id === item.course)[0].title} : {})}
                                         />
                                     )
                                 })

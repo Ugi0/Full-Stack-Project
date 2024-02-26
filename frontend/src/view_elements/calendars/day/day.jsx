@@ -38,7 +38,7 @@ function DayCalendar(props) {
                         <h5> {props.weekday} </h5>
                         <DeleteComponentButton editable={props.editable} id={props.id} deleteComponent={props.deleteComponent} />
                         <div className="dayCalendarEvents">
-                            {getAsList(props.userData.events.lectures, cur.toDateString()).map((item,index) => (
+                            {getAsList(props.userData.events, cur.toDateString()).map((item,index) => (
                                 (<div key={index} className="dayCalendarEvent">
                                     <input type="checkbox" checked={item.completed} onChange={() => handleBoxClick(item)}/>
                                     <p style={{textDecoration: `${item.completed ? "line-through" : ""}`}}>

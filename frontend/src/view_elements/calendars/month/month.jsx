@@ -7,6 +7,8 @@ import AddEvent from "../../../components/addEvent/addEvent";
 import ClickableCalendarEvent from "../../../components/clickableCalendarEvent/clickableCalendarEvent";
 import ChangeCalendarTimeButtons from "../../../components/changeCalendarTime/changeCalendarTime";
 import DeleteComponentButton from "../../../components/deleteComponentButton/deleteComponentButton";
+import { getCalendarMonthRenders } from "../../../utils/calendarEventRenders";
+import { getAsList } from "../../../utils/inputElements";
 
 function MonthCalendar(props) {
     const gridHeight = 5;
@@ -105,19 +107,15 @@ function MonthCalendar(props) {
                                 <div className={today.toDateString()===cur.toDateString() ? 'currentDateNumber' : "dateNumber"} >
                                     {cur.getDate()}
                                 </div>
-                                {[...props.userData.events.lectures.keys()]
-                                .map((e) => props.userData.events.lectures.get(e))
-                                .filter((item) => new Date(item.time).toDateString() === cur.toDateString())
-                                .sort((a,b) => new Date(a.time) - new Date(b.time))
-                                .map((item,index) => {
+                                { getAsList(props.userData.events, cur.toDateString())
+                                    .map((item) => {
                                     return <ClickableCalendarEvent
                                             item = {item}
-                                            title = {[...props.userData.courses.values()].filter(e => e.id === item.course)[0].title}
                                             duration = {item.duration}
-                                            handler = {handler}
-                                            key = {item.id}
-                                            draw = {["title"]}
-                                            sx = {{'overflow': 'hidden', 'whiteSpace': 'nowrap'}}
+                                            handler = {handler} key = {item.id}
+                                            draw = {getCalendarMonthRenders(item.type)} sx = {{'overflow': 'hidden', 'whiteSpace': 'nowrap'}}
+                                            //React magic to add 'title' props if item object doesn't have a title
+                                            {...(!('title' in item) ? {title: [...props.userData.courses.values()].filter(e => e.id === item.course)[0].title} : {})}
                                         />
                                 })}
                             </div>
