@@ -179,7 +179,7 @@ function AddEvent(props){
             case '0':
                 props.handleAdd("lectures",{
                     course: chosenCourse,
-                    title: title, description: description,
+                    description: description,
                     time: time, duration: duration,
                     repeating: repeating, repeatingTime: repeatingTime,
                     completed: false
