@@ -34,7 +34,7 @@ function Register() {
                     salt: salt
                 })
             };
-            const response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/register`, requestOptions)
+            const response = await fetch(`${myConfig.http}://${myConfig.BackendLocation}:${myConfig.BackendPort}/register`, requestOptions)
                 .catch(error => {
                     console.log(error)
                 });

@@ -10,7 +10,7 @@ export async function saveViewElement(item) {
         viewelement: item
       })
     };
-    let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/viewelements`, requestOptions)
+    let response = await fetch(`${myConfig.http}://${myConfig.BackendLocation}:${myConfig.BackendPort}/viewelements`, requestOptions)
             .catch(error => {
                 console.log("1",error)
             });
@@ -32,7 +32,7 @@ export async function deleteViewElement(id) {
       id: id
     })
   };
-  let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/viewelements`, requestOptions)
+  let response = await fetch(`${myConfig.http}://${myConfig.BackendLocation}:${myConfig.BackendPort}/viewelements`, requestOptions)
           .catch(error => {
               console.log("1",error)
           });

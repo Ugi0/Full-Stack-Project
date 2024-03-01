@@ -5,7 +5,7 @@ export async function fetchViewData(id, token) {
       method: 'GET',
       headers: { 'Content-Type': 'application/json', 'token': token }
     };
-    let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/viewelements/${id}`, requestOptions)
+    let response = await fetch(`${myConfig.http}://${myConfig.BackendLocation}:${myConfig.BackendPort}/viewelements/${id}`, requestOptions)
             .catch(error => {
                 console.log("1",error)
             });

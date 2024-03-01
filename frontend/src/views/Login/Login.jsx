@@ -28,7 +28,7 @@ function Login() {
                     username: username
                 })
             };
-            let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/login`, requestOptions)
+            let response = await fetch(`${myConfig.http}://${myConfig.BackendLocation}:${myConfig.BackendPort}/login`, requestOptions)
                     .catch(error => {
                         console.log(error)
                     });
@@ -42,7 +42,7 @@ function Login() {
                         password: bcrypt.hashSync(password, responseJSON.salt)
                     })
                 }
-                response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/login`, requestOptions)
+                response = await fetch(`${myConfig.http}://${myConfig.BackendLocation}:${myConfig.BackendPort}/login`, requestOptions)
                     .catch(error => {
                         console.log(error)
                     })
@@ -89,7 +89,7 @@ function Login() {
             method: 'GET',
             headers: { 'Content-Type': 'application/json', 'token': cookies.get('token') }
         }
-        fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/verifyToken`, requestOptions).then((res) => {
+        fetch(`${myConfig.http}://${myConfig.BackendLocation}:${myConfig.BackendPort}/verifyToken`, requestOptions).then((res) => {
             res.json().then(e => {
                 if (e.success) { //User already has a valid token
                     setRedirect(true)

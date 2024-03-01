@@ -7,7 +7,7 @@ export async function fetchData(table) {
       method: 'GET',
       headers: { 'Content-Type': 'application/json', 'token': cookies.get('token') },
     };
-    let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/${table}`, requestOptions)
+    let response = await fetch(`${myConfig.http}://${myConfig.BackendLocation}:${myConfig.BackendPort}/${table}`, requestOptions)
             .catch(error => {
                 console.log("1",error)
             });

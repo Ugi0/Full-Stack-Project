@@ -191,7 +191,7 @@ function App() {
           id: id
       })
     };
-    let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/${table}`, requestOptions)
+    let response = await fetch(`${myConfig.http}://${myConfig.BackendLocation}:${myConfig.BackendPort}/${table}`, requestOptions)
             .catch(error => {
               console.log("2",error)
             });
@@ -211,7 +211,7 @@ function App() {
           [table.slice(0,-1)]: data //Remove last character of the table
       })                            //courses -> course
     };
-    let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/${table}`, requestOptions)
+    let response = await fetch(`${myConfig.http}://${myConfig.BackendLocation}:${myConfig.BackendPort}/${table}`, requestOptions)
             .catch(error => {
             console.log("3",error)
             });

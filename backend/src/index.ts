@@ -3,17 +3,29 @@ import { db } from "./DBConnection";
 import { getRandomID } from "./utils/getRandomID";
 import { validateUserData } from "./utils/validateUserData";
 
+const fs = require('fs')
+
 const cors = require('cors');
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 
+const http = require('http');
+const https = require('https');
+
+const privateKey  = fs.readFileSync('../sslcert/server.key', 'utf8');
+const certificate = fs.readFileSync('../sslcert/server.crt', 'utf8');
+
+let credentials = {key: privateKey, cert: certificate};
+
 dotenv.config()
 
 const app = Express();
-const port = 8080
 
-app.use(cors())
+app.use(cors());
 app.use(Express.json());
+
+http.createServer(app).listen(8080);
+https.createServer(credentials, app).listen(8443);
 
 require('./routes/assignments')(app);
 require('./routes/courses')(app);
@@ -23,10 +35,6 @@ require('./routes/lectures')(app);
 require('./routes/projects')(app);
 require('./routes/viewelements')(app);
 require('./routes/views')(app);
-
-app.listen(port, () => {
-  console.log(`App listening at http://localhost:${port}`)
-})
 
 app.post('/register', async (req, res) => {
   try {
