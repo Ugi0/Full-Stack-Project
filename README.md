@@ -14,7 +14,7 @@ Things that I wanted for a calendar app:
 * Combine courses, assignments, exams, projects and events into a single application that you can customize easily.
 * App would remind you and keep track of progress
 
-Currently hosted at: http://16.170.248.48/
+Currently hosted at: www.studentcalendar.xyz
 
 ### Built With
 
