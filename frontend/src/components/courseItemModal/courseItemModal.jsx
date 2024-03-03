@@ -9,7 +9,7 @@ import { getFilename } from '../../utils/getFileName';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const icons = new Map();
-const iconsFolder = require.context('../../images/icons/', true);
+const iconsFolder = require.context('../../images/course_icons/', true);
 iconsFolder.keys().map(image => icons.set(getFilename(image), iconsFolder(`${image}`)));
 
 function CourseItemModal(props) {

@@ -1,0 +1,85 @@
+
+.ProjectListRoot {
+    position: absolute;
+    left: 250px;
+    top: 250px;
+    width: 800px;
+}
+
+#ProjectList {
+    border-left: 1px #F5F5F530 solid;
+    border-bottom: 1px #F5F5F530 solid;
+    border-top: 1px #F5F5F530 solid;
+}
+
+.ProjectListIconName {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-bottom: 2px whitesmoke solid;
+    width: fit-content;
+}
+
+.ProjectListIconName * {
+    margin: 3px;
+    font-size: 13px;
+    fill: whitesmoke;
+}
+
+.ProjectListTitles {
+    display: flex;
+    flex-direction: row;
+    color: gray;
+    font-size: 10px;
+    border-top: 1px #F5F5F530 solid;
+}
+
+.ProjectListTitle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    fill: gray;
+    width: 20%;
+    border-bottom: 1px #F5F5F530 solid;
+    border-right: 1px #F5F5F530 solid;
+    padding: 2px;
+}
+
+.ProjectListTitle * {
+    margin: 5px;
+}
+
+.ProjectListValues {
+    display: flex;
+    flex-direction: row;
+    font-size: 15px;
+}
+
+.ProjectListValues:hover {
+    cursor: pointer;
+}
+
+.ProjectListValues * {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: fit-content;
+}
+
+.ProjectListValue {
+    width: 20%;
+    align-items: center;
+    border-right: 1px #F5F5F530 solid;
+    padding: 4px;
+    height: 30px;
+    font-size: 14px;
+}
+
+.ProjectListValue p {
+    margin: 0 2px 0 2px;
+}
+
+#ProjectListStatus {
+    border-radius: 20px;
+    width: fit-content;
+}

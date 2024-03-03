@@ -5,11 +5,7 @@ import CourseItem from '../../../components/courseItem/courseItem'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import DeleteComponentButton from "../../../components/deleteComponentButton/deleteComponentButton";
 import CourseItemModal from '../../../components/courseItemModal/courseItemModal';
-import { getFilename } from '../../../utils/getFileName';
-
-const icons = new Map();
-const iconsFolder = require.context('../../../images/icons/', true);
-iconsFolder.keys().map(image => icons.set(getFilename(image), iconsFolder(`${image}`)));
+import { Icons } from '../../../utils/icons';
 
 function CoursesView(props) {
     const [x, setX] = useState(props.sx.x);
@@ -47,7 +43,7 @@ function CoursesView(props) {
 
     const courseIconsFromSubject = (subject) => {
         let icon = subject.toLowerCase().replace(" ","_");
-        return [icons.get(icon), icons.get(`${icon}_color`)]
+        return [Icons.get(icon), Icons.get(`${icon}_color`)]
     }
 
     return (

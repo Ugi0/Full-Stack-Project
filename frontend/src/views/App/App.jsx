@@ -17,6 +17,7 @@ import { checkToken } from '../../api/checkToken.js';
 import { fetchViewData } from '../../api/fetchViewData.js';
 import { saveViewElement, deleteViewElement } from '../../api/saveViewElement.js';
 import { defaultViewSize } from '../../api/defaultViewSizes.js';
+import ProjectList from '../../view_elements/projects/ProjectList/ProjectList.jsx';
 
 function App() {
   // Make so App contains all of the information that is needed to render
@@ -308,6 +309,7 @@ function App() {
       <div className='NavAndComponents'>
         <Navigation views={views} editable={editable} setSelectedView={updateSelectedView} addView={(title) => handleAdd("views", {title: title})} deleteView={(id) => handleDelete("views", id)}/>
           <div className='Components'>
+          <ProjectList projects={projects} courses={courses}/>
           {(viewElements.get(selectedView) ?? []).map((e,i) => {
             return chooseComponent(e,i)
           })}
