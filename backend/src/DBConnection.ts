@@ -82,6 +82,7 @@ interface assignments {
     course: string,
     priority: number,
     status: number,
+    started: Date,
     time: Date,
     grade: string,
     completed: boolean
@@ -95,6 +96,7 @@ interface projects {
     status: number,
     type: string,
     priority: number,
+    started: Date,
     time: Date,
     data: string,
     completed: boolean

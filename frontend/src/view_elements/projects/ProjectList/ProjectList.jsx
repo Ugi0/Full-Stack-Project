@@ -3,21 +3,32 @@ import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 import AbcIcon from '@mui/icons-material/Abc';
 import ViewTimelineIcon from '@mui/icons-material/ViewTimeline';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import CircleIcon from '@mui/icons-material/Circle';
+import EventModal from '../../../components/eventModal/eventModal';
 import { Icons } from '../../../utils/icons';
 import './ProjectList.css'
+import { useState } from 'react';
 
 function ProjectList(props) {
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedItem, setSelectedItem] = useState({})
     
     const getStatusColor = (status) => {
         switch (status) {
             case "Not started":
-                return '#5a5a5a'
+                return '#AFEEEE'
             case "In progress":
-                return '#294873'
+                return '#FCE205'
+            case "Stopped":
+                return '#324AB2'
+            case "Delayed":
+                return '#DE1738'
+            case "Done":
+                return '#39ff14'
             default:
                 throw new Error("Not valid status")
         }
@@ -32,9 +43,9 @@ function ProjectList(props) {
             case "Medium":
                 return '#3b3b3b'
             case "High":
-                return '#562e28'
+                return '#7C0A02'
             case "Urgent":
-                return '#562e28'
+                return '#FF0000'
             default:
                 throw new Error("Not valid status")
         }
@@ -45,19 +56,65 @@ function ProjectList(props) {
             case "High":
                 return <PriorityHighIcon fill='#562e28' />
             case "Urgent":
-                return <div><PriorityHighIcon fill='#562e28' /><PriorityHighIcon fill='#562e28' /></div>
+                return <PriorityHighIcon fill='#562e28' />
             default:
                 return
         }
     }
 
-    const handleProjectClick = () => {
-        //TODO Open a modal to edit project
+    const getTimeText = (time, started) => {
+        time = new Date(time);
+        if (started !== "") {
+            started = new Date(started);
+            return `${started.getUTCDate()}/${started.getMonth()}/${started.getFullYear()} → ${time.getUTCDate()}/${time.getMonth()}/${time.getFullYear()}`
+        } else {
+            return `${time.getUTCDate()}/${time.getMonth()}/${time.getFullYear()}`
+        }
     }
 
-    //TODO Add checkpoints to project creation that will be shown in the To Do part
-    //TODO When project is moved from "Not Started", mark the time to be shown in timeframe
+    const handleProjectClick = (item) => {
+        setSelectedItem(item)
+        setOpenModal(true)
+    }
 
+    const deleteEvent = () => {
+        setOpenModal(false)
+        props.handleDelete(selectedItem.type, selectedItem.id);
+    }
+    const saveEvent = (values) => {
+        const newItem = selectedItem;
+        for (const [key, value] of Object.entries(values)) {
+            newItem[key] = value;
+          }
+        setOpenModal(false)
+        props.handleAdd(selectedItem.type,newItem)
+    }
+
+    const renderNextCheckpoint = (data) => {
+        const items = data.data.split(";")
+                    .map(e => [e.split(",")[0], e.split(",")[1]])
+                    .filter(e => e[0] !== "")
+        const index =  data.data.split(";")
+            .map(e => [e.split(",")[0], e.split(",")[1]])
+            .filter(e => e[0] !== "")
+            .map(e => e[1])
+            .indexOf("0")
+        if (index === -1) {
+            return <>
+                <CheckCircleOutlineIcon />
+                All done
+                </>
+        } else {
+            return <>
+                <input type="checkbox" checked={false} onChange={() => {
+                    items[index][1] = '1'
+                    data.data = items.map(e => `${e[0]},${e[1]}`).join(";")
+                    props.handleAdd(data.type, data)
+                }}/>
+                {items[index][0]}
+            </>
+        }
+    }
 
     return (
         <div className="ProjectListRoot">
@@ -88,34 +145,40 @@ function ProjectList(props) {
                         <p> To Do </p>
                     </div>
                 </div>
-                {[...props.projects.values()].map((e,i) => {
+                {[...props.projects.values()].sort((a,b) => a.time.localeCompare(b.time)).map((e,i) => {
                     const date = new Date(e.time)
                     return (
-                        <div className="ProjectListValues" onClick={handleProjectClick}>
+                        <div key={i} className="ProjectListValues">
                             <div className='ProjectListValue'>
                                 <div id="ProjectListStatus" style={{backgroundColor: getStatusColor(e.status)}}>
                                     <CircleIcon sx={{fontSize: 10}}/>
                                     <p> {e.status} </p>
                                 </div>
                             </div>
-                            <div className='ProjectListValue' id="ProjectListName">
+                            <div className='ProjectListValue' id="ProjectListName" onClick={() => handleProjectClick(e)}>
                                 <p> {e.title} </p>
                             </div>
-                            <div className='ProjectListValue'>
+                            <div className='ProjectListValue' onClick={() => handleProjectClick(e)}>
                                 <div id="ProjectListPriority" style={{backgroundColor: getPriorityColor(e.priority)}}>
                                     {getPriorityIcon(e.priority)}
                                     <p> {e.priority} </p>
                                 </div>
                             </div>
-                            <div className='ProjectListValue' id="ProjectListTime">
-                                <p> {date.getUTCDate()}/{date.getMonth()}/{date.getFullYear()} </p>
+                            <div className='ProjectListValue' id="ProjectListTime" onClick={() => handleProjectClick(e)}>
+                                <p> {getTimeText(e.time, e.started)} </p>
                             </div>
                             <div className='ProjectListValue' id="ProjectListTodo">
-                                <p> To Do </p>
+                                <p> {renderNextCheckpoint(e)}</p>
                             </div>
                         </div>
                 )})}
                 </div>
+                <EventModal 
+                    saveEvent={saveEvent} deleteEvent ={deleteEvent}
+                    handleClose = {() => setOpenModal(false)}
+                    open = {openModal}
+                    item = {selectedItem}
+                />
         </div>
     )
 }

@@ -12,8 +12,11 @@ function EventModal(props) {
     const [modalEditable, setModalEditable] = useState(false);
     const [item, setItem] = useState(props.item)
 
+    const [checkpoint, setCheckpoint] = useState("");
+
     useEffect(() => {
         setItem(props.item);
+        setCheckpoint("")
         setModalEditable(false);
     }, [props.item])
 
@@ -73,7 +76,14 @@ function EventModal(props) {
                 return (
                     <>
                         Status:
-                        <select id="type" onChange={(e) => updateItem("status", e.target.value)}>
+                        <select defaultValue={item.status} id="type" onChange={(e) => {
+                                const newitem = {...item}
+                                if (item.started === "" && e.target.value !== "Not started") {
+                                    newitem.started = new Date().toISOString().slice(0,16);
+                                }
+                                newitem.status = e.target.value;
+                                setItem(newitem);
+                            }}>
                             <option value="Not started">Not started</option>
                             <option value="In progress">In progress</option>
                             <option value="Stopped">Stopped</option>
@@ -117,7 +127,7 @@ function EventModal(props) {
                 return (
                     <>
                         Priority:
-                        <select id="type" onChange={(e) => updateItem("priority", e.target.value)}>
+                        <select defaultValue={item.priority} id="type" onChange={(e) => updateItem("priority", e.target.value)}>
                             <option value="Lowest">Lowest</option>
                             <option value="Low">Low</option>
                             <option value="Medium">Medium</option>
@@ -141,13 +151,61 @@ function EventModal(props) {
             if (modalEditable) {
                 return <>
                     Completed:
-                    <input type="checkbox" checked={item.completed} onChange={(e) => updateItem('completed', !item.completed)}/>
+                    <input type="checkbox" checked={item.completed} onChange={(e) => {
+                        updateItem('completed', !item.completed)
+                        }}/>
                 </>
             } else {
                 return <>
                     Completed: {item.completed ? '✓' : 'X'}
                 </>
             }
+        }
+    }
+    const renderCheckpoints = () => {
+        if (item.data !== undefined) {
+            if (modalEditable) {
+                return (
+                    <div style={{flexDirection: "column", display: 'flex'}}>
+                        New checkpoint
+                        <div>
+                            <input value={checkpoint} onChange={(e) => setCheckpoint(e.target.value)} />
+                            <button onClick={() => updateItem("data", `${item.data}${checkpoint},0;`)}> Save </button>
+                        </div>
+                        <ul style={{listStyle: 'none', padding: 0}}>
+                            {item.data.split(";").map((e,i) => {
+                                if (e !== "") {
+                                    return (
+                                        <li key={i}> 
+                                            <input type="checkbox" checked={e.split(",")[1] === '1'} onChange={() => {
+                                                updateItem('data', item.data.split(";").map(f => f.split(",")[0] === e.split(",")[0] ? `${f.split(",")[0]},${f.split(",")[1] === '1' ? '0' : '1'}` : f).join(";"))
+                                            }} />
+                                            {e.split(",")[0]} 
+                                            <button onClick={() => updateItem("data", `${item.data.split(";").filter(f => e.split(",")[0] !== f.split(",")[0]).join(";")}`)}>Del</button> 
+                                        </li>
+                                    )
+                                }
+                            })}
+                        </ul>
+                    </div>
+                )
+            }
+            return (
+                <div style={{flexDirection: "column", display: 'flex'}}>
+                    {item.data === "" ? "" : "Checkpoints"}
+                    <ul style={{listStyle: 'none', padding: 0}}>
+                        {item.data.split(";").map((e,i) => {
+                            if (e !== "") {
+                                return (
+                                    <li key={i} style={{textDecoration: `${e.split(",")[1] === '0' ? '' : "line-through"}`}}> 
+                                        {e.split(",")[0]} 
+                                    </li>
+                                )
+                            }
+                        })}
+                    </ul>
+                </div>
+            )
         }
     }
     const renderDeleteIcon = () => {
@@ -203,6 +261,7 @@ function EventModal(props) {
                 {renderGrade()}
                 {renderPriority()}
                 {renderCompleted()}
+                {renderCheckpoints()}
 
                 {/* Icons */}
                 <IconButton sx={{position:'absolute', top:0, right:0}} onClick={handleSaveClick}>

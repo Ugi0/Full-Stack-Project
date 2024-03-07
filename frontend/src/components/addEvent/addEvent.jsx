@@ -21,12 +21,18 @@ function AddEvent(props){
 
     const [chosenCourse, setChosenCourse] = useState("");
     const [priority, setPriority] = useState("Lowest");
+
+    const [data, setData] = useState("");
+    const [checkpoint, setCheckpoint] = useState("");
+
     useEffect(() => {
         setTime(props.time);
         setDuration('1:00');
         setType('0');
         setRepeating(false);
         setRepeatingTime('');
+        setCheckpoint("");
+        setData("");
         setChosenCourse([...props.courses.values()].map((item) => item.id)[0])
     }, [props.time, props.courses, props.open])
     const renderTime = () => {
@@ -61,10 +67,34 @@ function AddEvent(props){
         )
     }
 
+    const renderAddCheckpoints = () => {
+        return (
+            <>
+                Add a checkpoint
+                <div>
+                    <input value={checkpoint} onChange={(e) => setCheckpoint(e.target.value)} />
+                    <button onClick={() => setData(`${data}${checkpoint},0;`)}> Save </button>
+                </div>
+                <ul style={{listStyle: 'none', alignItems: 'flex-start'}}>
+                    {data.split(";").map((e,i) => {
+                        if (e !== "") {
+                            return (
+                                <li key={i}> 
+                                    <button onClick={() => setData(`${data.split(";").filter(f => e.split(",")[0] !== f.split(",")[0]).join(";")}`)}>Del</button> 
+                                    {e.split(",")[0]} 
+                                </li>
+                            )
+                        }
+                    })}
+                </ul>
+            </>
+        )
+    }
+
     const renderOptions = () => {
         switch (type) {
             case '0': 
-                return (
+                return ( //lectures
                     <div className="options">
                         {descriptionInput(setDescription)}
                         {renderCourseOptions()}
@@ -84,7 +114,7 @@ function AddEvent(props){
                     </div>
                 )
             case '1':
-                return (
+                return ( //assignments
                     <div className="options">
                         {titleInput(setTitle)}
                         <div>
@@ -109,7 +139,7 @@ function AddEvent(props){
                     </div>
                 )
             case '2':
-                return (
+                return ( //exams
                     <div className="options">
                         {titleInput(setTitle)}
                         <div>
@@ -124,7 +154,7 @@ function AddEvent(props){
                     </div>
                 )
             case '3':
-                return (
+                return ( //events
                     <div className="options">
                         {titleInput(setTitle)}
                         {descriptionInput(setDescription)}
@@ -135,7 +165,7 @@ function AddEvent(props){
                     </div>
                 )
             case '4':
-                return (
+                return ( //projects
                     <div className="options">
                         {titleInput(setTitle)}
                         {descriptionInput(setDescription)}
@@ -153,6 +183,7 @@ function AddEvent(props){
                                 <option value="Urgent">Urgent</option>
                             </select>
                         </div>
+                        {renderAddCheckpoints()}
                     </div>
                 )
             default:
@@ -191,7 +222,8 @@ function AddEvent(props){
                     title: title, description: description,
                     status: "Not started",
                     priority: priority, time: time,
-                    grade: "", completed: false
+                    started: "",
+                    grade: "", completed: false,
                 })
                 break;
             case '2':
@@ -215,8 +247,10 @@ function AddEvent(props){
                     description: description,
                     type: type,
                     priority: priority,
+                    started: "",
                     time: time,
-                    completed: false
+                    completed: false,
+                    data: data
                 })
                 break;
             default:

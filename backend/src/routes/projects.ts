@@ -24,6 +24,7 @@ app.get('/projects', async (req, res) => {
                 status: toStatus(e.status), type: e.type,
                 priority: toPriority(e.priority),
                 title: e.title, description: e.description,
+                started: e.started,
                 data: e.data,
                 completed: e.completed
             }
@@ -51,6 +52,7 @@ app.get('/projects', async (req, res) => {
             status: fromStatus(data.status), type: data.type,
             priority: fromPriority(data.priority),
             title: data.title, description: data.description,
+            started: data.started,
             data: data.data,
             completed: data.completed
         }

@@ -83,3 +83,7 @@
     border-radius: 20px;
     width: fit-content;
 }
+
+#ProjectListStatus p {
+    color: black;
+}

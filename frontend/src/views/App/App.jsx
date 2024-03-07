@@ -309,7 +309,7 @@ function App() {
       <div className='NavAndComponents'>
         <Navigation views={views} editable={editable} setSelectedView={updateSelectedView} addView={(title) => handleAdd("views", {title: title})} deleteView={(id) => handleDelete("views", id)}/>
           <div className='Components'>
-          <ProjectList projects={projects} courses={courses}/>
+          <ProjectList handleAdd={handleAdd} handleDelete={handleDelete} projects={projects} courses={courses}/>
           {(viewElements.get(selectedView) ?? []).map((e,i) => {
             return chooseComponent(e,i)
           })}
