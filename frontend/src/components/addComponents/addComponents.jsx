@@ -29,7 +29,7 @@ function AddComponents(props) {
         },
         {
             title: 'Projects',
-            subItems: []
+            subItems: ['Project List']
         },
         {
             title: 'Note',

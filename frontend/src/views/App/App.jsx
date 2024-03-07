@@ -48,6 +48,9 @@ function App() {
       case 1:
         if (item.size === 0) return <CoursesView id={item.id} courses={courses} deleteComponent={deleteComponent} editable={editable} innerRef={item.ref} key={index} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} addCourse={(course) => handleAdd("courses", course)} deleteCourse={(id) => handleDelete('courses', id)}  />
         break;
+      case 3:
+        if (item.size === 0) return <ProjectList id={item.id} deleteComponent={deleteComponent} handleAdd={handleAdd} handleDelete={handleDelete} projects={projects} courses={courses} editable={editable} innerRef={item.ref} key={index} sx={{x: item.x, y:item.y, width: item.width, height: item.height}}/>
+        break;
       default:
         throw new Error("Not a valid component")
     }
@@ -309,7 +312,6 @@ function App() {
       <div className='NavAndComponents'>
         <Navigation views={views} editable={editable} setSelectedView={updateSelectedView} addView={(title) => handleAdd("views", {title: title})} deleteView={(id) => handleDelete("views", id)}/>
           <div className='Components'>
-          <ProjectList handleAdd={handleAdd} handleDelete={handleDelete} projects={projects} courses={courses}/>
           {(viewElements.get(selectedView) ?? []).map((e,i) => {
             return chooseComponent(e,i)
           })}
