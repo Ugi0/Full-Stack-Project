@@ -10,7 +10,7 @@ function AddEvent(props){
     const now = new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
 
-    const [time, setTime] = useState(props.time);
+    const [time, setTime] = useState(props.time ? props.time : new Date().toISOString().slice(0,12));
     const [duration, setDuration] = useState("1:00");
     const [title, setTitle] = useState("New title");
     const [description, setDescription] = useState("New description");
@@ -28,13 +28,13 @@ function AddEvent(props){
     useEffect(() => {
         setTime(props.time);
         setDuration('1:00');
-        setType('0');
+        setType(props.firstValue ? props.firstValue : "0");
         setRepeating(false);
         setRepeatingTime('');
         setCheckpoint("");
         setData("");
         setChosenCourse([...props.courses.values()].map((item) => item.id)[0])
-    }, [props.time, props.courses, props.open])
+    }, [props.time, props.courses, props.open, props.firstValue])
     const renderTime = () => {
         return (
             <input
@@ -257,6 +257,24 @@ function AddEvent(props){
                 return
         }
     }
+    if (props.showone) {
+        return <div>
+            <Modal
+                open={props.open ?? false}
+                onClose={props.onClose}
+            >
+                <Box className="modalContent">
+                    {renderOptions()}
+                    <IconButton sx={{position:'absolute', top:0, right:0}} onClick={() => {
+                        handleAdd();
+                        props.onClose();
+                        }}>
+                        <SaveIcon />
+                    </IconButton>
+                </Box>
+            </Modal>
+        </div>
+    }
     return (
         <div>
             <Modal
@@ -266,7 +284,7 @@ function AddEvent(props){
                 <Box className="modalContent">
                     <div className="modalContentEventType">
                         <p>Type</p> 
-                        <select id="type" onChange={(e) => setType(e.target.value)}>
+                        <select defaultValue={type} id="type" onChange={(e) => setType(e.target.value)}>
                             <option value="0">Lecture</option>
                             <option value="1">Assignment</option>
                             <option value="2">Exam</option>

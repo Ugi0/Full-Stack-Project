@@ -10,6 +10,7 @@ import Navigation from '../../components/navigation/Navigation.jsx';
 import Banner from '../../components/banner/banner.jsx';
 import Divider from '../../components/divider/Divider.jsx';
 import Cookies from 'universal-cookie';
+import StatusList from '../../view_elements/projects/StatusList/StatusList.jsx';
 import shallowEqual from '../../utils/shallowEqual.js'
 import { Navigate } from 'react-router-dom';
 import { fetchData } from '../../api/fetchers.js';
@@ -312,6 +313,7 @@ function App() {
       <div className='NavAndComponents'>
         <Navigation views={views} editable={editable} setSelectedView={updateSelectedView} addView={(title) => handleAdd("views", {title: title})} deleteView={(id) => handleDelete("views", id)}/>
           <div className='Components'>
+          <StatusList userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} deleteComponent={deleteComponent} handleAdd={handleAdd} handleDelete={handleDelete} sx={{width: 800, height: 300, x: 50, y: 50}} />
           {(viewElements.get(selectedView) ?? []).map((e,i) => {
             return chooseComponent(e,i)
           })}

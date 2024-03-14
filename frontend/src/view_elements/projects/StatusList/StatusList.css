@@ -1,0 +1,80 @@
+
+.StatusListRoot {
+    display: flex;
+    flex-direction: column;
+}
+
+.StatusListItem {
+    margin: 5px;
+}
+
+.StatusListTitle {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    border-bottom: 2px #f5f5f530 solid;
+}
+
+
+.StatusListTitle p, .StatusListItemTitle p {
+    margin: 5px;
+}
+
+.StatusListItemTitle p {
+    color: #80808040;
+    font-size: 13px;
+}
+
+.StatusList {
+    display: flex;
+    flex-direction: row;
+}
+
+.StatusListItemTitle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.StatusListItemTitleBubble {
+    display: flex;
+    flex-direction: row;
+    border-radius: 20px;
+    align-items: center;
+}
+
+.StatusListItemTitleBubble p {
+    color: black;
+    font-size: 12px;
+}
+
+.StatusListItemTitleBubble * {
+    margin: 3px;
+}
+
+.StatusListContainerItem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: #80808040;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.StatusListContainerItem:hover {
+    cursor: pointer;
+}
+
+.StatusListContainerItem * {
+    margin: 5px;
+}
+
+.StatusListContainerAdd {
+    color: #70707070;
+    font-size: 13px;
+    margin: 5px;
+}
+
+.StatusListContainerAdd:hover {
+    cursor: pointer;
+}
