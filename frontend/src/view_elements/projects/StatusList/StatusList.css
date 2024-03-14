@@ -23,6 +23,7 @@
 .StatusListItemTitle p {
     color: #80808040;
     font-size: 13px;
+    margin: 4px 4px 4px 6px;
 }
 
 .StatusList {
@@ -50,6 +51,10 @@
 
 .StatusListItemTitleBubble * {
     margin: 3px;
+}
+
+.StatusListContainer {
+    padding: 2px;
 }
 
 .StatusListContainerItem {

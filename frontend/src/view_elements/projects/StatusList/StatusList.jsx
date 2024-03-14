@@ -5,6 +5,7 @@ import CircleIcon from '@mui/icons-material/Circle';
 import FolderIcon from '@mui/icons-material/Folder';
 import EventModal from "../../../components/eventModal/eventModal";
 import AddEvent from "../../../components/addEvent/addEvent";
+import DeleteComponentButton from "../../../components/deleteComponentButton/deleteComponentButton";
 import './StatusList.css'
 
 function StatusList(props) {
@@ -16,6 +17,8 @@ function StatusList(props) {
     const [openModal, setOpenModal] = useState(false);
     const [openAddModal, setAddOpenModal] = useState(false);
     const [selectedItem, setSelectedItem] = useState({})
+
+    props.innerRef.current = () => { return {x :x, y:y, width: width, height: height} }
 
     const deleteEvent = () => {
         setOpenModal(false)
@@ -128,6 +131,7 @@ function StatusList(props) {
                     </div>
                 </div>
             </div>
+            <DeleteComponentButton editable={props.editable} id={props.id} deleteComponent={props.deleteComponent} />
         </Rnd>
         <EventModal 
                 saveEvent={saveEvent} deleteEvent ={deleteEvent}
