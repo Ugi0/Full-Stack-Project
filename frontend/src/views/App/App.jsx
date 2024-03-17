@@ -19,6 +19,7 @@ import { fetchViewData } from '../../api/fetchViewData.js';
 import { saveViewElement, deleteViewElement } from '../../api/saveViewElement.js';
 import { defaultViewSize } from '../../api/defaultViewSizes.js';
 import ProjectList from '../../view_elements/projects/ProjectList/ProjectList.jsx';
+import Timeline from '../../view_elements/projects/Timeline/Timeline.jsx';
 
 function App() {
   // Make so App contains all of the information that is needed to render
@@ -51,7 +52,8 @@ function App() {
         break;
       case 3:
         if (item.size === 0) return <ProjectList id={item.id} deleteComponent={deleteComponent} handleAdd={handleAdd} handleDelete={handleDelete} projects={projects} courses={courses} editable={editable} innerRef={item.ref} key={index} sx={{x: item.x, y:item.y, width: item.width, height: item.height}}/>
-        if (item.size === 1) return <StatusList id={item.id} deleteComponent={deleteComponent}  innerRef={item.ref} key={index} handleAdd={handleAdd} editable={editable} weekday={item.data} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        if (item.size === 1) return <StatusList id={item.id} deleteComponent={deleteComponent}  innerRef={item.ref} key={index} handleAdd={handleAdd} editable={editable} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        if (item.size === 2) return <Timeline id={item.id} deleteComponent={deleteComponent}  innerRef={item.ref} key={index} handleAdd={handleAdd} editable={editable} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
         break;
       default:
         throw new Error("Not a valid component")

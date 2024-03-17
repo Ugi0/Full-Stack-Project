@@ -34,7 +34,7 @@ function StatusList(props) {
     }
 
     const Container = (props) => {
-        return <div className="StatusListContainer" style={{width: 150, height: 150}}>
+        return <div className="StatusListContainer">
                 {props.projects.map((e,i) => {
                     return <div className="StatusListContainerItem" onClick={() => {
                         setSelectedItem(e)
@@ -58,8 +58,8 @@ function StatusList(props) {
         style={{border: props.editable ? "solid whitesmoke 1px" : "", position: 'relative'}}
         onDragStop={(e, d) => { setX(d.x); setY(d.y); }}
         onResizeStop={(e, direction, ref, delta, position) => {
-            setWidth(`${Math.max(Number(ref.style.width.slice(0,-2)), 200)}px`)
-            setHeight(`${Math.max(Number(ref.style.height.slice(0,-2)), 350)}px`);
+            setWidth(`${Math.max(Number(ref.style.width.slice(0,-2)), 500)}px`)
+            setHeight(`${Math.max(Number(ref.style.height.slice(0,-2)), 200)}px`);
             setX(position.x);
             setY(position.y);
         }}>

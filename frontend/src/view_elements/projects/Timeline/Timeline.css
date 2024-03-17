@@ -1,0 +1,138 @@
+.TimelineRoot {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.TimelineRootTitle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-bottom: 2px whitesmoke solid;
+    width: fit-content;
+}
+
+.TimelineRootTitle p {
+    margin: 3px;
+}
+
+.TimelineTitle {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-top: 1px #F5F5F530 solid;
+}
+
+.TimelineTitle * {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.TimelineTitleRightContainer {
+    margin: 5px;
+}
+
+.TimelineTitleRightContainer p, #TimelineTitleLeft p {
+    margin: 0;
+}
+
+.TimelineTitleRightContainer:hover {
+    cursor: pointer;
+}
+
+.TimelineDates {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    border-bottom: 1px #F5F5F530 solid;
+}
+
+.TimelineDate {
+    display: flex;
+    flex-direction: row;
+}
+
+.TimelineDate p {
+    margin: 0 1px 0 1px;
+    color: #F5F5F550;
+    font-size: 13px;
+}
+
+.Timeline {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.TimelineContainer {
+    flex-grow: 1;
+    border-bottom: 1px #F5F5F530 solid;
+}
+
+.TimelineNewButton {
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    background: none;
+    color: whitesmoke;
+    border: none;
+}
+
+.TimelineContainerItem {
+    display: flex;
+    background-color: #F5F5F520;
+    margin: 2px;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis; 
+}
+
+.TimelineContainerItem:hover, .TimelineNewButton:hover {
+    cursor: pointer;
+}
+
+.TimelineContainerItem * {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    margin: 0 3px 0 3px;
+}
+
+.TimelineContainerItem p {
+    font-size: 14px;
+    margin: 0;
+}
+
+.TimelineContainerItemPriority {
+    margin: 2px;
+    align-items: center;
+}
+
+.TimelineContainerItemPriority p {
+    font-size: 11px;
+    padding: 0 4px 0 0;
+}
+
+.TimelineContainerItemUrgency {
+    margin: 2px;
+    border-radius: 20px;
+    padding: 0 4px;
+}
+
+.TimelineContainerItemUrgency p {
+    color: black;
+    font-size: 12px;
+}
+
+.TimelineSelect {
+    background: none;
+    border: none;
+    color: white;
+}
+
+.TimelineSelect option {
+    color: black
+}
