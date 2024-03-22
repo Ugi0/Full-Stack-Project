@@ -7,9 +7,10 @@ import { useEffect } from 'react';
 function Notification(props) {
     const [playSound] = useSound(mySound)
 
-    if (!props.visible) return <></>
+    //playSound()
 
-    playSound()
+    const itemType = props.item.type[0].toUpperCase() +
+                props.item.type.slice(1,-1);
 
     return (
         <div className="notification">
@@ -19,12 +20,12 @@ function Notification(props) {
             <div className="notificationText">
                 <div className='notificationTitle'>
                     <h4>
-                        Svenska för IT-studenter
+                        {props.item.title}
                     </h4>
                 </div>
                 <div className='notificationDescription'>
                     <p>
-                        Lecture starting in 59 minutes.
+                        {itemType} starting in {parseInt(props.timeDifference / (1000*60))} minutes.
                     </p>
                 </div>
             </div>

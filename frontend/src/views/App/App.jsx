@@ -10,7 +10,7 @@ import Navigation from '../../components/navigation/Navigation.jsx';
 import Banner from '../../components/banner/banner.jsx';
 import Divider from '../../components/divider/Divider.jsx';
 import Cookies from 'universal-cookie';
-import Notification from '../../components/notification/notification.jsx';
+import NotificationHandler from '../../components/notificationHandler/notificationHandler.jsx';
 import StatusList from '../../view_elements/projects/StatusList/StatusList.jsx';
 import shallowEqual from '../../utils/shallowEqual.js'
 import { Navigate } from 'react-router-dom';
@@ -323,7 +323,7 @@ function App() {
         </div>
       </div>
       <AddComponents editable={editable} toggleEditable={toggleEditable} saveViewElement={addDataToElement} />
-      <Notification visible={true}/>
+      <NotificationHandler events={{lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}} />
     </div>
   );
 }

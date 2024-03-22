@@ -1,0 +1,8 @@
+
+.notificationHandler {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 15px;
+    right: 15px;
+}
