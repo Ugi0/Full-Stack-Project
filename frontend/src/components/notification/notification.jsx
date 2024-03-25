@@ -1,26 +1,36 @@
-import useSound from 'use-sound'
-import mySound from '../../sounds/notification.wav'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import ModeIcon from '@mui/icons-material/Mode';
+import EventIcon from '@mui/icons-material/Event';
 import './notification.css'
-import { useEffect } from 'react';
 
 function Notification(props) {
-    const [playSound] = useSound(mySound)
-
-    //playSound()
+    const icons = {
+        'Lecture': <AutoStoriesIcon style={{fontSize: '50px'}} />,
+        'Assignment': <CheckCircleIcon style={{fontSize: '50px'}} />,
+        'Exam': <ModeIcon style={{fontSize: '50px'}} />,
+        'Event': <EventIcon style={{fontSize: '50px'}} />
+    }
 
     const itemType = props.item.type[0].toUpperCase() +
                 props.item.type.slice(1,-1);
 
+    const titleText = () => {
+        if (itemType === 'Lecture') {
+            return props.item.course.title
+        }
+        return props.item.title
+    }
+
     return (
         <div className="notification">
             <div className='notificationIcon'>
-                <CheckCircleIcon style={{fontSize: '50px'}} />
+                {icons[itemType]}
             </div>
             <div className="notificationText">
                 <div className='notificationTitle'>
                     <h4>
-                        {props.item.title}
+                        {titleText()}
                     </h4>
                 </div>
                 <div className='notificationDescription'>
@@ -30,7 +40,7 @@ function Notification(props) {
                 </div>
             </div>
             <div className="notificationButtons">
-                <button>
+                <button onClick={() => props.handleDismiss(props.item.id)}>
                     Dismiss
                 </button>
             </div>

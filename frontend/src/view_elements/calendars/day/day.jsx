@@ -44,7 +44,7 @@ function DayCalendar(props) {
                                     <p style={{textDecoration: `${item.completed ? "line-through" : ""}`}}>
                                     {item.time.split("T")[1]}
                                     {" "}
-                                    {[...props.userData.courses.values()].filter(e => e.id === item.course)[0].title}
+                                    {[...props.userData.courses.values()].filter(e => e.id === item.course.id)[0].title}
                                     </p>
                                 </div>)
                             ))}

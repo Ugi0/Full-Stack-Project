@@ -115,7 +115,7 @@ function MonthCalendar(props) {
                                             handler = {handler} key = {item.id}
                                             draw = {getCalendarMonthRenders(item.type)} sx = {{'overflow': 'hidden', 'whiteSpace': 'nowrap'}}
                                             //React magic to add 'title' props if item object doesn't have a title
-                                            {...(!('title' in item) ? {title: [...props.userData.courses.values()].filter(e => e.id === item.course)[0].title} : {})}
+                                            {...(!('title' in item) ? {title: [...props.userData.courses.values()].filter(e => e.id === item.course.id)[0].title} : {})}
                                         />
                                 })}
                             </div>

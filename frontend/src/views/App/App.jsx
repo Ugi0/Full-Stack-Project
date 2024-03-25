@@ -118,12 +118,12 @@ function App() {
     // Fetch user data from backend and display if succeeded on first render
     Promise.all([
       fetchData('views'),
-      fetchData('lectures'),
       fetchData('assignments'),
       fetchData('projects'),
       fetchData('events'),
       fetchData('exams'),
-      fetchData('courses')]).then(e => {
+      fetchData('courses'),
+      fetchData('lectures'),]).then(e => {
         const cookies = new Cookies();
         if (!cookies.get('token')) {
           setRedirect(true);
@@ -149,41 +149,42 @@ function App() {
         }
         setViews(newMap)
         newMap = new Map();
-        for (let lecture of e[1]) {
-          lecture.type = "lectures";
-          newMap.set(lecture.id, lecture);
-        }
-        setLectures(newMap);
-        newMap = new Map();
-        for (let assignment of e[2]) {
+        for (let assignment of e[1]) {
           assignment.type = "assignments";
           newMap.set(assignment.id, assignment);
         }
         setAssignmentsMapState(newMap)
         newMap = new Map();
-        for (let project of e[3]) {
+        for (let project of e[2]) {
           project.type = "projects";
           newMap.set(project.id, project);
         }
         setProjectsMapState(newMap)
         newMap = new Map();
-        for (let event of e[4]) {
+        for (let event of e[3]) {
           event.type = "events";
           newMap.set(event.id, event);
         }
         setEventsMapState(newMap)
         newMap = new Map();
-        for (let exam of e[5]) {
+        for (let exam of e[4]) {
           exam.type = "exams";
           newMap.set(exam.id, exam);
         }
         setExamsMapState(newMap);
-        newMap = new Map();
-        for (let course of e[6]) {
+        const tempCoursesMap = new Map();
+        for (let course of e[5]) {
           course.type = "courses";
-          newMap.set(course.id, course);
+          tempCoursesMap.set(course.id, course);
         }
-        setCourseMapState(newMap);
+        setCourseMapState(tempCoursesMap);
+        newMap = new Map();
+        for (let lecture of e[6]) {
+          lecture.type = "lectures";
+          lecture.course = tempCoursesMap.get(lecture.course)
+          newMap.set(lecture.id, lecture);
+        }
+        setLectures(newMap);
         let result = fetchViewData(0, cookies.get('token'))
         newMap = new Map();
         newMap.set(0, result.data ?? [])
@@ -323,7 +324,7 @@ function App() {
         </div>
       </div>
       <AddComponents editable={editable} toggleEditable={toggleEditable} saveViewElement={addDataToElement} />
-      <NotificationHandler events={{lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}} />
+      <NotificationHandler userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} />
     </div>
   );
 }
