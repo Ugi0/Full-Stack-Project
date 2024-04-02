@@ -2,6 +2,11 @@
   "name": "Student app",
   "version": "0.1.0",
   "private": true,
+  "proxy": {
+    "/api/*": {
+      "target": "http://localhost:8443"
+    }
+  },
   "options": {
     "allowedHosts": [
       "localhost",

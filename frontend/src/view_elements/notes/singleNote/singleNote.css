@@ -1,0 +1,10 @@
+
+.singleNoteRoot {
+    display: flex;
+    align-items: center;
+    border: solid 1px #F5F5F550;
+}
+
+.singleNoteIcon {
+    margin: 5px;
+}

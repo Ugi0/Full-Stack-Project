@@ -21,6 +21,7 @@ import { saveViewElement, deleteViewElement } from '../../api/saveViewElement.js
 import { defaultViewSize } from '../../api/defaultViewSizes.js';
 import ProjectList from '../../view_elements/projects/ProjectList/ProjectList.jsx';
 import Timeline from '../../view_elements/projects/Timeline/Timeline.jsx';
+import SingleNote from '../../view_elements/notes/singleNote/singleNote.jsx';
 
 function App() {
   // Make so App contains all of the information that is needed to render
@@ -321,6 +322,7 @@ function App() {
           {(viewElements.get(selectedView) ?? []).map((e,i) => {
             return chooseComponent(e,i)
           })}
+          <SingleNote icon={"key"} body={"Some text here"} sx={{x: 10, y: 10, width: 400, height: 200}} />
         </div>
       </div>
       <AddComponents editable={editable} toggleEditable={toggleEditable} saveViewElement={addDataToElement} />
