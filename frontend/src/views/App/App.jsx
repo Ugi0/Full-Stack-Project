@@ -34,6 +34,7 @@ function App() {
   const [views, setViews] = useState(new Map());
   const [viewElements, setViewElements] = useState(new Map());
   const [selectedView, setSelectedView] = useState(0);
+  const [notes, setNotes] = useState(new Map());
 
   const [courses, setCourseMapState] = useState(new Map());
   const [events, setEventsMapState] = useState(new Map());
@@ -52,10 +53,13 @@ function App() {
       case 1:
         if (item.size === 0) return <CoursesView id={item.id} courses={courses} deleteComponent={deleteComponent} editable={editable} innerRef={item.ref} key={index} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} addCourse={(course) => handleAdd("courses", course)} deleteCourse={(id) => handleDelete('courses', id)}  />
         break;
-      case 3:
+      case 2:
         if (item.size === 0) return <ProjectList id={item.id} deleteComponent={deleteComponent} handleAdd={handleAdd} handleDelete={handleDelete} projects={projects} courses={courses} editable={editable} innerRef={item.ref} key={index} sx={{x: item.x, y:item.y, width: item.width, height: item.height}}/>
-        if (item.size === 1) return <StatusList id={item.id} deleteComponent={deleteComponent}  innerRef={item.ref} key={index} handleAdd={handleAdd} editable={editable} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
-        if (item.size === 2) return <Timeline id={item.id} deleteComponent={deleteComponent}  innerRef={item.ref} key={index} handleAdd={handleAdd} editable={editable} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        if (item.size === 1) return <StatusList id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} key={index} handleAdd={handleAdd} editable={editable} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        if (item.size === 2) return <Timeline id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} key={index} handleAdd={handleAdd} editable={editable} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        break;
+      case 3:
+        if (item.size === 0) return <SingleNote id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} editable={editable} key={item.id} notes={notes} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
         break;
       default:
         throw new Error("Not a valid component")
@@ -78,6 +82,8 @@ function App() {
         return lectures
       case 'views':
         return views
+      case 'notes':
+        return notes
       default:
         throw new Error("Not allowed")
     }
@@ -99,6 +105,8 @@ function App() {
         return setLectures
       case 'views':
         return setViews
+      case 'notes':
+        return setNotes
       default:
         throw new Error("Not allowed")
     }
@@ -119,6 +127,7 @@ function App() {
     // Fetch user data from backend and display if succeeded on first render
     Promise.all([
       fetchData('views'),
+      fetchData('notes'),
       fetchData('assignments'),
       fetchData('projects'),
       fetchData('events'),
@@ -150,37 +159,43 @@ function App() {
         }
         setViews(newMap)
         newMap = new Map();
-        for (let assignment of e[1]) {
+        for (let note of e[1]) {
+          note.type = "notes";
+          newMap.set(note.id, note);
+        }
+        setNotes(newMap)
+        newMap = new Map();
+        for (let assignment of e[2]) {
           assignment.type = "assignments";
           newMap.set(assignment.id, assignment);
         }
         setAssignmentsMapState(newMap)
         newMap = new Map();
-        for (let project of e[2]) {
+        for (let project of e[3]) {
           project.type = "projects";
           newMap.set(project.id, project);
         }
         setProjectsMapState(newMap)
         newMap = new Map();
-        for (let event of e[3]) {
+        for (let event of e[4]) {
           event.type = "events";
           newMap.set(event.id, event);
         }
         setEventsMapState(newMap)
         newMap = new Map();
-        for (let exam of e[4]) {
+        for (let exam of e[5]) {
           exam.type = "exams";
           newMap.set(exam.id, exam);
         }
         setExamsMapState(newMap);
         const tempCoursesMap = new Map();
-        for (let course of e[5]) {
+        for (let course of e[6]) {
           course.type = "courses";
           tempCoursesMap.set(course.id, course);
         }
         setCourseMapState(tempCoursesMap);
         newMap = new Map();
-        for (let lecture of e[6]) {
+        for (let lecture of e[7]) {
           lecture.type = "lectures";
           lecture.course = tempCoursesMap.get(lecture.course)
           newMap.set(lecture.id, lecture);
@@ -276,7 +291,7 @@ function App() {
     setSelectedView(id);
   }
 
-  const addDataToElement = (item) => {
+  const addDataToElement = async (item) => {
     if (defaultViewSize(item.type, item.size) === undefined) {
       return
     }
@@ -286,7 +301,7 @@ function App() {
     item['height'] = height;
     item['x'] = 250;
     item['y'] = 200;
-    saveViewElement(item).then(result => {
+    return saveViewElement(item).then(result => {
       if (result.success) {
         let newMap = new Map(viewElements);
         let newData = viewElements.get(selectedView);
@@ -296,6 +311,7 @@ function App() {
         newData.push(item);
         newMap.set(selectedView, newData);
         setViewElements(newMap);
+        return result.id;
       }
     });
   }
@@ -322,10 +338,9 @@ function App() {
           {(viewElements.get(selectedView) ?? []).map((e,i) => {
             return chooseComponent(e,i)
           })}
-          <SingleNote icon={"key"} body={"Some text here"} sx={{x: 10, y: 10, width: 400, height: 200}} />
         </div>
       </div>
-      <AddComponents editable={editable} toggleEditable={toggleEditable} saveViewElement={addDataToElement} />
+      <AddComponents editable={editable} toggleEditable={toggleEditable} saveViewElement={addDataToElement} saveNote={(item) => handleAdd("notes", item)} />
       <NotificationHandler userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} />
     </div>
   );

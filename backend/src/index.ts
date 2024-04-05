@@ -35,6 +35,7 @@ require('./routes/lectures')(app);
 require('./routes/projects')(app);
 require('./routes/viewelements')(app);
 require('./routes/views')(app);
+require('./routes/notes')(app);
 
 app.post('/register', async (req, res) => {
   try {

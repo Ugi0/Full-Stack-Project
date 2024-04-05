@@ -57,3 +57,9 @@
 .saveIcon:hover {
     cursor: pointer;
 }
+
+.addComponentModalSelect {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}

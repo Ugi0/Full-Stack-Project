@@ -1,7 +1,13 @@
-import KeyIcon from '@mui/icons-material/Key';
+import StickyNote2Icon from '@mui/icons-material/StickyNote2';
 import { useState } from 'react';
 import { Rnd } from 'react-rnd';
+import { getFilename } from '../../../utils/getFileName';
+import DeleteComponentButton from '../../../components/deleteComponentButton/deleteComponentButton';
 import './singleNote.css'
+
+const icons = new Map();
+const iconsFolder = require.context('../../../images/note_icons', true);
+iconsFolder.keys().map(image => icons.set(getFilename(image), iconsFolder(`${image}`)));
 
 function SingleNote(props) {
     const [x, setX] = useState(props.sx.x);
@@ -9,14 +15,13 @@ function SingleNote(props) {
     const [width, setWidth] = useState(props.sx.width);
     const [height, setHeight] = useState(props.sx.height);
 
-    const icons = (iconName) => {
-        switch (iconName) {
-            case "key":
-                return <KeyIcon style={{fontSize: 25}} />
-            default:
-                return
-        }
+    props.innerRef.current = () => { return {x :x, y:y, width: width, height: height} }
+
+    const getIcon = (iconName) => {
+        return icons.get(iconName)    
     }
+
+    const item = [...props.notes.values()].filter(e => e.hostid === props.id)[0];
 
     return <>
         <Rnd disableDragging={!props.editable} enableResizing={props.editable} size={{ width: width,  height: height }}
@@ -31,11 +36,17 @@ function SingleNote(props) {
             }}>
             <div className="singleNoteRoot">
                 <div className='singleNoteIcon'>
-                    {icons(props.icon)}
+                    <img src={getIcon(item.icon)} alt="icon" style={{width: 20}} />
+                    <p>
+                        {item.title}
+                    </p>
                 </div>
-                <span>
-                    {props.body}
+                <span className='singleNoteText'>
+                    <p>
+                        {item.body}
+                    </p>
                 </span>
+                <DeleteComponentButton editable={props.editable} id={props.id} deleteComponent={props.deleteComponent} />
             </div>
         </Rnd>
     </>

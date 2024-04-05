@@ -112,6 +112,7 @@ interface events {
 }
 
 interface notes {
+    hostid: string,
     id: string,
     creator: string,
     icon: string,

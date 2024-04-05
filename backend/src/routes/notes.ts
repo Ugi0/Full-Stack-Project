@@ -18,6 +18,7 @@ app.get('/notes', async (req, res) => {
             success: true,
             data: result.map((e,i) => {
             return {
+                hostid: e.hostid,
                 id: e.id,
                 creator: e.creator,
                 icon: e.icon,
@@ -44,7 +45,8 @@ app.post('/notes', async (req, res) => {
         const newID = req.body.note.id ?? getRandomID();
         const data = req.body.note;
         const note = {
-            id: data.id,
+            hostid: data.hostid,
+            id: newID,
             creator: decoded.data,
             icon: data.icon,
             title: data.title,
