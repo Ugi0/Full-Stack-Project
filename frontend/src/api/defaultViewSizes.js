@@ -17,6 +17,7 @@ export const defaultViewSize = (type, size) => {
             break;
         case 3:
             if (size === 0) return [300, 100]
+            if (size === 1) return [300, 100]
             break;
         default:
             throw new Error("Not a valid view")

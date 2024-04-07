@@ -40,7 +40,7 @@ function AddComponents(props) {
         },
         {
             title: 'Note',
-            subItems: ["Single Note"]
+            subItems: ["Single Note", "To Do List"]
         }
     ]
 

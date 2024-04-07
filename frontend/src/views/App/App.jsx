@@ -22,6 +22,7 @@ import { defaultViewSize } from '../../api/defaultViewSizes.js';
 import ProjectList from '../../view_elements/projects/ProjectList/ProjectList.jsx';
 import Timeline from '../../view_elements/projects/Timeline/Timeline.jsx';
 import SingleNote from '../../view_elements/notes/singleNote/singleNote.jsx';
+import ToDoList from '../../view_elements/notes/toDoList/toDoList.jsx';
 
 function App() {
   // Make so App contains all of the information that is needed to render
@@ -43,6 +44,9 @@ function App() {
   const [projects, setProjectsMapState] = useState(new Map());
   const [lectures, setLectures] = useState(new Map());
 
+  //TODO Use toast to make notifications instead
+  //TODO Use primeicons
+
   const chooseComponent = (item, index) => {
     switch (item.type) {
       case 0:
@@ -60,6 +64,7 @@ function App() {
         break;
       case 3:
         if (item.size === 0) return <SingleNote id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} editable={editable} key={item.id} notes={notes} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        if (item.size === 1) return <ToDoList id={item.id} data={item.data} notes={notes} deleteNote={(id) => {handleDelete("notes", id)}} saveNote={(item) => {handleAdd("notes", item)}} setData={(data) => saveViewElement({...item, data: data})} key={item.id} deleteComponent={deleteComponent} innerRef={item.ref} editable={editable} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
         break;
       default:
         throw new Error("Not a valid component")
@@ -335,9 +340,9 @@ function App() {
       <div className='NavAndComponents'>
         <Navigation views={views} editable={editable} setSelectedView={updateSelectedView} addView={(title) => handleAdd("views", {title: title})} deleteView={(id) => handleDelete("views", id)}/>
           <div className='Components'>
-          {(viewElements.get(selectedView) ?? []).map((e,i) => {
-            return chooseComponent(e,i)
-          })}
+            {(viewElements.get(selectedView) ?? []).map((e,i) => {
+              return chooseComponent(e,i)
+            })}
         </div>
       </div>
       <AddComponents editable={editable} toggleEditable={toggleEditable} saveViewElement={addDataToElement} saveNote={(item) => handleAdd("notes", item)} />

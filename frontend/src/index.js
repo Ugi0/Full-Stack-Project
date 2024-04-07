@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import Register from './views/Register/Register';
 import Login from './views/Login/Login';
 import App from './views/App/App';
+import 'primeicons/primeicons.css';
 
 import './fonts/StudyAlone.woff';
 import './fonts/Wall Notes.woff'
