@@ -22,6 +22,9 @@ function SingleNote(props) {
     }
 
     const item = [...props.notes.values()].filter(e => e.hostid === props.id)[0];
+    if (item === undefined) {
+        return <></>
+    }
 
     return <>
         <Rnd disableDragging={!props.editable} enableResizing={props.editable} size={{ width: width,  height: height }}

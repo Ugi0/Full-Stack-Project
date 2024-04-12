@@ -35,9 +35,9 @@ app.get('/viewelements/:uid', async (req, res) => {
         success: false
         })
     }
-    })
+})
     
-    app.post('/viewelements', async (req, res) => {
+app.post('/viewelements', async (req, res) => {
     try {
         let token = req.headers.token;
         let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
@@ -68,9 +68,9 @@ app.get('/viewelements/:uid', async (req, res) => {
         success: false
         })
     }
-    })
+})
     
-    app.delete('/viewelements', async (req, res) => {
+app.delete('/viewelements', async (req, res) => {
     try {
         let token = req.headers.token;
         let decoded = jwt.verify(token, process.env.PRIVATE_KEY);
@@ -90,7 +90,5 @@ app.get('/viewelements/:uid', async (req, res) => {
         success: false
         })
     }
-    })
-
-
+})
 }

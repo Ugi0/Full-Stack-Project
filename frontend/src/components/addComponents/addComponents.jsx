@@ -22,7 +22,7 @@ function AddComponents(props) {
     const [selectedDay, setSelectedDay] = useState("Monday");
 
     const [noteTitle, setNoteTitle] = useState("");
-    const [noteIcon, setNoteIcon] = useState("")
+    const [noteIcon, setNoteIcon] = useState("dots")
     const [noteBody, setNoteBody] = useState("")
 
     const menuItems = [
@@ -83,8 +83,8 @@ function AddComponents(props) {
         {value: "Note",         icon: "notes"},
         {value: "Notification", icon: 'bell'},
         {value: "Phone",        icon: 'call'},
-        {value: "Alert",        icon: 'danger'},
-        {value: "Menu",         icon: 'menu-dots-vertical'},
+        {value: "Alert",        icon: 'warn'},
+        {value: "Menu",         icon: 'dots'},
     ]
 
     const modalContent = (i, j) => {
@@ -133,7 +133,7 @@ function AddComponents(props) {
                     Text
                     <textarea value={noteBody} onChange={(e) => setNoteBody(e.target.value)} />
                 </div>
-                <SaveIcon className='saveIcon' onClick={async () => { saveItem({...item}).then(e => props.saveNote({hostid: e, icon: noteIcon.icon, title: noteTitle, body: noteBody, checked: false}))}} style={{position: 'absolute', top: 5, right: 5}}/>
+                <SaveIcon className='saveIcon' onClick={async () => { saveItem({...item}).then(e => { props.saveNote({hostid: e, icon: noteIcon.icon, title: noteTitle, body: noteBody, checked: false}); setModalOpen(false); } )}} style={{position: 'absolute', top: 5, right: 5}}/>
             </Box>
         }
         return <></>

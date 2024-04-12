@@ -2,6 +2,7 @@ import Express from "express";
 import { db } from "./DBConnection";
 import { getRandomID } from "./utils/getRandomID";
 import { validateUserData } from "./utils/validateUserData";
+import schedule from 'node-schedule'
 
 const fs = require('fs')
 
@@ -36,6 +37,34 @@ require('./routes/projects')(app);
 require('./routes/viewelements')(app);
 require('./routes/views')(app);
 require('./routes/notes')(app);
+
+schedule.scheduleJob('0 0 * * *', async () => { //Everyday at midnight check the note groups for if they need to be reset
+  let result = await db //Get all viewelements that are of the type toDoList
+      .selectFrom('viewelements')
+      .selectAll()
+      .where("type","=",3)
+      .where("size","=",1)
+      .execute()
+  const resetGroup = async (title) => {
+    await db.updateTable('notes')
+          .set({
+            checked: false
+          })
+          .where('body','=',title)
+          .execute()
+  }
+ result.forEach(e => {
+  e.data.split(";").filter(e => e === "").forEach(group => {
+    if (group.split(":")[1] === "D") { //Run daily
+      resetGroup(group.split(":")[0])
+    } else if (group.split(":")[1] === "W" && (new Date()).getDay() === 1) { //Run if weekly and it's monday
+      resetGroup(group.split(":")[0])
+    } else if (group.split(":")[1] === "M" && (new Date()).getDate() === 1) { //Run if monthly and it's 1st day of the month
+      resetGroup(group.split(":")[0])
+    }
+  })
+ })
+});
 
 app.post('/register', async (req, res) => {
   try {

@@ -128,7 +128,7 @@ function ToDoList(props) {
                         refreshTime: parts[1],
                         collapsed: parts[2]
                     }
-                    const curNotes = [...props.notes.values()].filter(e => e.body === parts.title)
+                    const curNotes = [...props.notes.values()].filter(e => e.body === parts.title && e.icon === null)
                     if (parts.collapsed === "N") {
                         return <div key={i} className='toDoListGroupTitle'>
                                 <ArrowDropDownIcon style={{transform: 'rotate(-90deg)', color: '#F5F5F530'}} className='toDoListGroupTitleIcon' onClick={() => {handleGroupClose(parts)}}/>
