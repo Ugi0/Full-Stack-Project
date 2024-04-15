@@ -137,7 +137,6 @@ function AddComponents(props) {
             </Box>
         }
         return <></>
-        // TODO Create a view where the singleNote can be placed in
     }
 
     const renderIcon = () => {

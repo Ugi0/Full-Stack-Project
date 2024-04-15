@@ -11,9 +11,10 @@ export async function checkToken(token) {
             });
     if (response) {
       let responseJSON = await response.json()
-      if (responseJSON.success) {
+      if (responseJSON.success === false) {
+        return false;
+      } else if (responseJSON.success) {
         return true;
       }
     }
-    return false;
 }

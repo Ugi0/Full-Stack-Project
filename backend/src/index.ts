@@ -101,7 +101,7 @@ app.post('/register', async (req, res) => {
         const key = s.slice(s.indexOf(".")+1, -1);
         res.send({
           success: false,
-          error: `Someone is already registered with this ${key}`
+          error: `Someone is already registered with this ${key}.`
         })
         return;
       }

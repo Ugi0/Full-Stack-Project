@@ -45,7 +45,6 @@ function App() {
   const [projects, setProjectsMapState] = useState(new Map());
   const [lectures, setLectures] = useState(new Map());
 
-  //TODO Use toast to make notifications instead
   //TODO Use primeicons
 
   const chooseComponent = (item, index) => {
@@ -127,7 +126,6 @@ function App() {
     data.delete(key);
     dataSetterMap(table)(data);
   }
-
 
   useEffect(() => {
     // Fetch user data from backend and display if succeeded on first render

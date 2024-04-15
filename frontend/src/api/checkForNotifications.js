@@ -27,12 +27,15 @@ function checkForNotifications(userData) {
                 dismissed.push(e.id);
                 const itemType = e.type[0].toUpperCase() + e.type.slice(1,-1);
                 toast(() => (
-                    <span>
-                        {`${itemType} ${wordToUse(e.type)} in ${parseInt((cur-currentTime) / (1000*60))} minutes `}
-                    <button onClick={() => toast.dismiss(e.id)}>
-                        Dismiss
-                    </button>
-                  </span>
+                    <>
+                        <span>
+                            <h3 style={{margin: 3}}> {e.title} </h3>
+                            {`${itemType} ${wordToUse(e.type)} in ${parseInt((cur-currentTime) / (1000*60))} minutes `}
+                        </span>
+                        <button onClick={() => toast.dismiss(e.id)} style={{background: 'none', border: 'none'}}>
+                            Dismiss
+                        </button>
+                    </>
                 ),
                 {
                     duration: Infinity,
