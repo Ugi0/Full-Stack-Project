@@ -36,7 +36,7 @@ function StatusList(props) {
     const Container = (props) => {
         return <div className="StatusListContainer">
                 {props.projects.map((e,i) => {
-                    return <div className="StatusListContainerItem" onClick={() => {
+                    return <div key={e.id} className="StatusListContainerItem" onClick={() => {
                         setSelectedItem(e)
                         setOpenModal(true)
                     }}>

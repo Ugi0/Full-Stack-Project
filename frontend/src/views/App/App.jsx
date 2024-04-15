@@ -10,7 +10,7 @@ import Navigation from '../../components/navigation/Navigation.jsx';
 import Banner from '../../components/banner/banner.jsx';
 import Divider from '../../components/divider/Divider.jsx';
 import Cookies from 'universal-cookie';
-import NotificationHandler from '../../components/notificationHandler/notificationHandler.jsx';
+import { Toaster } from 'react-hot-toast';
 import StatusList from '../../view_elements/projects/StatusList/StatusList.jsx';
 import shallowEqual from '../../utils/shallowEqual.js'
 import { Navigate } from 'react-router-dom';
@@ -23,6 +23,7 @@ import ProjectList from '../../view_elements/projects/ProjectList/ProjectList.js
 import Timeline from '../../view_elements/projects/Timeline/Timeline.jsx';
 import SingleNote from '../../view_elements/notes/singleNote/singleNote.jsx';
 import ToDoList from '../../view_elements/notes/toDoList/toDoList.jsx';
+import checkForNotifications from '../../api/checkForNotifications.js';
 
 function App() {
   // Make so App contains all of the information that is needed to render
@@ -212,6 +213,7 @@ function App() {
         setViewElements(newMap)
       })
   }, [])
+
   
   const handleDelete = async (table, id) => {
     const cookies = new Cookies();
@@ -333,6 +335,9 @@ function App() {
     })
   }
 
+  //check for new notifications to show every 5 minutes
+  setInterval(() => { checkForNotifications({courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}})}, 5*1000);
+
   return (
     <div className="App">
       <Banner />
@@ -346,7 +351,10 @@ function App() {
         </div>
       </div>
       <AddComponents editable={editable} toggleEditable={toggleEditable} saveViewElement={addDataToElement} saveNote={(item) => handleAdd("notes", item)} />
-      <NotificationHandler userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} />
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+      />
     </div>
   );
 }
