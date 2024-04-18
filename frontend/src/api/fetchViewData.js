@@ -1,11 +1,9 @@
-import myConfig from '../config.js';
-
 export async function fetchViewData(id, token) {
     const requestOptions = {
       method: 'GET',
       headers: { 'Content-Type': 'application/json', 'token': token }
     };
-    let response = await fetch(`${myConfig.http}://${myConfig.BackendLocation}:${myConfig.BackendPort}/viewelements/${id}`, requestOptions)
+    let response = await fetch(`${process.env.REACT_APP_BACKENDLOCATION}/viewelements/${id}`, requestOptions)
             .catch(error => {
                 console.log("1",error)
             });

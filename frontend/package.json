@@ -6,8 +6,7 @@
     "allowedHosts": [
       "localhost",
       ".localhost"
-    ],
-    "proxy": "https://www.studentcalendar.xyz"
+    ]
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
@@ -16,10 +15,12 @@
     "@mui/material": "^5.15.5",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/user-event": "^13.5.0",
-    "bcryptjs": "^2.4.3",
+    "bcryptjs-react": "^2.4.6",
     "buffer": "^6.0.3",
     "crypto-browserify": "^3.12.0",
+    "dotenv": "^16.4.5",
     "get-random-values": "^3.0.0",
+    "http-proxy-middleware": "^3.0.0",
     "primeicons": "^7.0.0",
     "primereact": "^10.6.2",
     "react": "^18.2.0",
@@ -33,7 +34,6 @@
     "stream": "^0.0.2",
     "stream-browserify": "^3.0.0",
     "universal-cookie": "^7.0.1",
-    "use-sound": "^4.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

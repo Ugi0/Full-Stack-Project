@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import '../Login/Login.css'
-import myConfig from '../../config.js';
 import Cookies from 'universal-cookie';
-import bcrypt from 'bcryptjs'
+import bcrypt from "bcryptjs-react";
 import { Navigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -36,7 +35,7 @@ function Register() {
                     salt: salt
                 })
             };
-            const response = await fetch(`${myConfig.http}://${myConfig.BackendLocation}:${myConfig.BackendPort}/register`, requestOptions)
+            const response = await fetch(`${process.env.REACT_APP_BACKENDLOCATION}/register`, requestOptions)
                 .catch(error => {
                     console.log(error)
                 });

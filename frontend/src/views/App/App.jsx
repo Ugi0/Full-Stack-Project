@@ -1,6 +1,5 @@
 import React, { useEffect, useState, createRef, useRef } from 'react';
 import './App.css';
-import myConfig from '../../config.js';
 import WeekCalendar from '../../view_elements/calendars/week/week.jsx'
 import MonthCalendar from '../../view_elements/calendars/month/month.jsx'
 import DayCalendar from '../../view_elements/calendars/day/day.jsx'
@@ -18,12 +17,12 @@ import { fetchData } from '../../api/fetchers.js';
 import { checkToken } from '../../api/checkToken.js';
 import { fetchViewData } from '../../api/fetchViewData.js';
 import { saveViewElement, deleteViewElement } from '../../api/saveViewElement.js';
-import { defaultViewSize } from '../../api/defaultViewSizes.js';
+import { defaultViewSize } from '../../utils/defaultViewSizes.js';
 import ProjectList from '../../view_elements/projects/ProjectList/ProjectList.jsx';
 import Timeline from '../../view_elements/projects/Timeline/Timeline.jsx';
 import SingleNote from '../../view_elements/notes/singleNote/singleNote.jsx';
 import ToDoList from '../../view_elements/notes/toDoList/toDoList.jsx';
-import checkForNotifications from '../../api/checkForNotifications.js';
+import checkForNotifications from '../../utils/checkForNotifications.js';
 
 function App() {
   // Make so App contains all of the information that is needed to render
@@ -45,7 +44,10 @@ function App() {
   const [projects, setProjectsMapState] = useState(new Map());
   const [lectures, setLectures] = useState(new Map());
 
-  //TODO Use primeicons
+  //TODO Add a info thingy to all of the views
+  //TODO Change banner to something better
+  //TODO Change modals to be more visually pleasant
+  //TODO Use .env for the backend locations
 
   const chooseComponent = (item, index) => {
     switch (item.type) {
@@ -210,6 +212,7 @@ function App() {
         newMap.set(0, result.data ?? [])
         setViewElements(newMap)
       })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   
@@ -222,7 +225,7 @@ function App() {
           id: id
       })
     };
-    let response = await fetch(`${myConfig.http}://${myConfig.BackendLocation}:${myConfig.BackendPort}/${table}`, requestOptions)
+    let response = await fetch(`${process.env.REACT_APP_BACKENDLOCATION}/${table}`, requestOptions)
             .catch(error => {
               console.log("2",error)
             });
@@ -242,7 +245,7 @@ function App() {
           [table.slice(0,-1)]: data //Remove last character of the table
       })                            //courses -> course
     };
-    let response = await fetch(`${myConfig.http}://${myConfig.BackendLocation}:${myConfig.BackendPort}/${table}`, requestOptions)
+    let response = await fetch(`${process.env.REACT_APP_BACKENDLOCATION}/${table}`, requestOptions)
             .catch(error => {
             console.log("3",error)
             });

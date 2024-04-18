@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import './Login.css'
-import myConfig from '../../config.js';
 import Cookies from 'universal-cookie';
+import bcrypt from "bcryptjs-react";
 import { Navigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
-
-var bcrypt = require('bcryptjs');
 
 function Login() {
     const [username, setUsername] = useState("");
@@ -30,7 +28,7 @@ function Login() {
                     username: username
                 })
             };
-            let response = await fetch(`${myConfig.http}://${myConfig.BackendLocation}:${myConfig.BackendPort}/login`, requestOptions)
+            let response = await fetch(`${process.env.REACT_APP_BACKENDLOCATION}/login`, requestOptions)
                     .catch(error => {
                         console.log(error)
                     });
@@ -44,7 +42,7 @@ function Login() {
                         password: bcrypt.hashSync(password, responseJSON.salt)
                     })
                 }
-                response = await fetch(`${myConfig.http}://${myConfig.BackendLocation}:${myConfig.BackendPort}/login`, requestOptions)
+                response = await fetch(`${process.env.REACT_APP_BACKENDLOCATION}/login`, requestOptions)
                     .catch(error => {
                         console.log(error)
                     })
@@ -81,7 +79,7 @@ function Login() {
             method: 'GET',
             headers: { 'Content-Type': 'application/json', 'token': cookies.get('token') }
         }
-        fetch(`${myConfig.http}://${myConfig.BackendLocation}:${myConfig.BackendPort}/verifyToken`, requestOptions).then((res) => {
+        fetch(`${process.env.REACT_APP_BACKENDLOCATION}/verifyToken`, requestOptions).then((res) => {
             res.json().then(e => {
                 if (e.success) { //User already has a valid token
                     setRedirect(true)

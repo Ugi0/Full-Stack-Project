@@ -1,5 +1,4 @@
 import Cookies from 'universal-cookie';
-import myConfig from '../config.js';
 import toast from 'react-hot-toast';
 
 export async function fetchData(table) {
@@ -8,7 +7,8 @@ export async function fetchData(table) {
       method: 'GET',
       headers: { 'Content-Type': 'application/json', 'token': cookies.get('token') },
     };
-    let response = await fetch(`${myConfig.http}://${myConfig.BackendLocation}:${myConfig.BackendPort}/${table}`, requestOptions)
+    console.log(`${process.env.REACT_APP_BACKENDLOCATION}/${table}`)
+    let response = await fetch(`${process.env.REACT_APP_BACKENDLOCATION}/${table}`, requestOptions)
         .catch(e => {
           toast.error(`There was an issue fetching your data.\nPlease try to refresh the page.`,
           {
