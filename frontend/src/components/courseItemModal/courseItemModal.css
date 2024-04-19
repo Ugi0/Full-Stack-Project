@@ -1,9 +1,9 @@
 
-.courseItemModalSelect img {
+#courseItemModalSelect img {
     width: 20px;
     height: 20px;
 }
 
-.courseItemModalSelect * {
+#courseItemModalSelect * {
     flex-direction: column;
 }

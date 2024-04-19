@@ -3,8 +3,6 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border: red solid;
-    border-radius: 20px;
     padding: 10px;
     display: flex;
     flex-direction: column;
@@ -21,4 +19,23 @@
 .modalContent div {
     display: flex;
     align-items: center;
+}
+
+.modalGroup {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 15px 2px 0 2px;
+}
+
+.modalGroup p {
+    margin-top: 0;
+}
+
+.modalGroupTitle {
+    margin-right: auto;
+    margin-left: 4px;
+    color: dimgray;
+    font-family: 'MonofontoRG';
+    font-size: 15px;
 }

@@ -130,7 +130,7 @@ function ProjectList(props) {
         onDragStop={(e, d) => { setX(d.x); setY(d.y); }}
         onResizeStop={(e, direction, ref, delta, position) => {
             setWidth(`${Math.max(Number(ref.style.width.slice(0,-2)), 200)}px`)
-            setHeight(`${Math.max(Number(ref.style.height.slice(0,-2)), 350)}px`);
+            setHeight(`${Math.max(Number(ref.style.height.slice(0,-2)), 150)}px`);
             setX(position.x);
             setY(position.y);
         }}>

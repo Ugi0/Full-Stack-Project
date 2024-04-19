@@ -1,8 +1,7 @@
 
 .divider {
     height: 70px;
-    width: calc(100% - 100px);
+    width: 100%;
     display: flex;
     align-items: center;
-    padding-left: 100px;
 }

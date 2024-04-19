@@ -148,16 +148,16 @@ function AddComponents(props) {
 
     const renderAddMenu = () => {
         if (addIconClicked) {
-            return <ul className="addMenu1" data-testid="addMenu1">
+            return <ul className="addMenu1" style={{zIndex: 2}}>
                 {menuItems.map((menu, index) => {
                     return (
-                        <ul key={index} className="addMenu2" onClick={() => handleMenuItemClick(index)} data-testid="addMenu2">
+                        <ul key={index} className="addMenu2" onClick={() => handleMenuItemClick(index)} style={{zIndex: 2}}>
                             <p> {menu.title} </p>
                             <div>
                                 {(itemGroup === index) ?
                                     menu.subItems.map((item, index2) => {
                                         return (
-                                            <p key={index2} onClick={() => handleItemClick(index, index2)}>
+                                            <p key={index2} style={{zIndex: 2}} onClick={() => handleItemClick(index, index2)}>
                                                 {item}
                                             </p>
                                         )
@@ -173,12 +173,12 @@ function AddComponents(props) {
 
     const renderAddIcon = () => {
         if (props.editable) {
-            return <div>
-                <IconButton sx={{position:'absolute', top:'50%', left:0, scale:'2'}} data-testid="addButton"> 
+            return <>
+                <IconButton sx={{position:'absolute', top:'50%', left:0, scale:'2', zIndex: 2}}> 
                     <AddCircleOutlineIcon onClick={handleAddClick}/>
                  </IconButton>
                  {renderAddMenu()}
-            </div>
+            </>
         }
     }
 
@@ -226,8 +226,8 @@ function AddComponents(props) {
     }
 
     return (
-        <div>
-            <IconButton onClick={handleEditClick} sx={{position:'absolute', top:0, right:0}} data-testid="editButton">
+        <>
+            <IconButton onClick={handleEditClick} sx={{position:'relative', marginLeft: 'auto'}}>
                 {renderIcon()}
             </IconButton>
             {renderAddIcon()}
@@ -241,7 +241,7 @@ function AddComponents(props) {
             >
                 {modalContent(itemGroup, chosenItem)}
             </Modal>
-        </div>
+        </>
     )
 }
 

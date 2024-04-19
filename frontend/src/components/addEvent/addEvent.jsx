@@ -5,6 +5,7 @@ import Modal from '@mui/material/Modal';
 import { titleInput, descriptionInput } from "../../utils/inputElements";
 import { IconButton } from "@mui/material";
 import SaveIcon from '@mui/icons-material/Save';
+import toast from "react-hot-toast";
 
 function AddEvent(props){
     const now = new Date();
@@ -53,7 +54,9 @@ function AddEvent(props){
     
     const renderCourseOptions = () => {
         return (
-            <select id="chosenCourse" onChange={(e) => setChosenCourse(e.target.value) }>
+            <div className="modalGroup">
+                <p className="modalGroupTitle">Course</p>
+                <select id="chosenCourse" onChange={(e) => setChosenCourse(e.target.value) }>
                 {[...props.courses.keys()]
                     .map((e) => props.courses.get(e))
                     .map((e,i) => {
@@ -63,14 +66,15 @@ function AddEvent(props){
                         </option>
                     )
                 })}
-            </select>
+                </select>
+            </div>
         )
     }
 
     const renderAddCheckpoints = () => {
         return (
-            <>
-                Add a checkpoint
+            <div className="modalGroup">
+                <p className="modalGroupTitle">Add a checkpoint</p>
                 <div>
                     <input value={checkpoint} onChange={(e) => setCheckpoint(e.target.value)} />
                     <button onClick={() => setData(`${data}${checkpoint},0;`)}> Save </button>
@@ -87,7 +91,7 @@ function AddEvent(props){
                         }
                     })}
                 </ul>
-            </>
+            </div>
         )
     }
 
@@ -98,16 +102,16 @@ function AddEvent(props){
                     <div className="options">
                         {descriptionInput(setDescription)}
                         {renderCourseOptions()}
-                        <div>
-                            <p>Time</p>
+                        <div className="modalGroup">
+                            <p className="modalGroupTitle">Time</p>
                             {renderTime()}
                         </div>
-                        <div>
-                            <p>Duration</p>
+                        <div className="modalGroup">
+                            <p className="modalGroupTitle">Duration</p>
                             {renderDuration()}
                         </div>
-                        <div>
-                            <p>Repeating</p>
+                        <div className="modalGroup">
+                            <p className="modalGroupTitle">Repeating</p>
                             <input type="checkbox" checked={repeating} id="repeating" onChange={() => setRepeating(!repeating)} />
                         </div>
                         {renderRepeating()}
@@ -117,17 +121,14 @@ function AddEvent(props){
                 return ( //assignments
                     <div className="options">
                         {titleInput(setTitle)}
-                        <div>
-                            <p>Course</p>
-                            {renderCourseOptions()}
-                        </div>
+                        {renderCourseOptions()}
                         {descriptionInput(setDescription)}
-                        <div>
-                            <p>Deadline</p>
+                        <div className="modalGroup">
+                            <p className="modalGroupTitle">Deadline</p>
                             {renderTime()}
                         </div>
-                        <div>
-                            <p>Priority</p>
+                        <div className="modalGroup">
+                            <p className="modalGroupTitle">Priority</p>
                             <select id="priority" onChange={(e) =>  setPriority(e.target.value)}>
                                 <option value="Lowest">Lowest</option>
                                 <option value="Low">Low</option>
@@ -142,13 +143,10 @@ function AddEvent(props){
                 return ( //exams
                     <div className="options">
                         {titleInput(setTitle)}
-                        <div>
-                            <p>Course</p>
-                            {renderCourseOptions()}
-                        </div>
+                        {renderCourseOptions()}
                         {descriptionInput(setDescription)}
-                        <div>
-                            <p>Time</p>
+                        <div className="modalGroup">
+                            <p className="modalGroupTitle">Time</p>
                             {renderTime()}
                         </div>
                     </div>
@@ -158,8 +156,8 @@ function AddEvent(props){
                     <div className="options">
                         {titleInput(setTitle)}
                         {descriptionInput(setDescription)}
-                        <div>
-                            <p>Time</p>
+                        <div className="modalGroup">
+                            <p className="modalGroupTitle">Time</p>
                             {renderTime()}
                         </div>
                     </div>
@@ -169,12 +167,12 @@ function AddEvent(props){
                     <div className="options">
                         {titleInput(setTitle)}
                         {descriptionInput(setDescription)}
-                        <div>
-                            <p>Time</p>
+                        <div className="modalGroup">
+                            <p className="modalGroupTitle">Time</p>
                             {renderTime()}
                         </div>
-                        <div>
-                            <p>Priority</p>
+                        <div className="modalGroup">
+                            <p className="modalGroupTitle">Priority</p>
                             <select id="priority" onChange={(e) =>  setPriority(e.target.value)}>
                                 <option value="Lowest">Lowest</option>
                                 <option value="Low">Low</option>
@@ -217,6 +215,10 @@ function AddEvent(props){
                 });
                 break;
             case '1':
+                if (chosenCourse === undefined) {
+                    toast("You need to have a chosen a course for this.\nPlease create one before trying again.")
+                    return
+                }
                 props.handleAdd("assignments",{
                     course: chosenCourse,
                     title: title, description: description,
@@ -227,6 +229,10 @@ function AddEvent(props){
                 })
                 break;
             case '2':
+                if (chosenCourse === undefined) {
+                    toast("You need to have a chosen a course for this.\nPlease create one before trying again.")
+                    return
+                }
                 props.handleAdd("exams",{
                     title: title, description: description,
                     time: time, course: chosenCourse,
@@ -282,8 +288,8 @@ function AddEvent(props){
                 onClose={props.onClose}
             >
                 <Box className="modalContent">
-                    <div className="modalContentEventType">
-                        <p>Type</p> 
+                    <div className="modalGroup" id="modalContentEventType">
+                        <p className="modalGroupTitle">Type</p> 
                         <select defaultValue={type} id="type" onChange={(e) => setType(e.target.value)}>
                             <option value="0">Lecture</option>
                             <option value="1">Assignment</option>

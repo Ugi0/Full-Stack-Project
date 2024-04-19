@@ -9,7 +9,7 @@ import Navigation from '../../components/navigation/Navigation.jsx';
 import Banner from '../../components/banner/banner.jsx';
 import Divider from '../../components/divider/Divider.jsx';
 import Cookies from 'universal-cookie';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import StatusList from '../../view_elements/projects/StatusList/StatusList.jsx';
 import shallowEqual from '../../utils/shallowEqual.js'
 import { Navigate } from 'react-router-dom';
@@ -43,11 +43,6 @@ function App() {
   const [exams, setExamsMapState] = useState(new Map());
   const [projects, setProjectsMapState] = useState(new Map());
   const [lectures, setLectures] = useState(new Map());
-
-  //TODO Add a info thingy to all of the views
-  //TODO Change banner to something better
-  //TODO Change modals to be more visually pleasant
-  //TODO Use .env for the backend locations
 
   const chooseComponent = (item, index) => {
     switch (item.type) {
@@ -153,7 +148,6 @@ function App() {
               }
         });
         }
-        if (e === undefined || e[0] === undefined) return;
         let newMap = new Map();
         e[0].sort((a,b) => a.title.localeCompare(b.title))
         for (let view of e[0]) {
@@ -211,6 +205,9 @@ function App() {
         newMap = new Map();
         newMap.set(0, result.data ?? [])
         setViewElements(newMap)
+      })
+      .catch(e => {
+        toast.error(`There was an issue fetching your data.\nPlease try to refresh the page.`, {id: 2})
       })
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -342,7 +339,10 @@ function App() {
   return (
     <div className="App">
       <Banner />
-      <Divider views={views} selectedView={selectedView} />
+      <Divider views={views} selectedView={selectedView} AddComponents={
+        <AddComponents editable={editable} toggleEditable={toggleEditable} saveViewElement={addDataToElement} saveNote={(item) => handleAdd("notes", item)} />
+        } 
+      />
       <div className='NavAndComponents'>
         <Navigation views={views} editable={editable} setSelectedView={updateSelectedView} addView={(title) => handleAdd("views", {title: title})} deleteView={(id) => handleDelete("views", id)}/>
           <div className='Components'>
@@ -351,7 +351,6 @@ function App() {
             })}
         </div>
       </div>
-      <AddComponents editable={editable} toggleEditable={toggleEditable} saveViewElement={addDataToElement} saveNote={(item) => handleAdd("notes", item)} />
       <Toaster
         position="top-center"
         reverseOrder={false}

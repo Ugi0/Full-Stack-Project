@@ -27,25 +27,25 @@ function EventModal(props) {
     const renderTime = () => {
         if (modalEditable) {
             return (
-                <>
-                Time:
-                <input
-                    type="datetime-local"
-                    id="newtime"
-                    value={item.time}
-                    onChange={(e) => updateItem("time", e.target.value)}
-                />
-                </>
+                <div className="modalGroup">
+                    <p className="modalGroupTitle">Time:</p>
+                    <input
+                        type="datetime-local"
+                        id="newtime"
+                        value={item.time}
+                        onChange={(e) => updateItem("time", e.target.value)}
+                    />
+                </div>
             )
         } else {
             const date = new Date(item.time);
             return (
-                <>
-                Time:
-                <Typography id="newtime" sx={{ mt: 2, margin:0 }} >
-                    {date.toLocaleDateString()} {date.toLocaleTimeString().slice(0,5)}
-                </Typography>
-                </>
+                <div className="modalGroup">
+                    <p className="modalGroupTitle">Time:</p>
+                    <Typography id="newtime" sx={{ mt: 2, margin:0 }} >
+                        {date.toLocaleDateString()} {date.toLocaleTimeString().slice(0,5).replace(".",":")}
+                    </Typography>
+                </div>
             )
         }
       }
@@ -53,18 +53,18 @@ function EventModal(props) {
         if (item.duration) {
             if (modalEditable) {
                 return (
-                    <>
-                    Duration:
-                    <input type="time" id="newduration" value={item.duration.padStart(5,'0')} onChange={(e) => updateItem("duration", e.target.value)}/>
-                    </>
+                    <div className="modalGroup">
+                        <p className="modalGroupTitle">Duration:</p>
+                        <input type="time" id="newduration" value={item.duration.padStart(5,'0')} onChange={(e) => updateItem("duration", e.target.value)}/>
+                    </div>
                 )
             } else {
                 return (
                     <>
-                    Duration:
-                    <Typography id="newduration" sx={{ mt: 2, margin:0 }} >
-                        {item.duration.split(":")[0]}h {item.duration.split(":")[1]}min
-                    </Typography>
+                            <p className="modalGroupTitle">Duration:</p>
+                        <Typography id="newduration" sx={{ mt: 2, margin:0 }} >
+                            {item.duration.split(":")[0]}h {item.duration.split(":")[1]}min
+                        </Typography>
                     </>
                 )
             }
@@ -74,8 +74,8 @@ function EventModal(props) {
         if (item.status) {
             if (modalEditable) {
                 return (
-                    <>
-                        Status:
+                    <div className="modalGroup">
+                        <p className="modalGroupTitle">Status:</p>
                         <select defaultValue={item.status} id="type" onChange={(e) => {
                                 const newitem = {...item}
                                 if (item.started === "" && e.target.value !== "Not started") {
@@ -90,14 +90,14 @@ function EventModal(props) {
                             <option value="Delayed">Delayed</option>
                             <option value="Done">Done</option>
                         </select>
-                    </>
+                    </div>
                 )
             } else {
                 return (
-                    <>
-                        Status:
+                    <div className="modalGroup">
+                        <p className="modalGroupTitle">Status:</p>
                         <p> {item.status} </p>
-                    </>
+                    </div>
                 )
             }
         }
@@ -106,17 +106,17 @@ function EventModal(props) {
         if (item.grade !== undefined) {
             if (modalEditable) {
                 return (
-                    <>
-                        Grade:
+                    <div className="modalGroup">
+                        <p className="modalGroupTitle">Grade:</p>
                         <input value={item.grade} onChange={(e) => updateItem("grade", e.target.value)}/>
-                    </>
+                    </div>
                 )
             } else {
                 return (
-                    <>
-                        Grade:
+                    <div className="modalGroup">
+                        <p className="modalGroupTitle">Grade:</p>
                         <p> {item.grade} </p>
-                    </>
+                    </div>
                 )
             }
         }
@@ -125,8 +125,8 @@ function EventModal(props) {
         if (item.priority) {
             if (modalEditable) {
                 return (
-                    <>
-                        Priority:
+                    <div className="modalGroup">
+                        <p className="modalGroupTitle">Priority:</p>
                         <select defaultValue={item.priority} id="type" onChange={(e) => updateItem("priority", e.target.value)}>
                             <option value="Lowest">Lowest</option>
                             <option value="Low">Low</option>
@@ -134,14 +134,14 @@ function EventModal(props) {
                             <option value="High">High</option>
                             <option value="Urgent">Urgent</option>
                         </select>
-                    </>
+                    </div>
                 )
             } else {
                 return (
-                    <>
-                        Priority:
+                    <div className="modalGroup">
+                        <p className="modalGroupTitle">Priority:</p>
                         <p> {item.priority} </p>
-                    </>
+                    </div>
                 )
             }
         }
@@ -149,16 +149,16 @@ function EventModal(props) {
     const renderCompleted = () => {
         if (item.completed !== undefined) {
             if (modalEditable) {
-                return <>
-                    Completed:
+                return <div className="modalGroup">
+                    <p className="modalGroupTitle">Completed:</p>
                     <input type="checkbox" checked={item.completed} onChange={(e) => {
                         updateItem('completed', !item.completed)
                         }}/>
-                </>
+                </div>
             } else {
-                return <>
-                    Completed: {item.completed ? '✓' : 'X'}
-                </>
+                return <div className="modalGroup">
+                        <p className="modalGroupTitle">Completed: {item.completed ? '✓' : '✘'}</p>
+                    </div>
             }
         }
     }
@@ -166,8 +166,8 @@ function EventModal(props) {
         if (item.data !== undefined) {
             if (modalEditable) {
                 return (
-                    <div style={{flexDirection: "column", display: 'flex'}}>
-                        New checkpoint
+                    <div className="modalGroup" style={{flexDirection: "column", display: 'flex'}}>
+                        <p className="modalGroupTitle">New checkpoint</p>
                         <div>
                             <input value={checkpoint} onChange={(e) => setCheckpoint(e.target.value)} />
                             <button onClick={() => updateItem("data", `${item.data}${checkpoint},0;`)}> Save </button>
@@ -191,8 +191,8 @@ function EventModal(props) {
                 )
             }
             return (
-                <div style={{flexDirection: "column", display: 'flex'}}>
-                    {item.data === "" ? "" : "Checkpoints"}
+                <div className="modalGroup" style={{flexDirection: "column", display: 'flex'}}>
+                    <p className="modalGroupTitle">{item.data === "" ? "" : "Checkpoints"}</p>
                     <ul style={{listStyle: 'none', padding: 0}}>
                         {item.data.split(";").map((e,i) => {
                             if (e !== "") {
@@ -239,9 +239,12 @@ function EventModal(props) {
     }
     const renderDescription = () => {
         if (item.description) {
-            return <Typography id="newdescription" sx={{ mt: 2 }} suppressContentEditableWarning={true} contentEditable={modalEditable} onInput={(e) => updateItem("description", e.target.innerText)}>
-                        {item.description}
-                    </Typography>
+            return <div className="modalGroup">
+                <p className="modalGroupTitle">Description</p>
+                <Typography id="newdescription" sx={{ mt: 2 }} suppressContentEditableWarning={true} contentEditable={modalEditable} onInput={(e) => updateItem("description", e.target.innerText)}>
+                    {item.description}
+                </Typography>
+            </div>
         }
     }
     if (!props.item) {
