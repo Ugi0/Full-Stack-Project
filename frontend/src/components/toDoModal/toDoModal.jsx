@@ -13,12 +13,12 @@ function ToDoModal(props) {
         switch (props.type) {
             case "group":
                 return <>
-                    <div>
-                        <p>Title</p>
+                    <div className="modalGroup">
+                        <p className="modalGroupTitle">Title</p>
                         <input onChange={(e) => setTitle(e.target.value)}/>
                     </div>
-                    <div>
-                        <p>Refresh time</p>
+                    <div className="modalGroup">
+                        <p className="modalGroupTitle">Refresh time</p>
                         <select onChange={(e) => setRefreshTime(e.target.value)}>
                             <option value={"N"}>None</option>
                             <option value={"D"}>Daily</option>
@@ -32,8 +32,8 @@ function ToDoModal(props) {
                 </>
             case "note":
                 return <>
-                <div>
-                    <p>Title</p>
+                <div className="modalGroup">
+                    <p className="modalGroupTitle">Title</p>
                     <input onChange={(e) => setTitle(e.target.value)}/>
                 </div>
                 <IconButton sx={{position:'absolute', top:0, right:0}} onClick={() => {props.setOpen(false); props.saveNote({title: title, checked: false, hostid: props.hostid, body: props.group})}} >
