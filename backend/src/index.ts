@@ -186,8 +186,6 @@ app.get('/verifyToken', async (req, res) => {
   }
 })
 
-//TODO create some better initialization to show the views and different possible elements
-
 const initialize = (id) => {
   const createMainPage = async () => {
     const view = {

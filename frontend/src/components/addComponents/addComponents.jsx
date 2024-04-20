@@ -89,28 +89,30 @@ function AddComponents(props) {
 
     const modalContent = (i, j) => {
         if (i === 0 && j === 0) {
-            return <Box className="addComponentModal">
-                Day
-                <select onChange={(e) => setSelectedDay(e.target.value)}>
-                    <option value={'Monday'}> Monday </option>
-                    <option value={'Tuesday'}> Tuesday </option>
-                    <option value={'Wednesday'}> Wednesday </option>
-                    <option value={'Thursday'}> Thursday </option>
-                    <option value={'Friday'}> Friday </option>
-                    <option value={'Saturday'}> Saturday </option>
-                    <option value={'Sunday'}> Sunday </option>
-                </select>
+            return <Box className="addComponentModalInput">
+                <div className="modalGroup">
+                    <p className="modalGroupTitle">Day</p>
+                    <select onChange={(e) => setSelectedDay(e.target.value)}>
+                        <option value={'Monday'}> Monday </option>
+                        <option value={'Tuesday'}> Tuesday </option>
+                        <option value={'Wednesday'}> Wednesday </option>
+                        <option value={'Thursday'}> Thursday </option>
+                        <option value={'Friday'}> Friday </option>
+                        <option value={'Saturday'}> Saturday </option>
+                        <option value={'Sunday'}> Sunday </option>
+                    </select>
+                </div>
                 <SaveIcon className='saveIcon' onClick={(e) => saveItem({...item, data: selectedDay})} style={{position: 'absolute', top: 5, right: 5}}/>
             </Box>
         }
         if (i === 3 && j === 0) {
-            return <Box className="addComponentModal">
-                <div>
-                    Title
+            return <Box className="addComponentModalInput">
+                <div className="modalGroup">
+                    <p className="modalGroupTitle">Title</p>
                     <input value={noteTitle} onChange={(e) => setNoteTitle(e.target.value)} />
                 </div>
-                <div className='addComponentModalSelect'>
-                    <p> Icon </p>
+                <div className="modalGroup" id='addComponentModalSelect'>
+                    <p className="modalGroupTitle"> Icon </p>
                     <Select
                         styles={customStyles}
                         value={noteIcon}
@@ -129,8 +131,8 @@ function AddComponents(props) {
                         )}
                     />
                 </div>
-                <div>
-                    Text
+                <div className="modalGroup">
+                    <p className="modalGroupTitle">Text</p>
                     <textarea value={noteBody} onChange={(e) => setNoteBody(e.target.value)} />
                 </div>
                 <SaveIcon className='saveIcon' onClick={async () => { saveItem({...item}).then(e => { props.saveNote({hostid: e, icon: noteIcon.icon, title: noteTitle, body: noteBody, checked: false}); setModalOpen(false); } )}} style={{position: 'absolute', top: 5, right: 5}}/>
@@ -146,30 +148,6 @@ function AddComponents(props) {
         return <BorderColorIcon/>
     }
 
-    const renderAddMenu = () => {
-        if (addIconClicked) {
-            return <ul className="addMenu1" style={{zIndex: 2}}>
-                {menuItems.map((menu, index) => {
-                    return (
-                        <ul key={index} className="addMenu2" onClick={() => handleMenuItemClick(index)} style={{zIndex: 2}}>
-                            <p> {menu.title} </p>
-                            <div>
-                                {(itemGroup === index) ?
-                                    menu.subItems.map((item, index2) => {
-                                        return (
-                                            <p key={index2} style={{zIndex: 2}} onClick={() => handleItemClick(index, index2)}>
-                                                {item}
-                                            </p>
-                                        )
-                                    }) : ''
-                                }
-                            </div>
-                        </ul>
-                    )
-                })}
-            </ul>
-        }
-    }
 
     const renderAddIcon = () => {
         if (props.editable) {
@@ -177,7 +155,6 @@ function AddComponents(props) {
                 <IconButton sx={{position:'absolute', top:'50%', left:0, scale:'2', zIndex: 2}}> 
                     <AddCircleOutlineIcon onClick={handleAddClick}/>
                  </IconButton>
-                 {renderAddMenu()}
             </>
         }
     }
@@ -231,6 +208,39 @@ function AddComponents(props) {
                 {renderIcon()}
             </IconButton>
             {renderAddIcon()}
+            <Modal
+                open={addIconClicked}
+                onClose={() => {
+                    setAddIconClicked(false);
+                    setModalOpen(false);
+                    setItemGroup(-1);
+                    setChosenItem(-1)
+                }}
+            >
+                <div className="addComponentModal">
+                    {menuItems.map((e,i) => (
+                        <div onClick={() => handleMenuItemClick(i)} key={i} className="addComponentModalItem">
+                            {e.title}
+                        </div> 
+                    ))}
+                </div>
+            </Modal>
+            <Modal
+                open={itemGroup !== -1}
+                onClose={() => {
+                    setModalOpen(false);
+                    setItemGroup(-1);
+                    setChosenItem(-1)
+                }}
+            >
+                <div className="addComponentModal">
+                    {menuItems[itemGroup === -1 ? 0 : itemGroup].subItems.map((e,i) => (
+                        <div onClick={() => handleItemClick(itemGroup, i)} key={i} className="addComponentModalItem">
+                            <p>{e}</p>
+                        </div> 
+                    ))}
+                </div>
+            </Modal>
             <Modal
                 open={modalOpen}
                 onClose={() => {
