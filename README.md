@@ -8,11 +8,13 @@
 ## About The Project
 
 Having apps that are just how I like is a important thing for me. And since no app is fully customizable, I like to create my own to have that level of freedom.
-As a bonus, I get to learn react which is not a strenth of me.
+As a bonus, I get to learn react which is not a strength of me.
 
 Things that I wanted for a calendar app:
 * Combine courses, assignments, exams, projects and events into a single application that you can customize easily.
 * App would remind you and keep track of progress
+
+Currently hosted at: www.studentcalendar.xyz
 
 ### Built With
 
