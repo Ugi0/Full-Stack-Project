@@ -5,11 +5,7 @@ import CourseItem from '../../../components/courseItem/courseItem'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import DeleteComponentButton from "../../../components/deleteComponentButton/deleteComponentButton";
 import CourseItemModal from '../../../components/courseItemModal/courseItemModal';
-import { getFilename } from '../../../utils/getFileName';
-
-const icons = new Map();
-const iconsFolder = require.context('../../../images/icons/', true);
-iconsFolder.keys().map(image => icons.set(getFilename(image), iconsFolder(`${image}`)));
+import { Icons } from '../../../utils/icons';
 
 function CoursesView(props) {
     const [x, setX] = useState(props.sx.x);
@@ -47,14 +43,14 @@ function CoursesView(props) {
 
     const courseIconsFromSubject = (subject) => {
         let icon = subject.toLowerCase().replace(" ","_");
-        return [icons.get(icon), icons.get(`${icon}_color`)]
+        return [Icons.get(icon), Icons.get(`${icon}_color`)]
     }
 
     return (
         <>
         <Rnd disableDragging={!props.editable} enableResizing={props.editable} size={{ width: width,  height: height }}
         position={{ x: x, y: y }}
-        style={{border: props.editable ? "solid whitesmoke 1px" : "", position: 'relative'}}
+        style={{border: props.editable ? "solid whitesmoke 1px" : ""}}
         onDragStop={(e, d) => { setX(d.x); setY(d.y); }}
         onResizeStop={(e, direction, ref, delta, position) => {
             setWidth(`${Math.max(Number(ref.style.width.slice(0,-2)), 200)}px`)

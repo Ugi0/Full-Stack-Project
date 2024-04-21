@@ -1,0 +1,68 @@
+
+.toDoListRoot {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.toDoListIconTitle {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    border-bottom: 2px whitesmoke solid;
+    font-family: "monofontoRg";
+}
+
+.toDoListIconTitle * {
+    margin: 3px;
+}
+
+.toDoListGroup {
+    border-bottom: 1px #F5F5F515 solid;
+}
+
+.toDoListRoot button {
+    background: none;
+    border: none;
+    width: fit-content;
+    color: #F5F5F530;
+    margin: 5px;
+    font-family: "monofontoRg";
+}
+
+.toDoListRoot button:hover {
+    cursor: pointer;
+}
+
+.toDoListGroupTitle {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-family: "monofontoRg";
+}
+
+.toDoListGroupTitle * {
+    margin: 3px 5px 3px 5px;
+}
+
+.toDoListGroupTitleIcon:hover {
+    cursor: pointer;
+}
+
+.toDoListGroupItem {
+    display: flex;
+    align-items: center;
+    font-family: "monofontoRg";
+}
+
+.toDoListGroupItem p {
+    margin: 3px;
+}
+
+.toDoListGroupItem i:hover {
+    cursor: pointer;
+}
+
+.toDoListGroupTitleMenu * {
+    margin: 3px;
+}

@@ -1,0 +1,36 @@
+
+.singleNoteRoot {
+    display: flex;
+    flex-direction: column;
+    background-color: #233028;
+    height: 100%;
+}
+
+.singleNoteIcon {
+    margin: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.singleNoteIcon p {
+    margin: 5px;
+    font-family: 'TypeWriter';
+    color: green;
+}
+
+.singleNoteText {
+    position: relative;
+    padding-left: 30px;
+}
+
+.singleNoteText p {
+    padding: 5px;
+    margin: 5px;
+    overflow-wrap: break-word;  
+    word-wrap: break-word; 
+    word-break: break-word;
+    border-left: 2px white solid;
+    width: fit-content;
+    font-family: 'monofontoRg';
+}

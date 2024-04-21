@@ -74,7 +74,7 @@ function MonthCalendar(props) {
         <>
             <Rnd disableDragging={!props.editable} enableResizing={props.editable} size={{ width: width,  height: height }}
             position={{ x: x, y: y }}
-            style={{border: props.editable ? "solid whitesmoke 1px" : "", position: 'relative'}}
+            style={{border: props.editable ? "solid whitesmoke 1px" : ""}}
             onDragStop={(e, d) => { setX(d.x); setY(d.y); }}
             onResizeStop={(e, direction, ref, delta, position) => {
                 setWidth(`${Math.max(Number(ref.style.width.slice(0,-2)), 815)}px`)
@@ -115,7 +115,7 @@ function MonthCalendar(props) {
                                             handler = {handler} key = {item.id}
                                             draw = {getCalendarMonthRenders(item.type)} sx = {{'overflow': 'hidden', 'whiteSpace': 'nowrap'}}
                                             //React magic to add 'title' props if item object doesn't have a title
-                                            {...(!('title' in item) ? {title: [...props.userData.courses.values()].filter(e => e.id === item.course)[0].title} : {})}
+                                            {...(!('title' in item) ? {title: [...props.userData.courses.values()].filter(e => e.id === item.course.id)[0].title} : {})}
                                         />
                                 })}
                             </div>

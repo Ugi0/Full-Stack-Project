@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
 import './Login.css'
-import myConfig from '../../config.js';
 import Cookies from 'universal-cookie';
+import bcrypt from "bcryptjs-react";
 import { Navigate } from 'react-router-dom';
-
-var bcrypt = require('bcryptjs');
+import toast, { Toaster } from 'react-hot-toast';
 
 function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [redirect, setRedirect] = useState(false);
     const [redirectLocation, setRedirectLocation] = useState("/");
-    const [errorMessage, setErrorMessage] = useState("");
 
     // Handle submitting the form. Meaning sending to the backend for checking
     const handleSubmit = async (event) => {
         event.preventDefault();
         const [valid, Error] = validate({username, password, redirect});
         if (!valid) { //Inputs are not valid, display an error to the user
-            setErrorMessage(Error);
+            if (Error !== "") {
+                toast.error(Error)
+            }
         }
         else {
             const requestOptions = {
@@ -28,7 +28,7 @@ function Login() {
                     username: username
                 })
             };
-            let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/login`, requestOptions)
+            let response = await fetch(`${process.env.REACT_APP_BACKENDLOCATION}/login`, requestOptions)
                     .catch(error => {
                         console.log(error)
                     });
@@ -42,7 +42,7 @@ function Login() {
                         password: bcrypt.hashSync(password, responseJSON.salt)
                     })
                 }
-                response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/login`, requestOptions)
+                response = await fetch(`${process.env.REACT_APP_BACKENDLOCATION}/login`, requestOptions)
                     .catch(error => {
                         console.log(error)
                     })
@@ -55,7 +55,7 @@ function Login() {
                             "token", responseJSON.token, { path: '/', maxAge: 60*60*24*30 }
                         )
                     } else {
-                        setErrorMessage("Either username or password is wrong.")
+                        toast.error("Either username or password is wrong.")
                     }
                 }
             }
@@ -73,23 +73,13 @@ function Login() {
         }
     }
 
-    const renderError = () => {
-        if (errorMessage !== "") {
-            return <div className='errorMessage'>
-                <p>
-                    {errorMessage}
-                </p>
-            </div>
-        }
-    }
-
     const cookies = new Cookies();
     if (cookies.get('token')) {
         const requestOptions = {
             method: 'GET',
             headers: { 'Content-Type': 'application/json', 'token': cookies.get('token') }
         }
-        fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/verifyToken`, requestOptions).then((res) => {
+        fetch(`${process.env.REACT_APP_BACKENDLOCATION}/verifyToken`, requestOptions).then((res) => {
             res.json().then(e => {
                 if (e.success) { //User already has a valid token
                     setRedirect(true)
@@ -99,7 +89,7 @@ function Login() {
                 console.log("Could not connect to backend")
             })
     }
-    return (
+    return ( <>
         <div className='LoginRoot'>
             <form onSubmit={handleSubmit} className='inputBox' autoComplete="off">
                 <div className='title'>
@@ -117,7 +107,6 @@ function Login() {
                 <div>
                     <input type="submit" value="Log in" className='loginButton' data-testid="SubmitButton" />
                 </div>
-                {renderError()}
                 <div className='registerDiv'>
                     <p>
                         Or haven't created an account yet?
@@ -129,6 +118,14 @@ function Login() {
             </form>
             {renderRedirect()}
         </div>
+        <Toaster
+            position="top-center"
+            reverseOrder={false}
+            toastOptions={{
+                duration: 5000
+            }}
+        />
+    </>
     ); 
 }
 

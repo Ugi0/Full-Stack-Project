@@ -1,6 +1,5 @@
 import React, { useEffect, useState, createRef, useRef } from 'react';
 import './App.css';
-import myConfig from '../../config.js';
 import WeekCalendar from '../../view_elements/calendars/week/week.jsx'
 import MonthCalendar from '../../view_elements/calendars/month/month.jsx'
 import DayCalendar from '../../view_elements/calendars/day/day.jsx'
@@ -10,13 +9,20 @@ import Navigation from '../../components/navigation/Navigation.jsx';
 import Banner from '../../components/banner/banner.jsx';
 import Divider from '../../components/divider/Divider.jsx';
 import Cookies from 'universal-cookie';
+import toast, { Toaster } from 'react-hot-toast';
+import StatusList from '../../view_elements/projects/StatusList/StatusList.jsx';
 import shallowEqual from '../../utils/shallowEqual.js'
 import { Navigate } from 'react-router-dom';
 import { fetchData } from '../../api/fetchers.js';
 import { checkToken } from '../../api/checkToken.js';
 import { fetchViewData } from '../../api/fetchViewData.js';
 import { saveViewElement, deleteViewElement } from '../../api/saveViewElement.js';
-import { defaultViewSize } from '../../api/defaultViewSizes.js';
+import { defaultViewSize } from '../../utils/defaultViewSizes.js';
+import ProjectList from '../../view_elements/projects/ProjectList/ProjectList.jsx';
+import Timeline from '../../view_elements/projects/Timeline/Timeline.jsx';
+import SingleNote from '../../view_elements/notes/singleNote/singleNote.jsx';
+import ToDoList from '../../view_elements/notes/toDoList/toDoList.jsx';
+import checkForNotifications from '../../utils/checkForNotifications.js';
 
 function App() {
   // Make so App contains all of the information that is needed to render
@@ -29,6 +35,7 @@ function App() {
   const [views, setViews] = useState(new Map());
   const [viewElements, setViewElements] = useState(new Map());
   const [selectedView, setSelectedView] = useState(0);
+  const [notes, setNotes] = useState(new Map());
 
   const [courses, setCourseMapState] = useState(new Map());
   const [events, setEventsMapState] = useState(new Map());
@@ -46,6 +53,15 @@ function App() {
         break;
       case 1:
         if (item.size === 0) return <CoursesView id={item.id} courses={courses} deleteComponent={deleteComponent} editable={editable} innerRef={item.ref} key={index} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} addCourse={(course) => handleAdd("courses", course)} deleteCourse={(id) => handleDelete('courses', id)}  />
+        break;
+      case 2:
+        if (item.size === 0) return <ProjectList id={item.id} deleteComponent={deleteComponent} handleAdd={handleAdd} handleDelete={handleDelete} projects={projects} courses={courses} editable={editable} innerRef={item.ref} key={index} sx={{x: item.x, y:item.y, width: item.width, height: item.height}}/>
+        if (item.size === 1) return <StatusList id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} key={index} handleAdd={handleAdd} editable={editable} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        if (item.size === 2) return <Timeline id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} key={index} handleAdd={handleAdd} editable={editable} userData={{courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}}} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        break;
+      case 3:
+        if (item.size === 0) return <SingleNote id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} editable={editable} key={item.id} notes={notes} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        if (item.size === 1) return <ToDoList id={item.id} data={item.data} notes={notes} deleteNote={(id) => {handleDelete("notes", id)}} saveNote={(item) => {handleAdd("notes", item)}} setData={(data) => saveViewElement({...item, data: data})} key={item.id} deleteComponent={deleteComponent} innerRef={item.ref} editable={editable} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
         break;
       default:
         throw new Error("Not a valid component")
@@ -68,6 +84,8 @@ function App() {
         return lectures
       case 'views':
         return views
+      case 'notes':
+        return notes
       default:
         throw new Error("Not allowed")
     }
@@ -89,6 +107,8 @@ function App() {
         return setLectures
       case 'views':
         return setViews
+      case 'notes':
+        return setNotes
       default:
         throw new Error("Not allowed")
     }
@@ -104,17 +124,17 @@ function App() {
     dataSetterMap(table)(data);
   }
 
-
   useEffect(() => {
     // Fetch user data from backend and display if succeeded on first render
     Promise.all([
       fetchData('views'),
-      fetchData('lectures'),
+      fetchData('notes'),
       fetchData('assignments'),
       fetchData('projects'),
       fetchData('events'),
       fetchData('exams'),
-      fetchData('courses')]).then(e => {
+      fetchData('courses'),
+      fetchData('lectures'),]).then(e => {
         const cookies = new Cookies();
         if (!cookies.get('token')) {
           setRedirect(true);
@@ -128,7 +148,6 @@ function App() {
               }
         });
         }
-        if (e === undefined || e[0] === undefined) return;
         let newMap = new Map();
         e[0].sort((a,b) => a.title.localeCompare(b.title))
         for (let view of e[0]) {
@@ -140,11 +159,11 @@ function App() {
         }
         setViews(newMap)
         newMap = new Map();
-        for (let lecture of e[1]) {
-          lecture.type = "lectures";
-          newMap.set(lecture.id, lecture);
+        for (let note of e[1]) {
+          note.type = "notes";
+          newMap.set(note.id, note);
         }
-        setLectures(newMap);
+        setNotes(newMap)
         newMap = new Map();
         for (let assignment of e[2]) {
           assignment.type = "assignments";
@@ -169,18 +188,30 @@ function App() {
           newMap.set(exam.id, exam);
         }
         setExamsMapState(newMap);
-        newMap = new Map();
+        const tempCoursesMap = new Map();
         for (let course of e[6]) {
           course.type = "courses";
-          newMap.set(course.id, course);
+          tempCoursesMap.set(course.id, course);
         }
-        setCourseMapState(newMap);
+        setCourseMapState(tempCoursesMap);
+        newMap = new Map();
+        for (let lecture of e[7]) {
+          lecture.type = "lectures";
+          lecture.course = tempCoursesMap.get(lecture.course)
+          newMap.set(lecture.id, lecture);
+        }
+        setLectures(newMap);
         let result = fetchViewData(0, cookies.get('token'))
         newMap = new Map();
         newMap.set(0, result.data ?? [])
         setViewElements(newMap)
       })
+      .catch(e => {
+        toast.error(`There was an issue fetching your data.\nPlease try to refresh the page.`, {id: 2})
+      })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
   
   const handleDelete = async (table, id) => {
     const cookies = new Cookies();
@@ -191,7 +222,7 @@ function App() {
           id: id
       })
     };
-    let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/${table}`, requestOptions)
+    let response = await fetch(`${process.env.REACT_APP_BACKENDLOCATION}/${table}`, requestOptions)
             .catch(error => {
               console.log("2",error)
             });
@@ -211,7 +242,7 @@ function App() {
           [table.slice(0,-1)]: data //Remove last character of the table
       })                            //courses -> course
     };
-    let response = await fetch(`http://${myConfig.BackendLocation}:${myConfig.BackendPort}/${table}`, requestOptions)
+    let response = await fetch(`${process.env.REACT_APP_BACKENDLOCATION}/${table}`, requestOptions)
             .catch(error => {
             console.log("3",error)
             });
@@ -265,7 +296,7 @@ function App() {
     setSelectedView(id);
   }
 
-  const addDataToElement = (item) => {
+  const addDataToElement = async (item) => {
     if (defaultViewSize(item.type, item.size) === undefined) {
       return
     }
@@ -275,7 +306,7 @@ function App() {
     item['height'] = height;
     item['x'] = 250;
     item['y'] = 200;
-    saveViewElement(item).then(result => {
+    return saveViewElement(item).then(result => {
       if (result.success) {
         let newMap = new Map(viewElements);
         let newData = viewElements.get(selectedView);
@@ -285,6 +316,7 @@ function App() {
         newData.push(item);
         newMap.set(selectedView, newData);
         setViewElements(newMap);
+        return result.id;
       }
     });
   }
@@ -301,19 +333,28 @@ function App() {
     })
   }
 
+  //check for new notifications to show every 5 minutes
+  setInterval(() => { checkForNotifications({courses: courses, events: {lectures: lectures, assignments: assignments, events: events, exams: exams, projects: projects}})}, 5*1000);
+
   return (
     <div className="App">
       <Banner />
-      <Divider views={views} selectedView={selectedView} />
+      <Divider views={views} selectedView={selectedView} AddComponents={
+        <AddComponents editable={editable} toggleEditable={toggleEditable} saveViewElement={addDataToElement} saveNote={(item) => handleAdd("notes", item)} />
+        } 
+      />
       <div className='NavAndComponents'>
         <Navigation views={views} editable={editable} setSelectedView={updateSelectedView} addView={(title) => handleAdd("views", {title: title})} deleteView={(id) => handleDelete("views", id)}/>
           <div className='Components'>
-          {(viewElements.get(selectedView) ?? []).map((e,i) => {
-            return chooseComponent(e,i)
-          })}
+            {(viewElements.get(selectedView) ?? []).map((e,i) => {
+              return chooseComponent(e,i)
+            })}
         </div>
       </div>
-      <AddComponents editable={editable} toggleEditable={toggleEditable} saveViewElement={addDataToElement} />
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+      />
     </div>
   );
 }

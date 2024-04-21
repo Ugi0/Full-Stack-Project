@@ -1,8 +1,8 @@
 
 export const titleInput = (handleChange) => {
     return (
-        <div>
-            <p>Title</p>
+        <div className="modalGroup">
+            <p className="modalGroupTitle">Title</p>
             <input id="title" onChange={(e) => handleChange(e.target.value)} />
         </div>
     )
@@ -10,8 +10,8 @@ export const titleInput = (handleChange) => {
 
 export const descriptionInput = (handleChange) => {
     return (
-        <div>
-            <p>Description</p>
+        <div className="modalGroup">
+            <p className="modalGroupTitle">Description</p>
             <textarea id="description" onChange={(e) => handleChange(e.target.value)} />
         </div>
     )

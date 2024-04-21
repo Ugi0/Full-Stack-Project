@@ -26,7 +26,7 @@ function DayCalendar(props) {
         <>
             <Rnd disableDragging={!props.editable} enableResizing={props.editable} size={{ width: width,  height: height }}
                 position={{ x: x, y: y }}
-                style={{border: props.editable ? "solid whitesmoke 1px" : "", position: 'relative'}}
+                style={{border: props.editable ? "solid whitesmoke 1px" : ""}}
                 onDragStop={(e, d) => { setX(d.x); setY(d.y); }}
                 onResizeStop={(e, direction, ref, delta, position) => {
                     setWidth(`${Math.max(Number(ref.style.width.slice(0,-2)), 100)}px`)
@@ -44,7 +44,7 @@ function DayCalendar(props) {
                                     <p style={{textDecoration: `${item.completed ? "line-through" : ""}`}}>
                                     {item.time.split("T")[1]}
                                     {" "}
-                                    {[...props.userData.courses.values()].filter(e => e.id === item.course)[0].title}
+                                    {[...props.userData.courses.values()].filter(e => e.id === item.course.id)[0].title}
                                     </p>
                                 </div>)
                             ))}

@@ -25,6 +25,7 @@ app.get('/assignments', async (req, res) => {
                 title: e.title,
                 description: e.description,
                 status: toStatus(e.status),
+                started: e.started,
                 time: e.time,
                 grade: e.grade,
                 completed: e.completed
@@ -54,6 +55,7 @@ app.get('/assignments', async (req, res) => {
             description: data.description,
             id: newID, course: data.course,
             status: fromStatus(data.status),
+            started: data.started,
             time: data.time,
             grade: data.grade,
             completed: data.completed

@@ -3,13 +3,14 @@ import { useEffect, useMemo, useState } from 'react';
 import Select from 'react-select';
 import { Modal } from '@mui/material';
 import { Box } from '@mui/material';
+import toast from 'react-hot-toast';
 import SaveIcon from '@mui/icons-material/Save';
 import { IconButton } from '@mui/material';
 import { getFilename } from '../../utils/getFileName';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const icons = new Map();
-const iconsFolder = require.context('../../images/icons/', true);
+const iconsFolder = require.context('../../images/course_icons/', true);
 iconsFolder.keys().map(image => icons.set(getFilename(image), iconsFolder(`${image}`)));
 
 function CourseItemModal(props) {
@@ -84,16 +85,16 @@ function CourseItemModal(props) {
             onClose={() => { reset(); props.switchOpen() }}
         >
             <Box className="modalContent">
-                <div>
-                    <p>Course name</p>
+                <div className="modalGroup">
+                    <p className="modalGroupTitle">Course name</p>
                     <input value={title} onChange={(e) => setTitle(e.target.value)}/>
                 </div>
-                <div>
-                    <p>Course description</p>
+                <div className="modalGroup">
+                    <p className="modalGroupTitle">Course description</p>
                     <input value={description} onChange={(e) => setDescription(e.target.value)}/>
                 </div>
-                <div className='courseItemModalSelect'>
-                    <p> Subject </p>
+                <div className="modalGroup" id='courseItemModalSelect'>
+                    <p className="modalGroupTitle"> Subject </p>
                     <Select
                         styles={customStyles}
                         value={selectedSubject}
@@ -113,7 +114,10 @@ function CourseItemModal(props) {
                     />
                 </div>
                 <IconButton sx={{position:'absolute', top:0, right:0}} onClick={() => {
-                        if (!selectedSubject) return;
+                        if (!selectedSubject) {
+                            toast("You need to choose a subject", {id: 2});
+                            return
+                        }
                         props.handleSubmit({title, description, subject: selectedSubject, item: props.item})
                         reset();
                         props.switchOpen();

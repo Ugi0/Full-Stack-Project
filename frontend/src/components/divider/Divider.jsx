@@ -23,6 +23,7 @@ function Divider(props) {
     return (
         <div className="divider">
             {getViewTitle()}
+            {props.AddComponents}
         </div>
     )
 }

@@ -12,8 +12,11 @@ function EventModal(props) {
     const [modalEditable, setModalEditable] = useState(false);
     const [item, setItem] = useState(props.item)
 
+    const [checkpoint, setCheckpoint] = useState("");
+
     useEffect(() => {
         setItem(props.item);
+        setCheckpoint("")
         setModalEditable(false);
     }, [props.item])
 
@@ -24,25 +27,25 @@ function EventModal(props) {
     const renderTime = () => {
         if (modalEditable) {
             return (
-                <>
-                Time:
-                <input
-                    type="datetime-local"
-                    id="newtime"
-                    value={item.time}
-                    onChange={(e) => updateItem("time", e.target.value)}
-                />
-                </>
+                <div className="modalGroup">
+                    <p className="modalGroupTitle">Time:</p>
+                    <input
+                        type="datetime-local"
+                        id="newtime"
+                        value={item.time}
+                        onChange={(e) => updateItem("time", e.target.value)}
+                    />
+                </div>
             )
         } else {
             const date = new Date(item.time);
             return (
-                <>
-                Time:
-                <Typography id="newtime" sx={{ mt: 2, margin:0 }} >
-                    {date.toLocaleDateString()} {date.toLocaleTimeString().slice(0,5)}
-                </Typography>
-                </>
+                <div className="modalGroup">
+                    <p className="modalGroupTitle">Time:</p>
+                    <Typography id="newtime" sx={{ mt: 2, margin:0 }} >
+                        {date.toLocaleDateString()} {date.toLocaleTimeString().slice(0,5).replace(".",":")}
+                    </Typography>
+                </div>
             )
         }
       }
@@ -50,18 +53,18 @@ function EventModal(props) {
         if (item.duration) {
             if (modalEditable) {
                 return (
-                    <>
-                    Duration:
-                    <input type="time" id="newduration" value={item.duration.padStart(5,'0')} onChange={(e) => updateItem("duration", e.target.value)}/>
-                    </>
+                    <div className="modalGroup">
+                        <p className="modalGroupTitle">Duration:</p>
+                        <input type="time" id="newduration" value={item.duration.padStart(5,'0')} onChange={(e) => updateItem("duration", e.target.value)}/>
+                    </div>
                 )
             } else {
                 return (
                     <>
-                    Duration:
-                    <Typography id="newduration" sx={{ mt: 2, margin:0 }} >
-                        {item.duration.split(":")[0]}h {item.duration.split(":")[1]}min
-                    </Typography>
+                            <p className="modalGroupTitle">Duration:</p>
+                        <Typography id="newduration" sx={{ mt: 2, margin:0 }} >
+                            {item.duration.split(":")[0]}h {item.duration.split(":")[1]}min
+                        </Typography>
                     </>
                 )
             }
@@ -71,23 +74,30 @@ function EventModal(props) {
         if (item.status) {
             if (modalEditable) {
                 return (
-                    <>
-                        Status:
-                        <select id="type" onChange={(e) => updateItem("status", e.target.value)}>
+                    <div className="modalGroup">
+                        <p className="modalGroupTitle">Status:</p>
+                        <select defaultValue={item.status} id="type" onChange={(e) => {
+                                const newitem = {...item}
+                                if (item.started === "" && e.target.value !== "Not started") {
+                                    newitem.started = new Date().toISOString().slice(0,16);
+                                }
+                                newitem.status = e.target.value;
+                                setItem(newitem);
+                            }}>
                             <option value="Not started">Not started</option>
                             <option value="In progress">In progress</option>
                             <option value="Stopped">Stopped</option>
                             <option value="Delayed">Delayed</option>
                             <option value="Done">Done</option>
                         </select>
-                    </>
+                    </div>
                 )
             } else {
                 return (
-                    <>
-                        Status:
+                    <div className="modalGroup">
+                        <p className="modalGroupTitle">Status:</p>
                         <p> {item.status} </p>
-                    </>
+                    </div>
                 )
             }
         }
@@ -96,17 +106,17 @@ function EventModal(props) {
         if (item.grade !== undefined) {
             if (modalEditable) {
                 return (
-                    <>
-                        Grade:
+                    <div className="modalGroup">
+                        <p className="modalGroupTitle">Grade:</p>
                         <input value={item.grade} onChange={(e) => updateItem("grade", e.target.value)}/>
-                    </>
+                    </div>
                 )
             } else {
                 return (
-                    <>
-                        Grade:
+                    <div className="modalGroup">
+                        <p className="modalGroupTitle">Grade:</p>
                         <p> {item.grade} </p>
-                    </>
+                    </div>
                 )
             }
         }
@@ -115,23 +125,23 @@ function EventModal(props) {
         if (item.priority) {
             if (modalEditable) {
                 return (
-                    <>
-                        Priority:
-                        <select id="type" onChange={(e) => updateItem("priority", e.target.value)}>
+                    <div className="modalGroup">
+                        <p className="modalGroupTitle">Priority:</p>
+                        <select defaultValue={item.priority} id="type" onChange={(e) => updateItem("priority", e.target.value)}>
                             <option value="Lowest">Lowest</option>
                             <option value="Low">Low</option>
                             <option value="Medium">Medium</option>
                             <option value="High">High</option>
                             <option value="Urgent">Urgent</option>
                         </select>
-                    </>
+                    </div>
                 )
             } else {
                 return (
-                    <>
-                        Priority:
+                    <div className="modalGroup">
+                        <p className="modalGroupTitle">Priority:</p>
                         <p> {item.priority} </p>
-                    </>
+                    </div>
                 )
             }
         }
@@ -139,15 +149,63 @@ function EventModal(props) {
     const renderCompleted = () => {
         if (item.completed !== undefined) {
             if (modalEditable) {
-                return <>
-                    Completed:
-                    <input type="checkbox" checked={item.completed} onChange={(e) => updateItem('completed', !item.completed)}/>
-                </>
+                return <div className="modalGroup">
+                    <p className="modalGroupTitle">Completed:</p>
+                    <input type="checkbox" checked={item.completed} onChange={(e) => {
+                        updateItem('completed', !item.completed)
+                        }}/>
+                </div>
             } else {
-                return <>
-                    Completed: {item.completed ? '✓' : 'X'}
-                </>
+                return <div className="modalGroup">
+                        <p className="modalGroupTitle">Completed: {item.completed ? '✓' : '✘'}</p>
+                    </div>
             }
+        }
+    }
+    const renderCheckpoints = () => {
+        if (item.data !== undefined) {
+            if (modalEditable) {
+                return (
+                    <div className="modalGroup" style={{flexDirection: "column", display: 'flex'}}>
+                        <p className="modalGroupTitle">New checkpoint</p>
+                        <div>
+                            <input value={checkpoint} onChange={(e) => setCheckpoint(e.target.value)} />
+                            <button onClick={() => updateItem("data", `${item.data}${checkpoint},0;`)}> Save </button>
+                        </div>
+                        <ul style={{listStyle: 'none', padding: 0}}>
+                            {item.data.split(";").map((e,i) => {
+                                if (e !== "") {
+                                    return (
+                                        <li key={i}> 
+                                            <input type="checkbox" checked={e.split(",")[1] === '1'} onChange={() => {
+                                                updateItem('data', item.data.split(";").map(f => f.split(",")[0] === e.split(",")[0] ? `${f.split(",")[0]},${f.split(",")[1] === '1' ? '0' : '1'}` : f).join(";"))
+                                            }} />
+                                            {e.split(",")[0]} 
+                                            <button onClick={() => updateItem("data", `${item.data.split(";").filter(f => e.split(",")[0] !== f.split(",")[0]).join(";")}`)}>Del</button> 
+                                        </li>
+                                    )
+                                }
+                            })}
+                        </ul>
+                    </div>
+                )
+            }
+            return (
+                <div className="modalGroup" style={{flexDirection: "column", display: 'flex'}}>
+                    <p className="modalGroupTitle">{item.data === "" ? "" : "Checkpoints"}</p>
+                    <ul style={{listStyle: 'none', padding: 0}}>
+                        {item.data.split(";").map((e,i) => {
+                            if (e !== "") {
+                                return (
+                                    <li key={i} style={{textDecoration: `${e.split(",")[1] === '0' ? '' : "line-through"}`}}> 
+                                        {e.split(",")[0]} 
+                                    </li>
+                                )
+                            }
+                        })}
+                    </ul>
+                </div>
+            )
         }
     }
     const renderDeleteIcon = () => {
@@ -181,9 +239,12 @@ function EventModal(props) {
     }
     const renderDescription = () => {
         if (item.description) {
-            return <Typography id="newdescription" sx={{ mt: 2 }} suppressContentEditableWarning={true} contentEditable={modalEditable} onInput={(e) => updateItem("description", e.target.innerText)}>
-                        {item.description}
-                    </Typography>
+            return <div className="modalGroup">
+                <p className="modalGroupTitle">Description</p>
+                <Typography id="newdescription" sx={{ mt: 2 }} suppressContentEditableWarning={true} contentEditable={modalEditable} onInput={(e) => updateItem("description", e.target.innerText)}>
+                    {item.description}
+                </Typography>
+            </div>
         }
     }
     if (!props.item) {
@@ -203,6 +264,7 @@ function EventModal(props) {
                 {renderGrade()}
                 {renderPriority()}
                 {renderCompleted()}
+                {renderCheckpoints()}
 
                 {/* Icons */}
                 <IconButton sx={{position:'absolute', top:0, right:0}} onClick={handleSaveClick}>
