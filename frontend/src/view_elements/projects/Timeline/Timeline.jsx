@@ -306,7 +306,7 @@ function Timeline(props) {
     return <>
         <Rnd disableDragging={!props.editable} enableResizing={props.editable} size={{ width: width,  height: height }}
         position={{ x: x, y: y }}
-        style={{border: props.editable ? "solid whitesmoke 1px" : "", position: 'relative'}}
+        style={{border: props.editable ? "solid whitesmoke 1px" : ""}}
         onDragStop={(e, d) => { setX(d.x); setY(d.y); }}
         onResizeStop={(e, direction, ref, delta, position) => {
             setWidth(`${Math.max(Number(ref.style.width.slice(0,-2)), 500)}px`)
