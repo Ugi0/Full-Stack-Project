@@ -24,6 +24,10 @@ function ToDoList(props) {
 
     props.innerRef.current = () => { return {x :x, y:y, width: width, height: height} }
 
+    const handleSaveNote = (item) => {
+        props.saveNote(item)
+    }
+
     const handleSaveGroup = (item) => {
         let newMap = new Map();
         let groups = data.split(";");
@@ -128,7 +132,7 @@ function ToDoList(props) {
                         refreshTime: parts[1],
                         collapsed: parts[2]
                     }
-                    const curNotes = [...props.notes.values()].filter(e => e.body === parts.title && e.icon === null)
+                    const curNotes = [...props.notes.values()].filter(e => e.body === parts.title && (e.icon === null || e.icon === undefined))
                     if (parts.collapsed === "N") {
                         return <div key={i} className='toDoListGroupTitle'>
                                 <ArrowDropDownIcon style={{transform: 'rotate(-90deg)', color: '#F5F5F530'}} className='toDoListGroupTitleIcon' onClick={() => {handleGroupClose(parts)}}/>
@@ -173,8 +177,8 @@ function ToDoList(props) {
                 </button>
                 <DeleteComponentButton editable={props.editable} id={props.id} deleteComponent={props.deleteComponent} />
             </div>
-            <ToDoModal hostid={props.id} open={openModal} setOpen={setOpenModal} type={type} group={chosenGroup} saveNote={(item) => {props.saveNote(item)}} saveGroup={(item) => handleSaveGroup(item)} />
         </Rnd>
+        <ToDoModal hostid={props.id} open={openModal} setOpen={setOpenModal} type={type} group={chosenGroup} saveNote={handleSaveNote} saveGroup={(item) => handleSaveGroup(item)} />
     </>
 }
 

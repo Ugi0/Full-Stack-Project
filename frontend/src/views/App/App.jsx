@@ -61,11 +61,20 @@ function App() {
         break;
       case 3:
         if (item.size === 0) return <SingleNote id={item.id} deleteComponent={deleteComponent} innerRef={item.ref} editable={editable} key={item.id} notes={notes} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
-        if (item.size === 1) return <ToDoList id={item.id} data={item.data} notes={notes} deleteNote={(id) => {handleDelete("notes", id)}} saveNote={(item) => {handleAdd("notes", item)}} setData={(data) => saveViewElement({...item, data: data})} key={item.id} deleteComponent={deleteComponent} innerRef={item.ref} editable={editable} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
+        if (item.size === 1) return <ToDoList id={item.id} data={item.data} notes={notes} deleteNote={(id) => {handleDelete("notes", id)}} saveNote={(item) => {handleAdd("notes", item); }} setData={(data) => handleSaveViewElement(item, data)} key={item.id} deleteComponent={deleteComponent} innerRef={item.ref} editable={editable} sx={{x: item.x, y:item.y, width: item.width, height: item.height}} />
         break;
       default:
         throw new Error("Not a valid component")
     }
+  }
+
+  const handleSaveViewElement = (value, data) => {
+    let newMap = new Map(viewElements);
+    let curArr = newMap.get(selectedView);
+    const index = curArr.findIndex(item => item.id === value.id);
+    curArr[index] = {...value, data: data};
+    newMap.set(selectedView, curArr);
+    saveViewElement({...value, data: data})
   }
 
   const dataMap = (e) => {
