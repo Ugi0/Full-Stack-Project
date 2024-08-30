@@ -1,3 +1,7 @@
+<div align="center">
+    <h1>DISCONTINUED</h1>
+</div>
+
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -14,7 +18,7 @@ Things that I wanted for a calendar app:
 * Combine courses, assignments, exams, projects and events into a single application that you can customize easily.
 * App would remind you and keep track of progress
 
-Currently hosted at: www.studentcalendar.xyz
+<s>Currently hosted at: www.studentcalendar.xyz</s>
 
 ### Built With
 
